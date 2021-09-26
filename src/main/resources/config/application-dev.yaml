@@ -1,7 +1,7 @@
 server:
   port: 8080
-  servlet:
-    context-path: /
+#  servlet:
+#    context-path: /
 logging:
   pattern:
     console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) - %clr([%t]){faint} %X{log_id} %clr(%logger{39}){cyan} %clr(:){faint} %m%n%wEx"
@@ -14,7 +14,6 @@ logging:
 ## 数据源配置
 spring:
   datasource: # 数据库的数据配置
-    type: com.mchange.v2.c3p0.ComboPooledDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     # url不用换行，由于数据太长了这里换行了
     url: jdbc:mysql://localhost:3306/ppl?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false

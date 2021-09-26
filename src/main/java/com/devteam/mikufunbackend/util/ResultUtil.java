@@ -11,19 +11,21 @@ public class ResultUtil {
     }
 
     public static Response success(Object object) {
-        Response response = new Response();
-        response.setSuccess(true);
-        response.setErrorCode(0);
-        response.setErrorMessage("success");
-        response.setData(object);
+        Response response = Response.builder()
+                .success(true)
+                .errorCode(0)
+                .errorMessage("success")
+                .data(object)
+                .build();
         return response;
     }
 
     public static Response fail(int errorCode, String errorMessage) {
-        Response response = new Response();
-        response.setSuccess(false);
-        response.setErrorCode(errorCode);
-        response.setErrorMessage(errorMessage);
+        Response response = Response.builder()
+                .success(false)
+                .errorCode(errorCode)
+                .errorMessage(errorMessage)
+                .build();
         return response;
     }
 }

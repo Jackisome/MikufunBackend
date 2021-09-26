@@ -94,3 +94,6 @@ mvnw.cmd
 .classpath
 .settings
 .metadata
+
+# log
+log

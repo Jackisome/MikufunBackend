@@ -16,6 +16,6 @@ public class Response<T> implements Serializable {
 
     private boolean success;
     private T data;
-    private int errorCode;
-    private String errorMessage;
+    private int statusCode;
+    private String message;
 }

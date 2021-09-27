@@ -15,8 +15,8 @@ public class ResultUtil {
     public static Response success(Object object) {
         Response response = Response.builder()
                 .success(true)
-                .errorCode(0)
-                .errorMessage("success")
+                .errorCode(ResponseEnum.SUCCESS.getStatusCode())
+                .errorMessage(ResponseEnum.SUCCESS.getMessage())
                 .data(object)
                 .build();
         return response;
@@ -34,8 +34,8 @@ public class ResultUtil {
     public static Response fail(ResponseEnum responseEnum) {
         Response response = Response.builder()
                 .success(false)
-                .errorCode(responseEnum.getErrorCode())
-                .errorMessage(responseEnum.getErrorMessage())
+                .errorCode(responseEnum.getStatusCode())
+                .errorMessage(responseEnum.getMessage())
                 .build();
         return response;
     }

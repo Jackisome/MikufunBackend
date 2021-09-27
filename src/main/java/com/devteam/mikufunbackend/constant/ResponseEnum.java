@@ -1,26 +1,22 @@
 package com.devteam.mikufunbackend.constant;
 
+import lombok.Getter;
+
 /**
  * @author Jackisome
  * @date 2021/9/26
  */
+@Getter
 public enum ResponseEnum {
-    UNKNOWN_ERROR(-1, "unknown error"),
-    SUCCESS(0, "success");
+    SUCCESS(0, "success"),
+    UNKNOWN_ERROR(1, "unknown error"),
+    LOGIN_ERROR(2, "login error");
 
-    private final int errorCode;
-    private final String errorMessage;
+    private final int statusCode;
+    private final String message;
 
-    ResponseEnum(int errorCode, String errorMessage) {
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
-    }
-
-    public int getErrorCode() {
-        return errorCode;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
+    ResponseEnum(int statusCode, String message) {
+        this.statusCode = statusCode;
+        this.message = message;
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 /**
  * @author Jackisome
  * @date 2021/9/26
+ * 统一异常处理
  */
 @ControllerAdvice
 public class ExceptionHandle {
@@ -20,6 +21,7 @@ public class ExceptionHandle {
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public Response handle(Exception e) {
+        // todo: 需细化
         if (e instanceof Exception) {
             return ResultUtil.fail(ResponseEnum.UNKNOWN_ERROR);
         } else {

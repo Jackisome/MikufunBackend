@@ -1,14 +1,10 @@
 package com.devteam.mikufunbackend.interceptor;
 
 import com.devteam.mikufunbackend.constant.ResponseEnum;
-import com.devteam.mikufunbackend.constant.RuntimeVariable;
-import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
 import com.devteam.mikufunbackend.util.TokenUtil;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -40,11 +36,11 @@ public class SignInterceptor implements HandlerInterceptor {
             }
         }
 
-        if(TokenUtil.validateToken(token)){
+        if(!TokenUtil.validateToken(token)){
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().print(JSONObject.wrap(ResultUtil.fail(ResponseEnum.LOGIN_ERROR)));
+            response.getWriter().write(ResultUtil.fail(ResponseEnum.LOGIN_ERROR).toString());
             logger.info("unauthorized");
             return false;
         }

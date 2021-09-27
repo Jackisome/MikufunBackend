@@ -2,7 +2,7 @@ package com.devteam.mikufunbackend.service.serviceInterface;
 
 /**
  * @author Jackisome
- * @date 2021/9/26
+ * @date 2021/9/27
  */
-public class TestServiceInterface {
+public interface TestService {
 }

@@ -43,7 +43,7 @@ public class ResultUtil {
         return response;
     }
 
-    public static Map<String, Object> initData() {
+    public static Map<String, Object> getData() {
         return new HashMap<>();
     }
 }

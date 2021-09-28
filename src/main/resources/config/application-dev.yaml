@@ -23,3 +23,7 @@ mybatis:
   mapper-locations: classpath:mybatis/*.xml
   configuration:
     map-underscore-to-camel-case: true
+
+aria2:
+  download:
+    dir: /docker

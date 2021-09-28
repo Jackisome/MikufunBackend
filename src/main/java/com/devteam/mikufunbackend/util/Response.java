@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * @author Jackisome
@@ -12,10 +13,10 @@ import java.io.Serializable;
  */
 @Data
 @Builder
-public class Response<T> implements Serializable {
+public class Response implements Serializable {
 
     private boolean success;
-    private T data;
+    private Map<String, Object> data;
     private int statusCode;
     private String message;
 }

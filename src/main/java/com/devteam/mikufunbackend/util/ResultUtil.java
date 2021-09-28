@@ -2,6 +2,9 @@ package com.devteam.mikufunbackend.util;
 
 import com.devteam.mikufunbackend.constant.ResponseEnum;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * @author Jackisome
  * @date 2021/9/26
@@ -12,12 +15,12 @@ public class ResultUtil {
         return success(null);
     }
 
-    public static Response success(Object object) {
+    public static Response success(Map<String, Object> data) {
         Response response = Response.builder()
                 .success(true)
                 .statusCode(ResponseEnum.SUCCESS.getStatusCode())
                 .message(ResponseEnum.SUCCESS.getMessage())
-                .data(object)
+                .data(data)
                 .build();
         return response;
     }
@@ -38,5 +41,9 @@ public class ResultUtil {
                 .message(responseEnum.getMessage())
                 .build();
         return response;
+    }
+
+    public static Map<String, Object> initData() {
+        return new HashMap<>();
     }
 }

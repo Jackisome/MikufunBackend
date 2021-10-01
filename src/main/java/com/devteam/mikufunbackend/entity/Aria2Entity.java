@@ -17,6 +17,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.dom4j.DocumentHelper;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -57,8 +58,7 @@ public class Aria2Entity {
 
     public static String addUrl(String url, String dir, String gid) {
         Aria2OptionEntity aria2Option = new Aria2OptionEntity();
-        aria2Option.setDir(dir)
-                .setRefer(url);
+        aria2Option.setRefer(url);
         ;
         Aria2Entity aria2Entity = new Aria2Entity(gid);
         aria2Entity.setMethod(Aria2Constant.METHOD_ADD_URI)

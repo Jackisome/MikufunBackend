@@ -25,7 +25,7 @@ public class ExceptionHandle {
         if (e instanceof Exception) {
             return ResultUtil.fail(ResponseEnum.UNKNOWN_ERROR);
         } else {
-            logger.error("unkown error: {}", e);
+            logger.error("unknown error: {}", e);
             return ResultUtil.fail(ResponseEnum.UNKNOWN_ERROR);
         }
     }

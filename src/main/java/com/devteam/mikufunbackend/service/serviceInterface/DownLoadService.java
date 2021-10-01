@@ -11,5 +11,5 @@ public interface DownLoadService {
      * @return 下载请求是否完成创建
      * @throws Exception
      */
-    public boolean download(String link) throws Exception;
+    boolean download(String link) throws Exception;
 }

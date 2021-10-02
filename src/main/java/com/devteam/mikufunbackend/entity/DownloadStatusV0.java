@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class DownloadStatusV0 {
+    String gid;
     String fileName;
     int fileId;
     int completedLength;

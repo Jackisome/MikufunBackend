@@ -26,7 +26,7 @@ public interface Aria2Service {
 
     DownloadStatusEntity tellDownloadingFileStatus(String gid, String keys);
 
-    List<DownloadStatusEntity> getActiveFileStatus();
+    List<DownloadStatusEntity> getActiveFileStatus() throws IOException;
 
     List<DownloadStatusEntity> getWaitingFileStatus();
 

@@ -25,6 +25,6 @@ mybatis:
     map-underscore-to-camel-case: true
 
 aria2:
-  url: localhost:6800/jsonrpc
+  url: http://72.44.78.113:6800/jsonrpc
   download:
     dir: /docker

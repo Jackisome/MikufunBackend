@@ -79,6 +79,7 @@ public class HttpClientUtil {
      */
     public static CloseableHttpResponse sendPostAsJson(String urlPath, Object entity) throws IOException {
         CloseableHttpClient httpClient = HttpClients.createDefault();
+        System.out.println(urlPath);
         HttpPost httpPost = new HttpPost(urlPath);
         httpPost.setHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
         httpPost.setEntity(new StringEntity(JSONObject.toJSONString(entity), StandardCharsets.UTF_8));

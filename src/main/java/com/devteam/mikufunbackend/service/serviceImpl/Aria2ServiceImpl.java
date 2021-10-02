@@ -35,20 +35,20 @@ public class Aria2ServiceImpl implements Aria2Service {
     private String aria2RpcUrl;
 
     @Override
-    public String addUrl(String link) throws IOException, DocumentException {
+    public String addUrl(String link) throws IOException, DocumentException, Aria2Exception {
         Aria2Entity aria2Entity = new Aria2Entity();
         aria2Entity.setMethod(Aria2Constant.METHOD_ADD_URI)
                 .addParam(new String[]{link});
+        logger.info("begin download, link: {}", link);
         CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2Entity);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2下载未正常进行，下载链接: {}", link);
             throw new Aria2Exception("下载未正常进行");
         }
+        logger.info("send to aria2 for downloading finished, link: {}", link);
         String entityString = EntityUtils.toString(response.getEntity());
-        org.dom4j.Document document = DocumentHelper.parseText(entityString);
-        org.dom4j.Element rootElement = document.getRootElement();
-        String gid = rootElement.elementText("result");
-        return gid;
+        System.out.println(entityString);
+        return "1234567890";
     }
 
     @Override
@@ -56,11 +56,15 @@ public class Aria2ServiceImpl implements Aria2Service {
         Aria2Entity aria2Entity = new Aria2Entity();
         aria2Entity.setMethod(Aria2Constant.METHOD_REMOVE_DOWNLOAD_RESULT)
                 .addParam(gid);
+        logger.info("begin remove downloading file, gid: {}", gid);
         CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2Entity);
+        String entityString = EntityUtils.toString(response.getEntity());
+        System.out.println(entityString);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2下载未正常移除, gid: {}", gid);
             throw new Aria2Exception("移除下载未正常进行");
         }
+        logger.info("send to aria2 for removing finished, gid: {}", gid);
         return true;
     }
 
@@ -90,7 +94,16 @@ public class Aria2ServiceImpl implements Aria2Service {
     }
 
     @Override
-    public List<DownloadStatusEntity> getActiveFileStatus() {
+    public List<DownloadStatusEntity> getActiveFileStatus() throws IOException {
+        Aria2Entity aria2Entity = new Aria2Entity();
+        aria2Entity.setMethod(Aria2Constant.METHOD_TELL_ACTIVE)
+                .addParam(Aria2Constant.PARAM_ARRAY_OF_FILED);
+        logger.info("begin get active file status");
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2Entity);
+        if (!HttpClientUtil.validateResponse(response)) {
+            logger.error("Aria2查看active文件信息未完成");
+            throw new Aria2Exception("查看active文件信息未完成");
+        }
         return null;
     }
 

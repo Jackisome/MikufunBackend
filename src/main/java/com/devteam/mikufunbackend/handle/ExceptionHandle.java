@@ -36,4 +36,11 @@ public class ExceptionHandle {
         logger.error(e.getMessage());
         return ResultUtil.fail(ResponseEnum.ARIA2_ERROR);
     }
+
+    @ExceptionHandler(value = FileIdException.class)
+    @ResponseBody
+    public Response fileIdExceptionHandle(FileIdException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(ResponseEnum.FILEID_ERROR);
+    }
 }

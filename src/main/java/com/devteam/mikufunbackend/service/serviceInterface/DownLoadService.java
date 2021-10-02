@@ -3,6 +3,7 @@ package com.devteam.mikufunbackend.service.serviceInterface;
 import com.devteam.mikufunbackend.entity.DownloadStatusV0;
 import com.devteam.mikufunbackend.entity.FinishFileV0;
 import com.devteam.mikufunbackend.entity.ResourceV0;
+import com.devteam.mikufunbackend.entity.SimpleFinishFileV0;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import org.dom4j.DocumentException;
 
@@ -55,4 +56,6 @@ public interface DownLoadService {
      * @return
      */
     List<ResourceV0> getResourceList();
+
+    List<SimpleFinishFileV0> deleteLocalFiles(List<Integer> fileIds);
 }

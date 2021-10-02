@@ -37,4 +37,12 @@ public class ResourceEntity {
                 .resourceName(this.getResourceName())
                 .build();
     }
+
+    public SimpleFinishFileV0 getSimpleFinishFileV0() {
+        return SimpleFinishFileV0.builder()
+                .fileId(this.getFileId())
+                .fileName(ResultUtil.getFileName(this.getFilePath()))
+                .delete(false)
+                .build();
+    }
 }

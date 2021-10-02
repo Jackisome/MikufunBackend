@@ -6,13 +6,13 @@ import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.service.serviceInterface.DownLoadService;
-import com.devteam.mikufunbackend.util.ResultUtil;
 import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +96,31 @@ public class DownloadServiceImpl implements DownLoadService {
     @Override
     public List<ResourceV0> getResourceList() {
         List<ResourceV0> data = resourceInformationDao.findResourceList();
+        return data;
+    }
+
+    @Override
+    public List<SimpleFinishFileV0> deleteLocalFiles(List<Integer> fileIds) {
+        List<SimpleFinishFileV0> data = new ArrayList<>();
+        fileIds.forEach(fileId -> {
+            SimpleFinishFileV0 simpleFinishFileV0;
+            ResourceEntity resourceEntity = resourceInformationDao.findResourceInformationByFileId(fileId);
+            if (resourceEntity == null) {
+                simpleFinishFileV0 = SimpleFinishFileV0.builder()
+                        .fileId(fileId)
+                        .delete(false)
+                        .build();
+            } else {
+                resourceInformationDao.deleteResourceInformationByFileId(fileId);
+                simpleFinishFileV0 = resourceEntity.getSimpleFinishFileV0();
+                String path = resourceEntity.getFilePath();
+                File file = new File(path);
+                if (!file.exists() || file.delete()) {
+                    simpleFinishFileV0.setDelete(true);
+                }
+            }
+            data.add(simpleFinishFileV0);
+        });
         return data;
     }
 }

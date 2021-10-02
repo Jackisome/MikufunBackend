@@ -24,7 +24,7 @@ public interface ResourceInformationDao {
      * @param fileId
      * @return
      */
-    ResourceEntity findResourceInformationByFileId(String fileId);
+    ResourceEntity findResourceInformationByFileId(int fileId);
 
     /**
      * 寻找最近播放的文件
@@ -43,7 +43,7 @@ public interface ResourceInformationDao {
      * @param fileId
      * @return
      */
-    int deleteResourceInformationByFileId(String fileId);
+    int deleteResourceInformationByFileId(int fileId);
 
     /**
      * 根据番剧id寻找番剧的所有集数

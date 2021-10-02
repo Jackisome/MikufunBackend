@@ -13,6 +13,6 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-public class Aria2OptionEntity {
+public class Aria2OptionV0 {
     String refer;
 }

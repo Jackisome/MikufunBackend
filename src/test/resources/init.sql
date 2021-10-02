@@ -21,7 +21,7 @@ create table if not exists 'mikufun_resource_information' (
 ) comment '下载资源信息表';
 
 -- 文件下载之后还需要做种，处于stopped且已完成转码的文件才能删除
-create table if not exists 'mikufun_gid_link' (
+create table if not exists 'mikufun_download_status' (
     'id'    int NULL AUTO_INCREMENT comment '自增主键',
     'gid'   varchar(100) NOT NULL   comment '下载标识',
     'link'  text    NOT NULL    comment '下载链接',
@@ -30,4 +30,4 @@ create table if not exists 'mikufun_gid_link' (
     'is_source_delete'  int default 0   comment '转码前文件是否已删除',
     'status'    varchar(20) comment '下载状态',
     primary key ('id')
-) comment 'gid与下载链接对应表';
+) comment '下载和保存状态信息表';

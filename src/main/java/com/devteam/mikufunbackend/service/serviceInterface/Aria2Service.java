@@ -1,6 +1,6 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
-import com.devteam.mikufunbackend.entity.DownloadStatusEntity;
+import com.devteam.mikufunbackend.entity.DownloadStatusV0;
 import org.dom4j.DocumentException;
 
 import java.io.IOException;
@@ -24,13 +24,13 @@ public interface Aria2Service {
 
     boolean unpauseAllDownloadingFile();
 
-    DownloadStatusEntity tellDownloadingFileStatus(String gid, String keys);
+    DownloadStatusV0 tellDownloadingFileStatus(String gid, String keys);
 
-    List<DownloadStatusEntity> getActiveFileStatus() throws IOException;
+    List<DownloadStatusV0> getActiveFileStatus() throws IOException;
 
-    List<DownloadStatusEntity> getWaitingFileStatus();
+    List<DownloadStatusV0> getWaitingFileStatus();
 
-    List<DownloadStatusEntity> getStoppedFilesStatus();
+    List<DownloadStatusV0> getStoppedFilesStatus();
 
     Map<String, String> getGlobalStatus();
 }

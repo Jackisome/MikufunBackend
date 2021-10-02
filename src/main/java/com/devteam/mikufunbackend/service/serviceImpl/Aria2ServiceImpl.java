@@ -1,18 +1,14 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.entity.Aria2Entity;
-import com.devteam.mikufunbackend.entity.Aria2OptionEntity;
-import com.devteam.mikufunbackend.entity.DownloadStatusEntity;
+import com.devteam.mikufunbackend.entity.DownloadStatusV0;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -89,12 +85,12 @@ public class Aria2ServiceImpl implements Aria2Service {
     }
 
     @Override
-    public DownloadStatusEntity tellDownloadingFileStatus(String gid, String keys) {
+    public DownloadStatusV0 tellDownloadingFileStatus(String gid, String keys) {
         return null;
     }
 
     @Override
-    public List<DownloadStatusEntity> getActiveFileStatus() throws IOException {
+    public List<DownloadStatusV0> getActiveFileStatus() throws IOException {
         Aria2Entity aria2Entity = new Aria2Entity();
         aria2Entity.setMethod(Aria2Constant.METHOD_TELL_ACTIVE)
                 .addParam(Aria2Constant.PARAM_ARRAY_OF_FILED);
@@ -108,12 +104,12 @@ public class Aria2ServiceImpl implements Aria2Service {
     }
 
     @Override
-    public List<DownloadStatusEntity> getWaitingFileStatus() {
+    public List<DownloadStatusV0> getWaitingFileStatus() {
         return null;
     }
 
     @Override
-    public List<DownloadStatusEntity> getStoppedFilesStatus() {
+    public List<DownloadStatusV0> getStoppedFilesStatus() {
         return null;
     }
 

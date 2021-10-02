@@ -15,7 +15,7 @@ import java.text.DecimalFormat;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DanmakuEntity {
+public class DanmakuV0 {
     double time;
     int type;
     int color;

@@ -4,8 +4,10 @@ import lombok.Data;
 
 /**
  * @author Jackisome
- * @date 2021/9/26
+ * @date 2021/10/2
  */
 @Data
-public class TestEntity {
+public class ResourceV0 {
+    int resourceId;
+    String resourceName;
 }

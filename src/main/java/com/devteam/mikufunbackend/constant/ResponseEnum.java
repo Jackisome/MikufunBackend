@@ -10,7 +10,9 @@ import lombok.Getter;
 public enum ResponseEnum {
     SUCCESS(0, "success"),
     UNKNOWN_ERROR(1, "unknown error"),
-    LOGIN_ERROR(2, "login error");
+    LOGIN_ERROR(2, "login error"),
+    ARIA2_ERROR(3, "aria2 error"),
+    FILEID_ERROR(4, "fileId error");
 
     private final int statusCode;
     private final String message;

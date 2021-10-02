@@ -3,22 +3,22 @@ package com.devteam.mikufunbackend.service.serviceImpl;
 import com.alibaba.fastjson.JSONObject;
 import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.entity.Aria2Entity;
-import com.devteam.mikufunbackend.entity.Aria2OptionEntity;
-import com.devteam.mikufunbackend.entity.DownloadStatusEntity;
+import com.devteam.mikufunbackend.entity.Aria2ResponseV0;
+import com.devteam.mikufunbackend.entity.Aria2StatusV0;
+import com.devteam.mikufunbackend.entity.DownloadStatusV0;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -35,20 +35,20 @@ public class Aria2ServiceImpl implements Aria2Service {
     private String aria2RpcUrl;
 
     @Override
-    public String addUrl(String link) throws IOException, DocumentException {
+    public String addUrl(String link) throws IOException, DocumentException, Aria2Exception {
         Aria2Entity aria2Entity = new Aria2Entity();
         aria2Entity.setMethod(Aria2Constant.METHOD_ADD_URI)
                 .addParam(new String[]{link});
+        logger.info("begin download, link: {}", link);
         CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2Entity);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2下载未正常进行，下载链接: {}", link);
             throw new Aria2Exception("下载未正常进行");
         }
+        logger.info("send to aria2 for downloading finished, link: {}", link);
         String entityString = EntityUtils.toString(response.getEntity());
-        org.dom4j.Document document = DocumentHelper.parseText(entityString);
-        org.dom4j.Element rootElement = document.getRootElement();
-        String gid = rootElement.elementText("result");
-        return gid;
+        System.out.println(entityString);
+        return "1234567890";
     }
 
     @Override
@@ -56,11 +56,15 @@ public class Aria2ServiceImpl implements Aria2Service {
         Aria2Entity aria2Entity = new Aria2Entity();
         aria2Entity.setMethod(Aria2Constant.METHOD_REMOVE_DOWNLOAD_RESULT)
                 .addParam(gid);
+        logger.info("begin remove downloading file, gid: {}", gid);
         CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2Entity);
+        String entityString = EntityUtils.toString(response.getEntity());
+        System.out.println(entityString);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2下载未正常移除, gid: {}", gid);
             throw new Aria2Exception("移除下载未正常进行");
         }
+        logger.info("send to aria2 for removing finished, gid: {}", gid);
         return true;
     }
 
@@ -85,23 +89,29 @@ public class Aria2ServiceImpl implements Aria2Service {
     }
 
     @Override
-    public DownloadStatusEntity tellDownloadingFileStatus(String gid, String keys) {
+    public Aria2StatusV0 tellDownloadingFileStatus(String gid) {
         return null;
     }
 
     @Override
-    public List<DownloadStatusEntity> getActiveFileStatus() {
-        return null;
-    }
-
-    @Override
-    public List<DownloadStatusEntity> getWaitingFileStatus() {
-        return null;
-    }
-
-    @Override
-    public List<DownloadStatusEntity> getStoppedFilesStatus() {
-        return null;
+    public List<Aria2StatusV0> getFileStatus(String type) throws IOException {
+        Aria2Entity aria2Entity = new Aria2Entity();
+        aria2Entity.setMethod(type);
+        if (!Aria2Constant.METHOD_TELL_ACTIVE.equals(type)) {
+            aria2Entity.addParam(0)
+                    .addParam(1000);
+        }
+        aria2Entity.addParam(Aria2Constant.PARAM_ARRAY_OF_FILED);
+        logger.info("begin get file status, type: {}", type);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2Entity);
+        if (!HttpClientUtil.validateResponse(response)) {
+            logger.error("Aria2查看文件信息未完成");
+            throw new Aria2Exception("查看文件信息未完成");
+        }
+        logger.info("get file status finish, type: {}", type);
+        String Aria2Response = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+        Aria2ResponseV0 aria2ResponseV0 = JSONObject.parseObject(Aria2Response, Aria2ResponseV0.class);
+        return aria2ResponseV0.getResult();
     }
 
     @Override

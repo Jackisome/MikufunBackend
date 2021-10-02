@@ -7,11 +7,10 @@ import lombok.Data;
  * @date 2021/10/2
  */
 @Data
-public class DownloadStatusEntity {
-    String gid;
-    String link;
+public class Aria2FileV0 {
+    int index;
     String path;
-    int isFinish;
-    int isSourceDelete;
-    String status;
+    int completedLength;
+    int length;
+    boolean selected;
 }

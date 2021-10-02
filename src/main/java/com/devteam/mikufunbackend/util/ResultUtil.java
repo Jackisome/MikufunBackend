@@ -46,4 +46,12 @@ public class ResultUtil {
     public static Map<String, Object> getData() {
         return new HashMap<>();
     }
+
+    public static String getFileName(String path) {
+        if (path == null) {
+            return "";
+        }
+        String[] strings = path.split("/");
+        return strings[strings.length - 1];
+    }
 }

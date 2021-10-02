@@ -14,7 +14,7 @@ public class Aria2StatusV0 {
     String totalLength;
     int downloadSpeed;
     int uploadSpeed;
-    List<FileV0> files;
+    List<Aria2FileV0> files;
     String gid;
     String status;
 }

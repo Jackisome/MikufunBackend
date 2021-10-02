@@ -12,5 +12,5 @@ import java.util.List;
 public class Aria2ResponseV0 {
     String id;
     String jsonrpc;
-    List<Aria2StatusV0> aria2StatusV0s;
+    List<Aria2StatusV0> result;
 }

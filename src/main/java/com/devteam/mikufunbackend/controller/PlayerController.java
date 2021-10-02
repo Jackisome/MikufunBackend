@@ -1,6 +1,6 @@
 package com.devteam.mikufunbackend.controller;
 
-import com.devteam.mikufunbackend.entity.DanmakuEntity;
+import com.devteam.mikufunbackend.entity.DanmakuV0;
 import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
 import org.springframework.web.bind.annotation.*;
@@ -19,9 +19,9 @@ public class PlayerController {
     @GetMapping("danmaku/{fileId}")
     public Response getDanmaku(@PathVariable String fileId) {
         Map<String, Object> data = ResultUtil.getData();
-        List<DanmakuEntity> danmakuEntities = new ArrayList<>();
-        danmakuEntities.add(new DanmakuEntity(230.523, 0, 16777215, "618c713c", "comment1"));
-        danmakuEntities.add(new DanmakuEntity(25.837, 0, 16777215, "6b2884ac", "comment2"));
+        List<DanmakuV0> danmakuEntities = new ArrayList<>();
+        danmakuEntities.add(new DanmakuV0(230.523, 0, 16777215, "618c713c", "comment1"));
+        danmakuEntities.add(new DanmakuV0(25.837, 0, 16777215, "6b2884ac", "comment2"));
         data.put("code", 0);
         data.put("data", danmakuEntities);
         return ResultUtil.success(data);

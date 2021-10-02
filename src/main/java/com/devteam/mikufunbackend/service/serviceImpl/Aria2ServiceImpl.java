@@ -1,7 +1,10 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.entity.Aria2Entity;
+import com.devteam.mikufunbackend.entity.Aria2ResponseV0;
+import com.devteam.mikufunbackend.entity.Aria2StatusV0;
 import com.devteam.mikufunbackend.entity.DownloadStatusV0;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
@@ -15,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -85,32 +89,29 @@ public class Aria2ServiceImpl implements Aria2Service {
     }
 
     @Override
-    public DownloadStatusV0 tellDownloadingFileStatus(String gid, String keys) {
+    public Aria2StatusV0 tellDownloadingFileStatus(String gid) {
         return null;
     }
 
     @Override
-    public List<DownloadStatusV0> getActiveFileStatus() throws IOException {
+    public List<Aria2StatusV0> getFileStatus(String type) throws IOException {
         Aria2Entity aria2Entity = new Aria2Entity();
-        aria2Entity.setMethod(Aria2Constant.METHOD_TELL_ACTIVE)
-                .addParam(Aria2Constant.PARAM_ARRAY_OF_FILED);
-        logger.info("begin get active file status");
+        aria2Entity.setMethod(type);
+        if (!Aria2Constant.METHOD_TELL_ACTIVE.equals(type)) {
+            aria2Entity.addParam(0)
+                    .addParam(1000);
+        }
+        aria2Entity.addParam(Aria2Constant.PARAM_ARRAY_OF_FILED);
+        logger.info("begin get file status, type: {}", type);
         CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2Entity);
         if (!HttpClientUtil.validateResponse(response)) {
-            logger.error("Aria2查看active文件信息未完成");
-            throw new Aria2Exception("查看active文件信息未完成");
+            logger.error("Aria2查看文件信息未完成");
+            throw new Aria2Exception("查看文件信息未完成");
         }
-        return null;
-    }
-
-    @Override
-    public List<DownloadStatusV0> getWaitingFileStatus() {
-        return null;
-    }
-
-    @Override
-    public List<DownloadStatusV0> getStoppedFilesStatus() {
-        return null;
+        logger.info("get file status finish, type: {}", type);
+        String Aria2Response = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+        Aria2ResponseV0 aria2ResponseV0 = JSONObject.parseObject(Aria2Response, Aria2ResponseV0.class);
+        return aria2ResponseV0.getResult();
     }
 
     @Override

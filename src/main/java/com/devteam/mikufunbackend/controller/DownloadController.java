@@ -36,7 +36,10 @@ public class DownloadController {
         return ResultUtil.success(data);
     }
 
-//    @GetMapping("/download/downloading")
-//    public Response findDownloadingFile() throws Exception {
-//    }
+    @GetMapping("/download/downloading")
+    public Response findDownloadingFile() throws Aria2Exception, IOException {
+        Map<String, Object> data = ResultUtil.getData();
+        data.put("downloadingFiles", downloadService.getDownloadingFiles());
+        return ResultUtil.success(data);
+    }
 }

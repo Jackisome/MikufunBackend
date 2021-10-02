@@ -50,7 +50,7 @@ public interface ResourceInformationDao {
      * @param resourceId
      * @return
      */
-    List<ResourceEntity> findResourceInformationByResourceId(String resourceId);
+    List<ResourceEntity> findResourceInformationByResourceId(int resourceId);
 
     /**
      * 寻找番剧列表
@@ -83,4 +83,10 @@ public interface ResourceInformationDao {
      */
     int updatePlayPosition(int fileId,
                            int recentPlayPosition);
+
+    /**
+     * 查找所有文件信息记录
+     * @return
+     */
+    List<ResourceEntity> findAllResourceInformation();
 }

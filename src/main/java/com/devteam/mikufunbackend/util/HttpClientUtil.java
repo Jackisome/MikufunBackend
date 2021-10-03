@@ -1,6 +1,7 @@
 package com.devteam.mikufunbackend.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.devteam.mikufunbackend.entity.Aria2ResponseV0;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -99,5 +101,18 @@ public class HttpClientUtil {
      */
     public static boolean validateResponse(CloseableHttpResponse response) {
         return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
+    }
+
+    /**
+     * 将响应主体实例化为实体对象
+     * @param response 响应体
+     * @param clazz 需要实例化的实体类Class
+     * @return 实例化之后的实体对象
+     * @throws IOException
+     */
+    public static Object convertJsonToObject(CloseableHttpResponse response, Class clazz) throws IOException {
+        String jsonResponse = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+        Object object = JSONObject.parseObject(jsonResponse, clazz);
+        return object;
     }
 }

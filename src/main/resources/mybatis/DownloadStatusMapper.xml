@@ -1,0 +1,73 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatic.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatic-3-mapper.dtd">
+<mapper namespace="com.devteam.mikufunbackend.dao.DownloadStatusDao">
+    <resultMap id="downloadStatusMap" type="com.devteam.mikufunbackend.entity.DownloadStatusEntity">
+        <result property="gid" column="gid" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="link" column="link" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="fileName" column="file_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="filePath" column="file_path" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="isFinish" column="is_finish" javaType="int" jdbcType="NUMERIC"/>
+        <result property="isSourceDelete" column="is_source_delete" javaType="int" jdbcType="NUMERIC"/>
+        <result property="status" column="status" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="addDownloadStatusRecord">
+        insert into mikufun_download_status (
+        gid,
+        link,
+        file_name,
+        file_path,
+        is_finish,
+        is_source_delete,
+        status
+        )
+        values (
+        #{gid}, #{link}, #{fileName}, #{filePath}, #{isFinish}, #{isSourceDelete}, #{status}
+        )
+    </insert>
+
+    <delete id="deleteDownloadStatusRecordByGidAndFileName">
+        delete from mikufun_download_status
+        where gid = #{gid}
+        and file_name = #{fileName}
+    </delete>
+
+    <delete id="deleteDownloadStatusRecordByGid">
+        delete from mikufun_download_status
+        where gid = #{gid}
+    </delete>
+
+    <update id="updateFinishTag">
+        update mikufun_download_status
+        set is_finish = 1
+        where file_path = #{filePath}
+    </update>
+
+    <update id="updateSourceDeleteTag">
+        update mikufun_download_status
+        set is_source_delete = 1
+        where file_path = #{filePath}
+    </update>
+
+    <select id="findDownloadStatusRecordByGid"
+            resultType="com.devteam.mikufunbackend.entity.DownloadStatusEntity">
+        select gid, link, file_name, file_path, is_finish, is_source_delete, status
+        from mikufun_download_status
+        where gid = #{gid}
+    </select>
+
+    <select id="findDownloadStatusRecordByLink"
+            resultType="com.devteam.mikufunbackend.entity.DownloadStatusEntity">
+        select gid, link, file_name, file_path, is_finish, is_source_delete, status
+        from mikufun_download_status
+        where link = #{link}
+    </select>
+
+    <select id="findAbleDeleteResource" resultType="com.devteam.mikufunbackend.entity.DownloadStatusEntity">
+        select gid, link, file_name, file_path, is_finish, is_source_delete, status
+        from mikufun_download_status
+        where is_finish = 1
+        and is_source_delete = 0
+    </select>
+</mapper>

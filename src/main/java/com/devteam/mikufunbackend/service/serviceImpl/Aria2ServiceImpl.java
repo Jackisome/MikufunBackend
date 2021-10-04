@@ -1,5 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.entity.Aria2RequestV0;
 import com.devteam.mikufunbackend.entity.Aria2ResponseV0;
@@ -44,8 +46,8 @@ public class Aria2ServiceImpl implements Aria2Service {
         }
         logger.info("send to aria2 for downloading finished, link: {}", link);
         String entityString = EntityUtils.toString(response.getEntity());
-        System.out.println(entityString);
-        return "1234567890";
+        Map<String, String> entityMap = JSON.parseObject(entityString, new TypeReference<Map<String, String>>(){});
+        return entityMap.get("result");
     }
 
     @Override

@@ -1,0 +1,120 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatic.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatic-3-mapper.dtd">
+
+<mapper namespace="com.devteam.mikufunbackend.dao.ResourceInformationDao">
+    <resultMap id="resourceInformationMap" type="com.devteam.mikufunbackend.entity.ResourceEntity">
+        <result property="fileId" column="file_id" javaType="int" jdbcType="NUMERIC"/>
+        <result property="fileName" column="file_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="fileDirectory" column="file_directory" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="fileHash" column="file_hash" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="fileSize" column="file_size" javaType="int" jdbcType="NUMERIC"/>
+        <result property="videoDuration" column="video_duration" javaType="int" jdbcType="NUMERIC"/>
+        <result property="imageUrl" column="image_url" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="recentPlayTime" column="recent_play_time" javaType="java.sql.Timestamp" jdbcType="TIMESTAMP"/>
+        <result property="recentPlayPosition" column="recent_play_position" javaType="int" jdbcType="NUMERIC"/>
+        <result property="downloadTime" column="download_time" javaType="java.sql.Timestamp" jdbcType="TIMESTAMP"/>
+        <result property="exactMatch" column="exact_match" javaType="int" jdbcType="NUMERIC"/>
+        <result property="resourceId" column="resource_id" javaType="int" jdbcType="NUMERIC"/>
+        <result property="resourceName" column="resource_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="episodeTitle" column="episode_title" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="type" column="type" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="episodeId" column="episode_id" javaType="int" jdbcType="NUMERIC"/>
+        <result property="danmakuShift" column="danmaku_shift" javaType="int" jdbcType="NUMERIC"/>
+        <result property="gid" column="gid" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <insert id="addResourceInformation">
+        insert into mikufun_resource_information (
+        file_name,
+        file_directory,
+        file_hash,
+        file_size,
+        video_duration,
+        image_url,
+        exact_match,
+        resource_id,
+        resource_name,
+        episode_title,
+        type,
+        episode_id,
+        danmaku_shift,
+        gid
+        )
+        values (
+        #{fileName}, #{fileDirectory}, #{fileHash}, #{fileSize}, #{videoDuration}, #{imageUrl},
+        #{exactMatch}, #{resourceId}, #{resourceName}, #{episodeTitle}, #{type}, #{episodeId}, #{danmaku_shift}, #{gid}
+        )
+    </insert>
+
+    <delete id="deleteResourceInformationByFileId">
+        delete from mikufun_resource_information
+        where file_id = #{fileId}
+    </delete>
+
+    <update id="updateResourceInformation">
+        update mikufun_resource_information
+        set exact_match = #{exactMatch},
+        resource_id = #{resourceId},
+        resource_name = #{resourceName},
+        episode_title = #{episodeTitle},
+        type = #{type},
+        episode_id = #{episodeId}
+        where file_id = #{fileId}
+    </update>
+
+    <update id="updatePlayPosition">
+        update mikufun_resource_information
+        set recent_play_position = #{recentPlayStation}
+        where file_id = #{fileId}
+    </update>
+
+    <select id="findResourceInformationByFileId" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
+        select file_id, file_name, file_directory, file_hash, file_size, video_duration, image_url, recent_play_time,
+        recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title, type, episode_id,
+        danmaku_shift, gid
+        from mikufun_resource_information
+        where file_id = #{fileId}
+    </select>
+
+    <select id="findRecentPlayResource" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
+        select file_id, file_name, file_directory, file_hash, file_size, video_duration, image_url, recent_play_time,
+        recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title, type, episode_id,
+        danmaku_shift, gid
+        from mikufun_resource_information
+        order by recent_play_time DESC
+        limit 20
+    </select>
+
+    <select id="findRecentDownloadResource" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
+        select file_id, file_name, file_directory, file_hash, file_size, video_duration, image_url, recent_play_time,
+        recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title, type, episode_id,
+        danmaku_shift, gid
+        from mikufun_resource_information
+        order by download_time DESC
+        limit 20
+    </select>
+
+    <select id="findResourceInformationByResourceId"
+            resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
+        select file_id, file_name, file_directory, file_hash, file_size, video_duration, image_url, recent_play_time,
+        recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title, type, episode_id,
+        danmaku_shift, gid
+        from mikufun_resource_information
+        where resource_id = #{resourceId}
+        order by file_name
+    </select>
+
+    <select id="findResourceList" resultType="com.devteam.mikufunbackend.entity.ResourceV0">
+        select DISTINCT resource_id, resource_name
+        from mikufun_resource_information
+    </select>
+
+    <select id="findAllResourceInformation" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
+        select file_id, file_name, file_directory, file_hash, file_size, video_duration, image_url, recent_play_time,
+        recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title, type, episode_id,
+        danmaku_shift, gid
+        from mikufun_resource_information
+        order by file_name
+    </select>
+</mapper>

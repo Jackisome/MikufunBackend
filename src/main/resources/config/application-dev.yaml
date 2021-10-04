@@ -20,7 +20,7 @@ spring:
     password: 123456
 ## mybatis 配置
 mybatis:
-  mapper-locations: classpath:mybatis/*.xml
+  mapper-locations: classpath*:**/mybatis/*Mapper.xml
   configuration:
     map-underscore-to-camel-case: true
 

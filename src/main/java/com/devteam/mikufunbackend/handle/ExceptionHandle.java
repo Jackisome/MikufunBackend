@@ -18,17 +18,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class ExceptionHandle {
     public static final Logger logger = LoggerFactory.getLogger(ExceptionHandle.class);
 
-//    @ExceptionHandler(value = Exception.class)
-//    @ResponseBody
-//    public Response exceptionHandle(Exception e) {
-//        // todo: 需细化
-//        if (e instanceof Exception) {
-//            return ResultUtil.fail(ResponseEnum.UNKNOWN_ERROR);
-//        } else {
-//            logger.error("unknown error: {}", e);
-//            return ResultUtil.fail(ResponseEnum.UNKNOWN_ERROR);
-//        }
-//    }
+    @ExceptionHandler(value = Exception.class)
+    @ResponseBody
+    public Response exceptionHandle(Exception e) {
+        // todo: 需细化
+        if (e instanceof Exception) {
+            return ResultUtil.fail(ResponseEnum.UNKNOWN_ERROR);
+        } else {
+            logger.error("unknown error: {}", e);
+            return ResultUtil.fail(ResponseEnum.UNKNOWN_ERROR);
+        }
+    }
 
     @ExceptionHandler(value = Aria2Exception.class)
     @ResponseBody

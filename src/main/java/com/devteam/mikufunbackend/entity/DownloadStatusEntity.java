@@ -1,5 +1,6 @@
 package com.devteam.mikufunbackend.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -7,10 +8,12 @@ import lombok.Data;
  * @date 2021/10/2
  */
 @Data
+@Builder
 public class DownloadStatusEntity {
     String gid;
     String link;
-    String path;
+    String fileName;
+    String filePath;
     int isFinish;
     int isSourceDelete;
     String status;

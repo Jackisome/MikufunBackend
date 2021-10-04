@@ -1,6 +1,19 @@
-package com.devteam.mikufunbackend.entity;/**
- *
+package com.devteam.mikufunbackend.entity;
+
+import lombok.Builder;
+import lombok.Data;
+
+/**
  * @author Jackisome
  * @date 2021/10/4
- */public class ResourceMatchV0 {
+ */
+@Data
+@Builder
+public class ResourceMatchV0 {
+    int resourceId;
+    String resourceName;
+    String episodeTitle;
+    String type;
+    int episodeId;
+    int shift;
 }

@@ -1,9 +1,7 @@
 package com.devteam.mikufunbackend.controller;
 
-import com.devteam.mikufunbackend.entity.SimpleFinishFileV0;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.handle.FileIdException;
-import com.devteam.mikufunbackend.service.serviceImpl.DownloadServiceImpl;
 import com.devteam.mikufunbackend.service.serviceInterface.DownLoadService;
 import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
@@ -69,7 +67,7 @@ public class DownloadController {
     }
 
     @DeleteMapping("/finish/{fileIdList}")
-    public Response deleteLocalFiles(@PathVariable String fileIdList) {
+    public Response deleteLocalFiles(@PathVariable String fileIdList) throws IOException, InterruptedException {
         Map<String, Object> data = ResultUtil.getData();
         List<Integer> fileIds = new ArrayList<>();
         String[] strings = fileIdList.split(",");

@@ -3,7 +3,8 @@ create database if not exists 'mikufun' default charset utf8 collate utf8_genera
 -- 只保存下载完成的文件
 create table if not exists 'mikufun_resource_information' (
     'file_id'    int NOT NULL AUTO_INCREMENT comment '文件标识',
-    'file_path' varchar(1024)   NOT NULL comment '文件地址',
+    'file_name' varchar(1024)   NOT NULL comment '文件名',
+    'file_directory' varchar(1024)   NOT NULL comment '文件目录地址',
     'file_hash' varchar(100)    comment '文件前16MB的MD5值',
     'file_size' int comment '文件大小，单位为byte',
     'video_duration'    int default 0   comment '视频时长，单位为秒',
@@ -16,7 +17,8 @@ create table if not exists 'mikufun_resource_information' (
     'resource_name' varchar(1024)   comment '番剧名',
     'episode_title' varchar(1024)   comment '剧集标题',
     'type' varchar(100) comment '类型',
-    'episode_id'    int, comment '弹幕库id',
+    'episode_id'    int comment '弹幕库id',
+    'danmaku_shift' int default 0   comment '弹幕延迟时间',
     'gid'   varchar(100)    NOT NULL comment '下载标识',
     primary key ('file_id')
 ) comment '下载资源信息表';
@@ -26,7 +28,8 @@ create table if not exists 'mikufun_download_status' (
     'id'    int NULL AUTO_INCREMENT comment '自增主键',
     'gid'   varchar(100) NOT NULL   comment '下载标识',
     'link'  text    NOT NULL    comment '下载链接',
-    'path'  text    NOT NULL    comment '文件路径',
+    'file_name' text NOT NULL comment '文件名',
+    'file_path'  text    NOT NULL    comment '文件路径',
     'is_finish' int default 0   comment '文件下载是否已完成',
     'is_source_delete'  int default 0   comment '转码前文件是否已删除',
     'status'    varchar(20) comment '下载状态',

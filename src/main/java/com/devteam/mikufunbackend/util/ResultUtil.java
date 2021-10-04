@@ -54,4 +54,17 @@ public class ResultUtil {
         String[] strings = path.split("/");
         return strings[strings.length - 1];
     }
+
+    public static String getFileNameWithoutExtensionName(String fileName) {
+        int lastDotPosition = fileName.lastIndexOf('.');
+        return lastDotPosition <= 0? fileName: fileName.substring(0, lastDotPosition);
+    }
+
+    public static String getFileType(String path) {
+        if (path == null) {
+            return "";
+        }
+        String[] strings = path.split("\\.");
+        return strings[strings.length - 1];
+    }
 }

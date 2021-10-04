@@ -110,12 +110,14 @@ public class TransferServiceImpl implements TransferService {
         aria2StatusV0s.forEach(aria2StatusV0 -> {
             gids.add(aria2StatusV0.getGid());
         });
+        logger.info("begin to clean source file");
         downloadStatusEntities.forEach(downloadStatusEntity -> {
             if (gids.contains(downloadStatusEntity.getGid())) {
                 String filePath = downloadStatusEntity.getFilePath();
                 try {
                     if (deleteFile(filePath)) {
                         downloadStatusDao.updateSourceDeleteTag(filePath);
+                        logger.info("clean source file and update record in downloadStatus table, filePath: {}", filePath);
                     }
                 } catch (IOException | InterruptedException e) {
                     logger.error(e.toString());
@@ -175,15 +177,17 @@ public class TransferServiceImpl implements TransferService {
         return data;
     }
 
-    private static long getVideoDuration(File video) {
+    private long getVideoDuration(String filePath) {
         long duration = 0L;
+        File video = new File(filePath);
         FFmpegFrameGrabber ff = new FFmpegFrameGrabber(video);
+        logger.info("get video duration, video: {}", video);
         try {
             ff.start();
             duration = ff.getLengthInTime() / (1000 * 1000);
             ff.stop();
         } catch (FrameGrabber.Exception e) {
-            e.printStackTrace();
+            logger.error(e.toString());
         }
         return duration;
     }
@@ -202,9 +206,10 @@ public class TransferServiceImpl implements TransferService {
         }
     }
 
-    private String getResourceMd5(String filePath) throws IOException {
+    private String getResourceMd5(String filePath) {
         File file = new File(filePath);
         if (file.exists()) {
+            logger.info("get resource md5, filePath: {}", filePath);
             byte[] first16MBytes = new byte[16 * 1024 * 1024];
             try (InputStream inputStream = new FileInputStream(file)) {
                 inputStream.read(first16MBytes);
@@ -235,7 +240,7 @@ public class TransferServiceImpl implements TransferService {
         String filePath = aria2FileV0.getPath();
         String fileName = ResultUtil.getFileName(filePath);
         // 获取资源时长
-        int videoDuration = (int) getVideoDuration(new File(filePath));
+        int videoDuration = (int) getVideoDuration(filePath);
 
         // 获取资源前16M字节的32位MD5值
         String md5 = getResourceMd5(filePath);

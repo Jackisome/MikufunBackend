@@ -68,6 +68,7 @@ public class DownloadServiceImpl implements DownLoadService {
                                     .status(aria2StatusV0.getStatus())
                                     .build();
                             downloadStatusDao.addDownloadStatusRecord(downloadStatusEntity);
+                            logger.info("add record to downloadStatus table, downloadStatusEntity: {}", downloadStatusEntity.toString());
                         }
                     });
                 }
@@ -107,6 +108,7 @@ public class DownloadServiceImpl implements DownLoadService {
                 }
             });
         });
+        logger.info("get downloading file, files: {}", data);
         return data;
     }
 
@@ -117,6 +119,7 @@ public class DownloadServiceImpl implements DownLoadService {
         resourceEntities.forEach(resourceEntity -> {
             data.add(resourceEntity.getFinishFileV0());
         });
+        logger.info("get finish file, files: {}", data);
         return data;
     }
 
@@ -127,12 +130,14 @@ public class DownloadServiceImpl implements DownLoadService {
         resourceEntities.forEach(resourceEntity -> {
             data.add(resourceEntity.getFinishFileV0());
         });
+        logger.info("get resource file by resourceId, files: {}", data);
         return data;
     }
 
     @Override
     public List<ResourceV0> getResourceList() {
         List<ResourceV0> data = resourceInformationDao.findResourceList();
+        logger.info("get resource list, resources: {}", data);
         return data;
     }
 
@@ -143,6 +148,7 @@ public class DownloadServiceImpl implements DownLoadService {
             SimpleFinishFileV0 simpleFinishFileV0;
             ResourceEntity resourceEntity = resourceInformationDao.findResourceInformationByFileId(fileId);
             if (resourceEntity == null) {
+                logger.info("not find file wanted to delete, fileId: {}", fileId);
                 simpleFinishFileV0 = SimpleFinishFileV0.builder()
                         .fileId(fileId)
                         .delete(false)
@@ -152,7 +158,9 @@ public class DownloadServiceImpl implements DownLoadService {
                 try {
                     if (transferService.deleteFile(resourceEntity.getFileDirectory())) {
                         resourceInformationDao.deleteResourceInformationByFileId(fileId);
+                        logger.info("delete record in resourceInformation table by fileId, fileId: {}", fileId);
                         downloadStatusDao.deleteDownloadStatusRecordByGidAndFileName(resourceEntity.getGid(), resourceEntity.getFileName());
+                        logger.info("delete record in downloadStatus table by gid and fileName, gid: {}, fileName: {}", resourceEntity.getGid(), resourceEntity.getFileName());
                         simpleFinishFileV0.setDelete(true);
                     }
                 } catch (IOException | InterruptedException e) {

@@ -1,6 +1,5 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.entity.Aria2BodyV0;
 import com.devteam.mikufunbackend.entity.Aria2ResponseV0;
@@ -17,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -108,8 +106,7 @@ public class Aria2ServiceImpl implements Aria2Service {
             throw new Aria2Exception("查看文件信息未完成");
         }
         logger.info("get file status finish, type: {}", type);
-        String Aria2Response = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-        Aria2ResponseV0 aria2ResponseV0 = JSONObject.parseObject(Aria2Response, Aria2ResponseV0.class);
+        Aria2ResponseV0 aria2ResponseV0 = (Aria2ResponseV0) HttpClientUtil.convertJsonToObject(response, Aria2ResponseV0.class);
         return aria2ResponseV0.getResult();
     }
 

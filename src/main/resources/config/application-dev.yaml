@@ -28,3 +28,9 @@ aria2:
   url: http://72.44.78.113:6800/jsonrpc
   download:
     dir: /docker
+
+shell:
+  path: ./src/main/resources/transfer.sh
+
+dandanplay:
+  url: https://api.acplay.net/api/v2

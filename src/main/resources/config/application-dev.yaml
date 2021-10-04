@@ -31,3 +31,6 @@ aria2:
 
 shell:
   path: ./src/main/resources/transfer.sh
+
+dandanplay:
+  url: https://api.acplay.net/api/v2

@@ -19,6 +19,35 @@ public interface DownloadStatusDao {
     int addDownloadStatusRecord(DownloadStatusEntity downloadStatusEntity);
 
     /**
+     * 根据gid和文件名删除下载状态的记录
+     * @param fileName
+     * @return
+     */
+    int deleteDownloadStatusRecordByGidAndFileName(String gid,
+                                                   String fileName);
+
+    /**
+     * 删除gid关联的所有文件下载记录
+     * @param gid
+     * @return
+     */
+    int deleteDownloadStatusRecordByGid(String gid);
+
+    /**
+     * 更新下载完成的标识为已完成
+     * @param filePath
+     * @return
+     */
+    int updateFinishTag(String filePath);
+
+    /**
+     * 更新源文件删除的标识为已删除
+     * @param filePath
+     * @return
+     */
+    int updateSourceDeleteTag(String filePath);
+
+    /**
      * 根据gid寻找关联的所有文件
      * @param gid
      * @return
@@ -33,9 +62,8 @@ public interface DownloadStatusDao {
     List<DownloadStatusEntity> findDownloadStatusRecordByLink(String link);
 
     /**
-     * 删除gid关联的所有文件下载记录
-     * @param gid
+     * 寻找可以删除源文件（下载完成而源文件未删除）的记录
      * @return
      */
-    int deleteDownloadStatusRecordByGid(String gid);
+    List<DownloadStatusEntity> findAbleDeleteResource();
 }

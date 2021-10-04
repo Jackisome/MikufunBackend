@@ -1,7 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.devteam.mikufunbackend.constant.Aria2Constant;
-import com.devteam.mikufunbackend.entity.Aria2BodyV0;
+import com.devteam.mikufunbackend.entity.Aria2RequestV0;
 import com.devteam.mikufunbackend.entity.Aria2ResponseV0;
 import com.devteam.mikufunbackend.entity.Aria2StatusV0;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
@@ -33,11 +33,11 @@ public class Aria2ServiceImpl implements Aria2Service {
 
     @Override
     public String addUrl(String link) throws IOException, DocumentException, Aria2Exception {
-        Aria2BodyV0 aria2BodyV0 = new Aria2BodyV0();
-        aria2BodyV0.setMethod(Aria2Constant.METHOD_ADD_URI)
+        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
+        aria2RequestV0.setMethod(Aria2Constant.METHOD_ADD_URI)
                 .addParam(new String[]{link});
         logger.info("begin download, link: {}", link);
-        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2BodyV0);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2下载未正常进行，下载链接: {}", link);
             throw new Aria2Exception("下载未正常进行");
@@ -50,11 +50,11 @@ public class Aria2ServiceImpl implements Aria2Service {
 
     @Override
     public boolean removeDownloadingFile(String gid) throws IOException {
-        Aria2BodyV0 aria2BodyV0 = new Aria2BodyV0();
-        aria2BodyV0.setMethod(Aria2Constant.METHOD_REMOVE_DOWNLOAD_RESULT)
+        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
+        aria2RequestV0.setMethod(Aria2Constant.METHOD_REMOVE_DOWNLOAD_RESULT)
                 .addParam(gid);
         logger.info("begin remove downloading file, gid: {}", gid);
-        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2BodyV0);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
         String entityString = EntityUtils.toString(response.getEntity());
         System.out.println(entityString);
         if (!HttpClientUtil.validateResponse(response)) {
@@ -92,15 +92,15 @@ public class Aria2ServiceImpl implements Aria2Service {
 
     @Override
     public List<Aria2StatusV0> getFileStatus(String type) throws IOException {
-        Aria2BodyV0 aria2BodyV0 = new Aria2BodyV0();
-        aria2BodyV0.setMethod(type);
+        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
+        aria2RequestV0.setMethod(type);
         if (!Aria2Constant.METHOD_TELL_ACTIVE.equals(type)) {
-            aria2BodyV0.addParam(0)
+            aria2RequestV0.addParam(0)
                     .addParam(1000);
         }
-        aria2BodyV0.addParam(Aria2Constant.PARAM_ARRAY_OF_FILED);
+        aria2RequestV0.addParam(Aria2Constant.PARAM_ARRAY_OF_FILED);
         logger.info("begin get file status, type: {}", type);
-        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2BodyV0);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2查看文件信息未完成");
             throw new Aria2Exception("查看文件信息未完成");

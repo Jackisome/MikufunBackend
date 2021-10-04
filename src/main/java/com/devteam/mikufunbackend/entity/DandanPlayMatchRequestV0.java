@@ -1,6 +1,19 @@
-package com.devteam.mikufunbackend.entity;/**
- *
+package com.devteam.mikufunbackend.entity;
+
+import lombok.Builder;
+import lombok.Data;
+
+/**
  * @author Jackisome
  * @date 2021/10/4
- */public class DandanPlayMatchRequestV0 {
+ */
+@Data
+@Builder
+public class DandanPlayMatchRequestV0 {
+    String fileName;
+    String fileHash;
+    int fileSize;
+    int videoDuration;
+    // 'hashAndFileName', 'fileNameOnly', 'hashOnly'
+    String matchMode;
 }

@@ -1,5 +1,8 @@
 package com.devteam.mikufunbackend.controller;
 
+import com.devteam.mikufunbackend.entity.DandanPlayMatchRequestV0;
+import com.devteam.mikufunbackend.entity.ResourceMatchV0;
+import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,6 +27,9 @@ public class TestController {
 
     @Autowired(required = false)
     HttpServletResponse response;
+
+    @Autowired
+    private TransferService transferService;
 
     @GetMapping("/test/cookie")
     public Response testCookie() {
@@ -66,5 +74,13 @@ public class TestController {
             return ResultUtil.success(data);
         }
         return ResultUtil.fail(2, "未获取到参数");
+    }
+
+    @GetMapping("/test/match")
+    Response testMatch() throws IOException {
+        Map<String, Object> data = ResultUtil.getData();
+        List<ResourceMatchV0> resourceMatchV0s = transferService.matchResourceInformation("Dragon Quest The Adventure Of Dai - S01E51 VOSTFR 1080p WEB x264 -NanDesuKa (ADN).mkv", "8c7dd922ad47494fc02c388e12c00eac", 586814875, 1442);
+        data.put("resourceMatchV0s", resourceMatchV0s);
+        return ResultUtil.success(data);
     }
 }

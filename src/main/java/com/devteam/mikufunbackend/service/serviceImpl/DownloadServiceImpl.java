@@ -1,18 +1,22 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.devteam.mikufunbackend.constant.Aria2Constant;
+import com.devteam.mikufunbackend.dao.DownloadStatusDao;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.service.serviceInterface.DownLoadService;
+import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
+import com.devteam.mikufunbackend.util.ParamUtil;
+import com.devteam.mikufunbackend.util.ResultUtil;
 import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +34,45 @@ public class DownloadServiceImpl implements DownLoadService {
     private Aria2Service aria2Service;
 
     @Autowired
+    private TransferService transferService;
+
+    @Autowired
     private ResourceInformationDao resourceInformationDao;
+
+    @Autowired
+    private DownloadStatusDao downloadStatusDao;
+
+    @Value("${shell.path}")
+    private String shellPath;
 
     @Override
     public boolean download(String link) throws DocumentException, IOException, Aria2Exception {
-        String gid = aria2Service.addUrl(link);
-        System.out.println(gid);
+        aria2Service.addUrl(link);
+        // 在下载状态表中增加相应记录
+        List<Aria2StatusV0> aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE);
+        aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_WAITING));
+        aria2StatusV0s.forEach(aria2StatusV0 -> {
+            String gid = aria2StatusV0.getGid();
+            if (downloadStatusDao.findDownloadStatusRecordByGid(gid).size() == 0) {
+                List<Aria2FileV0> aria2FileV0s = aria2StatusV0.getFiles();
+                if (ParamUtil.isNotEmpty(aria2FileV0s)) {
+                    aria2FileV0s.forEach(aria2FileV0 -> {
+                        if (!ResultUtil.getFileName(aria2FileV0.getPath()).startsWith("[METADATA]")) {
+                            DownloadStatusEntity downloadStatusEntity = DownloadStatusEntity.builder()
+                                    .gid(gid)
+                                    .link(link)
+                                    .fileName(ResultUtil.getFileName(aria2FileV0.getPath()))
+                                    .filePath(aria2FileV0.getPath())
+                                    .isFinish(0)
+                                    .isSourceDelete(0)
+                                    .status(aria2StatusV0.getStatus())
+                                    .build();
+                            downloadStatusDao.addDownloadStatusRecord(downloadStatusEntity);
+                        }
+                    });
+                }
+            }
+        });
         return true;
     }
 
@@ -64,7 +101,7 @@ public class DownloadServiceImpl implements DownLoadService {
                             .fileSize(fileV0.getLength())
                             .downloadSpeed(downloadSpeed)
                             .uploadSpeed(uploadSpeed)
-                            .status(status.equals("complete")? "transfering": status)
+                            .status(status.equals("complete")? "transferring": status)
                             .build();
                     data.add(downloadStatusV0);
                 }
@@ -111,12 +148,15 @@ public class DownloadServiceImpl implements DownLoadService {
                         .delete(false)
                         .build();
             } else {
-                resourceInformationDao.deleteResourceInformationByFileId(fileId);
                 simpleFinishFileV0 = resourceEntity.getSimpleFinishFileV0();
-                String path = resourceEntity.getFilePath();
-                File file = new File(path);
-                if (!file.exists() || file.delete()) {
-                    simpleFinishFileV0.setDelete(true);
+                try {
+                    if (transferService.deleteFile(resourceEntity.getFileDirectory())) {
+                        resourceInformationDao.deleteResourceInformationByFileId(fileId);
+                        downloadStatusDao.deleteDownloadStatusRecordByGidAndFileName(resourceEntity.getGid(), resourceEntity.getFileName());
+                        simpleFinishFileV0.setDelete(true);
+                    }
+                } catch (IOException | InterruptedException e) {
+                    logger.error(e.toString());
                 }
             }
             data.add(simpleFinishFileV0);

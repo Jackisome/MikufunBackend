@@ -3,7 +3,6 @@ package com.devteam.mikufunbackend.entity;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.UUID;
 @Accessors(chain = true)
 //无参构造方法
 @NoArgsConstructor
-public class Aria2BodyV0 {
+public class Aria2RequestV0 {
     /**
      * id随机生成，也可以手动设置
      */
@@ -33,7 +32,7 @@ public class Aria2BodyV0 {
      * 添加下载参数
      * @return
      */
-    public Aria2BodyV0 addParam(Object obj) {
+    public Aria2RequestV0 addParam(Object obj) {
         params.add(obj);
         return this;
     }

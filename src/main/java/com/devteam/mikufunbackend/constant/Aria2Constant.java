@@ -17,4 +17,16 @@ public class Aria2Constant {
     public final static String METHOD_PAUSE_ALL = "aria2.pauseAll";
     public final static String METHOD_UNPAUSE = "aria2.unpause";
     public final static String METHOD_UNPAUSE_ALL = "aria2.unpauseAll";
+
+    public enum downloadStatus {
+        ACTIVE("active"),
+        WAITING("waiting"),
+        PAUSED("paused"),
+        ERROR("error"),
+        COMPLETE("complete"),
+        REMOVED("removed");
+
+        downloadStatus(String active) {
+        }
+    }
 }

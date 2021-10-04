@@ -57,5 +57,5 @@ public interface DownLoadService {
      */
     List<ResourceV0> getResourceList();
 
-    List<SimpleFinishFileV0> deleteLocalFiles(List<Integer> fileIds);
+    List<SimpleFinishFileV0> deleteLocalFiles(List<Integer> fileIds) throws IOException, InterruptedException;
 }

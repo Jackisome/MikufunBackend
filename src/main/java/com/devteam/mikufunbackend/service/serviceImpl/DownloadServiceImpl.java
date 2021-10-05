@@ -95,7 +95,7 @@ public class DownloadServiceImpl implements DownLoadService {
                 if (fileV0.isSelected() && !ResultUtil.getFileName(fileV0.getPath()).equals(fileV0.getPath())) {
                     DownloadStatusV0 downloadStatusV0 = DownloadStatusV0.builder()
                             .gid(gid)
-                            .fileName(fileV0.getPath())
+                            .fileName(ResultUtil.getFileName(fileV0.getPath()))
                             .completedLength(fileV0.getCompletedLength())
                             .fileSize(fileV0.getLength())
                             .downloadSpeed(downloadSpeed)

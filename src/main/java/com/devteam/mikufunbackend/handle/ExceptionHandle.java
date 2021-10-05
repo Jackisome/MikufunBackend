@@ -43,4 +43,11 @@ public class ExceptionHandle {
         logger.error(e.getMessage());
         return ResultUtil.fail(ResponseEnum.FILEID_ERROR);
     }
+
+    @ExceptionHandler(value = ShellException.class)
+    @ResponseBody
+    public Response shellExceptionHandle(ShellException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(ResponseEnum.SHELL_ERROR);
+    }
 }

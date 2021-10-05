@@ -25,7 +25,7 @@ public class DownloadController {
     DownLoadService downloadService;
 
     @PostMapping("")
-    public Response download(@RequestParam("link") String link) throws Aria2Exception, IOException, DocumentException {
+    public Response download(@RequestParam("link") String link) throws Aria2Exception, IOException, DocumentException, InterruptedException {
         downloadService.download(link);
         return ResultUtil.success();
     }

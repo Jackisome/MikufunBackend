@@ -14,7 +14,6 @@ import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -42,22 +41,21 @@ public class DownloadServiceImpl implements DownLoadService {
     @Autowired
     private DownloadStatusDao downloadStatusDao;
 
-    @Value("${shell.path}")
-    private String shellPath;
-
     @Override
-    public boolean download(String link) throws DocumentException, IOException, Aria2Exception {
+    public boolean download(String link) throws DocumentException, IOException, Aria2Exception, InterruptedException {
         aria2Service.addUrl(link);
+        Thread.sleep(10 * 1000);
         // 在下载状态表中增加相应记录
-        List<Aria2StatusV0> aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE);
-        aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_WAITING));
+        List<Aria2StatusV0> aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_WAITING);
+        aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE));
         aria2StatusV0s.forEach(aria2StatusV0 -> {
+            logger.info("add record to downloadStatus table begin, aria2StatusV0: {}", aria2StatusV0.toString());
             String gid = aria2StatusV0.getGid();
             if (downloadStatusDao.findDownloadStatusRecordByGid(gid).size() == 0) {
                 List<Aria2FileV0> aria2FileV0s = aria2StatusV0.getFiles();
                 if (ParamUtil.isNotEmpty(aria2FileV0s)) {
                     aria2FileV0s.forEach(aria2FileV0 -> {
-                        if (!ResultUtil.getFileName(aria2FileV0.getPath()).startsWith("[METADATA]")) {
+                        if (!ResultUtil.getFileName(aria2FileV0.getPath()).equals(aria2FileV0.getPath())) {
                             DownloadStatusEntity downloadStatusEntity = DownloadStatusEntity.builder()
                                     .gid(gid)
                                     .link(link)
@@ -94,7 +92,7 @@ public class DownloadServiceImpl implements DownLoadService {
             int uploadSpeed = k.getUploadSpeed();
             String status = k.getStatus();
             k.getFiles().forEach(fileV0 -> {
-                if (fileV0.isSelected()) {
+                if (fileV0.isSelected() && !ResultUtil.getFileName(fileV0.getPath()).equals(fileV0.getPath())) {
                     DownloadStatusV0 downloadStatusV0 = DownloadStatusV0.builder()
                             .gid(gid)
                             .fileName(fileV0.getPath())
@@ -155,7 +153,15 @@ public class DownloadServiceImpl implements DownLoadService {
                         .build();
             } else {
                 simpleFinishFileV0 = resourceEntity.getSimpleFinishFileV0();
+                DownloadStatusEntity downloadStatusEntity = downloadStatusDao.findDownloadStatusRecordByFileName(resourceEntity.getFileName());
                 try {
+                    // 清除Aria2记录
+                    remove(resourceEntity.getGid());
+                    // 如果源文件存在，先删除源文件
+                    if (downloadStatusEntity.getIsSourceDelete() == 0) {
+                        transferService.deleteFile(downloadStatusEntity.getFilePath());
+                    }
+                    // 删除转码文件，清除数据表记录
                     if (transferService.deleteFile(resourceEntity.getFileDirectory())) {
                         resourceInformationDao.deleteResourceInformationByFileId(fileId);
                         logger.info("delete record in resourceInformation table by fileId, fileId: {}", fileId);

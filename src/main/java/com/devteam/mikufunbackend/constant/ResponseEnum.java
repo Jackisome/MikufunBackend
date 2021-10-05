@@ -12,7 +12,8 @@ public enum ResponseEnum {
     UNKNOWN_ERROR(1, "unknown error"),
     LOGIN_ERROR(2, "login error"),
     ARIA2_ERROR(3, "aria2 error"),
-    FILEID_ERROR(4, "fileId error");
+    FILEID_ERROR(4, "fileId error"),
+    SHELL_ERROR(5, "shell execute error");
 
     private final int statusCode;
     private final String message;

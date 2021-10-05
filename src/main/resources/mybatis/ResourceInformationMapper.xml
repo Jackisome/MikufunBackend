@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatic.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatic-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.devteam.mikufunbackend.dao.ResourceInformationDao">
     <resultMap id="resourceInformationMap" type="com.devteam.mikufunbackend.entity.ResourceEntity">
@@ -43,7 +44,7 @@
         )
         values (
         #{fileName}, #{fileDirectory}, #{fileHash}, #{fileSize}, #{videoDuration}, #{imageUrl},
-        #{exactMatch}, #{resourceId}, #{resourceName}, #{episodeTitle}, #{type}, #{episodeId}, #{danmaku_shift}, #{gid}
+        #{exactMatch}, #{resourceId}, #{resourceName}, #{episodeTitle}, #{type}, #{episodeId}, #{danmakuShift}, #{gid}
         )
     </insert>
 
@@ -116,5 +117,9 @@
         danmaku_shift, gid
         from mikufun_resource_information
         order by file_name
+    </select>
+    <select id="findAllGid" resultType="java.lang.String">
+        select distinct gid
+        from mikufun_resource_information
     </select>
 </mapper>

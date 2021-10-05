@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
-        PUBLIC "-//mybatic.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatic-3-mapper.dtd">
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.devteam.mikufunbackend.dao.DownloadStatusDao">
     <resultMap id="downloadStatusMap" type="com.devteam.mikufunbackend.entity.DownloadStatusEntity">
         <result property="gid" column="gid" javaType="java.lang.String" jdbcType="VARCHAR"/>
@@ -69,5 +70,12 @@
         from mikufun_download_status
         where is_finish = 1
         and is_source_delete = 0
+    </select>
+
+    <select id="findDownloadStatusRecordByFileName"
+            resultType="com.devteam.mikufunbackend.entity.DownloadStatusEntity">
+        select gid, link, file_name, file_path, is_finish, is_source_delete, status
+        from mikufun_download_status
+        where file_name = #{fileName}
     </select>
 </mapper>

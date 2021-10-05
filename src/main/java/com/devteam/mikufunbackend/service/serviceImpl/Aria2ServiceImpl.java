@@ -107,8 +107,8 @@ public class Aria2ServiceImpl implements Aria2Service {
             logger.error("Aria2查看文件信息未完成");
             throw new Aria2Exception("查看文件信息未完成");
         }
-        logger.info("get file status finish, type: {}", type);
         Aria2ResponseV0 aria2ResponseV0 = (Aria2ResponseV0) HttpClientUtil.convertJsonToObject(response, Aria2ResponseV0.class);
+        logger.info("get file status finish, type: {}, content: {}", type, aria2ResponseV0.toString());
         return aria2ResponseV0.getResult();
     }
 

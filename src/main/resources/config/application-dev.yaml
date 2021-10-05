@@ -15,7 +15,7 @@ logging:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ppl?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false
+    url: jdbc:mysql://72.44.78.113:13306/mikufun?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false
     username: root
     password: 123456
 ## mybatis 配置
@@ -25,12 +25,10 @@ mybatis:
     map-underscore-to-camel-case: true
 
 aria2:
-  url: http://72.44.78.113:6800/jsonrpc
-  download:
-    dir: /docker
+  url: http://localhost:6800/jsonrpc
 
 shell:
-  path: ./src/main/resources/transfer.sh
+  path: /docker/transfer.sh
 
 dandanplay:
   url: https://api.acplay.net/api/v2

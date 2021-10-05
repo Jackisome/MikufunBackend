@@ -26,7 +26,14 @@ public class Aria2Constant {
         COMPLETE("complete"),
         REMOVED("removed");
 
-        downloadStatus(String active) {
+        private final String description;
+
+        private downloadStatus(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
         }
     }
 }

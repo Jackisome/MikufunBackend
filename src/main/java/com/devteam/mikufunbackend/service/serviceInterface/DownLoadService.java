@@ -21,7 +21,7 @@ public interface DownLoadService {
      * @return 下载请求是否完成创建
      * @throws Exception
      */
-    boolean download(String link) throws DocumentException, IOException, Aria2Exception;
+    boolean download(String link) throws DocumentException, IOException, Aria2Exception, InterruptedException;
 
     /**
      * 删除一个下载中的文件

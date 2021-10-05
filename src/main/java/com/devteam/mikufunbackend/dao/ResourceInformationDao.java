@@ -100,4 +100,10 @@ public interface ResourceInformationDao {
      * @return
      */
     List<ResourceEntity> findAllResourceInformation();
+
+    /**
+     * 寻找所有已下载并已转码完成的gid
+     * @return
+     */
+    List<String> findAllGid();
 }

@@ -62,6 +62,13 @@ public interface DownloadStatusDao {
     List<DownloadStatusEntity> findDownloadStatusRecordByLink(String link);
 
     /**
+     * 根据文件名寻找下载过的文件
+     * @param fileName
+     * @return
+     */
+    DownloadStatusEntity findDownloadStatusRecordByFileName(String fileName);
+
+    /**
      * 寻找可以删除源文件（下载完成而源文件未删除）的记录
      * @return
      */

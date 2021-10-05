@@ -1,5 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.entity.Aria2RequestV0;
 import com.devteam.mikufunbackend.entity.Aria2ResponseV0;
@@ -44,8 +46,8 @@ public class Aria2ServiceImpl implements Aria2Service {
         }
         logger.info("send to aria2 for downloading finished, link: {}", link);
         String entityString = EntityUtils.toString(response.getEntity());
-        System.out.println(entityString);
-        return "1234567890";
+        Map<String, String> entityMap = JSON.parseObject(entityString, new TypeReference<Map<String, String>>(){});
+        return entityMap.get("result");
     }
 
     @Override
@@ -105,8 +107,8 @@ public class Aria2ServiceImpl implements Aria2Service {
             logger.error("Aria2查看文件信息未完成");
             throw new Aria2Exception("查看文件信息未完成");
         }
-        logger.info("get file status finish, type: {}", type);
         Aria2ResponseV0 aria2ResponseV0 = (Aria2ResponseV0) HttpClientUtil.convertJsonToObject(response, Aria2ResponseV0.class);
+        logger.info("get file status finish, type: {}, content: {}", type, aria2ResponseV0.toString());
         return aria2ResponseV0.getResult();
     }
 

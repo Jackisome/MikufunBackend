@@ -6,6 +6,7 @@ import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.ShellException;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
+import com.devteam.mikufunbackend.service.serviceInterface.DownLoadService;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
 import com.devteam.mikufunbackend.util.ParamUtil;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -47,6 +47,9 @@ public class TransferServiceImpl implements TransferService {
 
     @Autowired
     private Aria2Service aria2Service;
+
+    @Autowired
+    private DownLoadService downloadService;
 
     @Value("${shell.path}")
     private String shellPath;
@@ -129,8 +132,14 @@ public class TransferServiceImpl implements TransferService {
         });
         logger.info("begin to clean source file");
         downloadStatusEntities.forEach(downloadStatusEntity -> {
-            if (gids.contains(downloadStatusEntity.getGid())) {
+            String gid = downloadStatusEntity.getGid();
+            if (gids.contains(gid)) {
                 String filePath = downloadStatusEntity.getFilePath();
+                try {
+                    downloadService.remove(gid);
+                } catch (IOException e) {
+                    logger.error(e.toString());
+                }
                 try {
                     if (deleteFile(filePath)) {
                         downloadStatusDao.updateSourceDeleteTag(filePath);

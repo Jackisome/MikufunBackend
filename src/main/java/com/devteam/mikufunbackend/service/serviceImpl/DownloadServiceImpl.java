@@ -179,10 +179,13 @@ public class DownloadServiceImpl implements DownLoadService {
             } else {
                 simpleFinishFileV0 = resourceEntity.getSimpleFinishFileV0();
                 DownloadStatusEntity downloadStatusEntity = downloadStatusDao.findDownloadStatusRecordByFileName(resourceEntity.getFileName());
-                try {
-                    // todo: 需要进行清理
-                    // 清除Aria2记录
+                // 清除Aria2记录
+//                try {
 //                    remove(resourceEntity.getGid());
+//                } catch (IOException e) {
+//                    logger.error(e.toString());
+//                }
+                try {
                     // 如果源文件存在，先删除源文件
                     if (downloadStatusEntity.getIsSourceDelete() == 0) {
                         transferService.deleteFile(downloadStatusEntity.getFilePath());

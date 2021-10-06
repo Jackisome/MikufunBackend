@@ -91,20 +91,22 @@ public class DownloadServiceImpl implements DownLoadService {
             int downloadSpeed = k.getDownloadSpeed();
             int uploadSpeed = k.getUploadSpeed();
             String status = k.getStatus();
-            k.getFiles().forEach(fileV0 -> {
-                if (fileV0.isSelected() && !ResultUtil.getFileName(fileV0.getPath()).equals(fileV0.getPath())) {
-                    DownloadStatusV0 downloadStatusV0 = DownloadStatusV0.builder()
-                            .gid(gid)
-                            .fileName(ResultUtil.getFileName(fileV0.getPath()))
-                            .completedLength(fileV0.getCompletedLength())
-                            .fileSize(fileV0.getLength())
-                            .downloadSpeed(downloadSpeed)
-                            .uploadSpeed(uploadSpeed)
-                            .status(status.equals("complete")? "transferring": status)
-                            .build();
-                    data.add(downloadStatusV0);
-                }
-            });
+            if (!"complete".equals(status) && !"removed".equals(status)) {
+                k.getFiles().forEach(fileV0 -> {
+                    if (fileV0.isSelected() && !ResultUtil.getFileName(fileV0.getPath()).equals(fileV0.getPath())) {
+                        DownloadStatusV0 downloadStatusV0 = DownloadStatusV0.builder()
+                                .gid(gid)
+                                .fileName(ResultUtil.getFileName(fileV0.getPath()))
+                                .completedLength(fileV0.getCompletedLength())
+                                .fileSize(fileV0.getLength())
+                                .downloadSpeed(downloadSpeed)
+                                .uploadSpeed(uploadSpeed)
+                                .status(status)
+                                .build();
+                        data.add(downloadStatusV0);
+                    }
+                });
+            }
         });
         logger.info("get downloading file, files: {}", data);
         return data;

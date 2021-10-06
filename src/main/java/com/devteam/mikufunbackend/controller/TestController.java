@@ -1,6 +1,5 @@
 package com.devteam.mikufunbackend.controller;
 
-import com.devteam.mikufunbackend.entity.DandanPlayMatchRequestV0;
 import com.devteam.mikufunbackend.entity.ResourceMatchV0;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.Response;
@@ -55,7 +54,7 @@ public class TestController {
     }
 
     @GetMapping("/test/get/param")
-    public Response testGetParameter(@RequestParam(value = "id", required = false) int id, @RequestParam(value = "type", required = true) String type1) {
+    public Response testGetParameter(@RequestParam(value = "id", required = false) int id, @RequestParam(value = "type") String type1) {
         Map<String, Object> data = ResultUtil.getData();
         if (type1 != null) {
             data.put("type", type1);

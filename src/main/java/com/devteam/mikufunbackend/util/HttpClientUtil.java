@@ -1,8 +1,6 @@
 package com.devteam.mikufunbackend.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.devteam.mikufunbackend.entity.Aria2ResponseV0;
-import com.devteam.mikufunbackend.handle.Aria2Exception;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
@@ -42,8 +40,6 @@ public class HttpClientUtil {
         HttpGet httpGet = new HttpGet(uri.build());
         try {
             return httpClient.execute(httpGet);
-        } catch (IOException e) {
-            throw e;
         } finally {
             httpClient.close();
         }
@@ -65,8 +61,6 @@ public class HttpClientUtil {
         HttpPost httpPost = new HttpPost(uri.build());
         try {
             return httpClient.execute(httpPost);
-        } catch (IOException e) {
-            throw e;
         } finally {
             httpClient.close();
         }
@@ -87,8 +81,6 @@ public class HttpClientUtil {
         httpPost.setEntity(new StringEntity(JSONObject.toJSONString(entity), StandardCharsets.UTF_8));
         try {
             return httpClient.execute(httpPost);
-        } catch (IOException e) {
-            throw e;
         } finally {
             httpClient.close();
         }
@@ -112,7 +104,6 @@ public class HttpClientUtil {
      */
     public static Object convertJsonToObject(CloseableHttpResponse response, Class clazz) throws IOException {
         String jsonResponse = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-        Object object = JSONObject.parseObject(jsonResponse, clazz);
-        return object;
+        return JSONObject.parseObject(jsonResponse, clazz);
     }
 }

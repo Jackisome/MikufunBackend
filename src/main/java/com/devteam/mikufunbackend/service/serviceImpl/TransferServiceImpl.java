@@ -4,6 +4,7 @@ import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.dao.DownloadStatusDao;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
+import com.devteam.mikufunbackend.handle.ShellException;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
@@ -97,7 +98,12 @@ public class TransferServiceImpl implements TransferService {
             logger.info("transfer file to m3u8, fileName: {}", fileName);
 //            Process process = Runtime.getRuntime().exec(cmd);
 //            int exitValue = process.waitFor();
-            int exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/transferLog");
+            int exitValue = -1;
+            try {
+                exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/transferLog");
+            } catch (ShellException e) {
+                logger.error(e.getMessage());
+            }
             if (exitValue == 0) {
                 logger.info("transfer file to m3u8 and ts file complete, fileName: {}", fileName);
                 resourceInformationDao.addResourceInformation(generateResourceEntity(aria2FileV0, gid, uuid));
@@ -141,9 +147,12 @@ public class TransferServiceImpl implements TransferService {
     public boolean deleteFile(String path) throws IOException, InterruptedException {
         String[] cmd = new String[]{"bash", shellPath, "delete", path};
         logger.info("delete source file, path: {}", path);
-//        Process process = Runtime.getRuntime().exec(cmd);
-//        int exitValue = process.waitFor();
-        int exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/deleteLog");
+        int exitValue = -1;
+        try {
+            exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/deleteLog");
+        } catch (ShellException e) {
+            logger.error(e.getMessage());
+        }
         if (exitValue == 0) {
             logger.info("delete source file complete, path: {}", path);
             return true;
@@ -207,9 +216,12 @@ public class TransferServiceImpl implements TransferService {
     private String makeResourceImage(String filePath, String uuid) throws IOException, InterruptedException {
         String[] cmd = new String[]{"bash", shellPath, "make-image", filePath, uuid};
         logger.info("make image, filePath: {}", filePath);
-//        Process process = Runtime.getRuntime().exec(cmd);
-//        int exitValue = process.waitFor();
-        int exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/makeImageLog");
+        int exitValue = -1;
+        try {
+            exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/makeImageLog");
+        } catch (ShellException e) {
+            logger.error(e.getMessage());
+        }
         if (exitValue == 0) {
             logger.info("make image complete, filePath: {}", filePath);
             return "/docker/image/" + uuid + ".jpg";

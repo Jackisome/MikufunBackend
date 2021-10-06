@@ -14,9 +14,9 @@ import lombok.experimental.Accessors;
 public class DownloadStatusV0 {
     String gid;
     String fileName;
-    int completedLength;
-    int fileSize;
-    int downloadSpeed;
-    int uploadSpeed;
+    double completedLength;
+    double fileSize;
+    double downloadSpeed;
+    double uploadSpeed;
     String status;
 }

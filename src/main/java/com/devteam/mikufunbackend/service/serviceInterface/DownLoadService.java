@@ -1,9 +1,6 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
-import com.devteam.mikufunbackend.entity.DownloadStatusV0;
-import com.devteam.mikufunbackend.entity.FinishFileV0;
-import com.devteam.mikufunbackend.entity.ResourceV0;
-import com.devteam.mikufunbackend.entity.SimpleFinishFileV0;
+import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import org.dom4j.DocumentException;
 
@@ -55,7 +52,14 @@ public interface DownLoadService {
      * 获取番剧列表，其中任何一个番剧至少有一个完成下载并转码的本地文件
      * @return
      */
-    List<ResourceV0> getResourceList();
+    List<ResourceResponseV0> getResourceList();
 
+    /**
+     * 根据fileId删除本地文件
+     * @param fileIds
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
     List<SimpleFinishFileV0> deleteLocalFiles(List<Integer> fileIds) throws IOException, InterruptedException;
 }

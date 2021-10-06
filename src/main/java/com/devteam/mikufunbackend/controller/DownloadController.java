@@ -60,9 +60,9 @@ public class DownloadController {
     }
 
     @GetMapping("/finish/resource/{resourceId}")
-    public Response findResourceFile(@PathVariable int resourceId) {
+    public Response findResourceFile(@PathVariable String resourceId) {
         Map<String, Object> data = ResultUtil.getData();
-        data.put("files", downloadService.getFinishFilesByResourceId(resourceId));
+        data.put("files", downloadService.getFinishFilesByResourceId(Integer.parseInt(resourceId)));
         return ResultUtil.success(data);
     }
 

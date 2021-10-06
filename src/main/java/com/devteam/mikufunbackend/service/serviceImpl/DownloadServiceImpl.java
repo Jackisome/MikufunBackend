@@ -156,14 +156,16 @@ public class DownloadServiceImpl implements DownLoadService {
                 logger.info("not find file wanted to delete, fileId: {}", fileId);
                 simpleFinishFileV0 = SimpleFinishFileV0.builder()
                         .fileId(String.valueOf(fileId))
+                        .fileId(String.valueOf(fileId))
                         .delete(false)
                         .build();
             } else {
                 simpleFinishFileV0 = resourceEntity.getSimpleFinishFileV0();
                 DownloadStatusEntity downloadStatusEntity = downloadStatusDao.findDownloadStatusRecordByFileName(resourceEntity.getFileName());
                 try {
+                    // todo: 需要进行清理
                     // 清除Aria2记录
-                    remove(resourceEntity.getGid());
+//                    remove(resourceEntity.getGid());
                     // 如果源文件存在，先删除源文件
                     if (downloadStatusEntity.getIsSourceDelete() == 0) {
                         transferService.deleteFile(downloadStatusEntity.getFilePath());

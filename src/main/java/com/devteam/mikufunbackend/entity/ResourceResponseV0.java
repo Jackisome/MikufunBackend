@@ -5,12 +5,11 @@ import lombok.Data;
 
 /**
  * @author Jackisome
- * @date 2021/10/2
+ * @date 2021/10/6
  */
 @Data
 @Builder
-public class SimpleFinishFileV0 {
-    String fileId;
-    String fileName;
-    boolean delete;
+public class ResourceResponseV0 {
+    String resourceId;
+    String resourceName;
 }

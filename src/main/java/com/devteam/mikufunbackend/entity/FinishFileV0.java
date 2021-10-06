@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 @Builder
 public class FinishFileV0 {
-    int fileId;
+    String fileId;
     String imageUrl;
     String fileName;
     double fileSize;

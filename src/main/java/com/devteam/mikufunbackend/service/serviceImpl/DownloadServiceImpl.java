@@ -133,8 +133,15 @@ public class DownloadServiceImpl implements DownLoadService {
     }
 
     @Override
-    public List<ResourceV0> getResourceList() {
-        List<ResourceV0> data = resourceInformationDao.findResourceList();
+    public List<ResourceResponseV0> getResourceList() {
+        List<ResourceV0> resourceV0s = resourceInformationDao.findResourceList();
+        List<ResourceResponseV0> data = new ArrayList<>();
+        resourceV0s.forEach(resourceV0 -> {
+            data.add(ResourceResponseV0.builder()
+                    .resourceId(String.valueOf(resourceV0.getResourceId()))
+                    .resourceName(resourceV0.getResourceName())
+                    .build());
+        });
         logger.info("get resource list, resources: {}", data);
         return data;
     }
@@ -148,7 +155,7 @@ public class DownloadServiceImpl implements DownLoadService {
             if (resourceEntity == null) {
                 logger.info("not find file wanted to delete, fileId: {}", fileId);
                 simpleFinishFileV0 = SimpleFinishFileV0.builder()
-                        .fileId(fileId)
+                        .fileId(String.valueOf(fileId))
                         .delete(false)
                         .build();
             } else {

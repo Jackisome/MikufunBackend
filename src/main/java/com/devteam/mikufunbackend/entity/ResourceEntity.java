@@ -36,7 +36,7 @@ public class ResourceEntity {
 
     public FinishFileV0 getFinishFileV0() {
         return FinishFileV0.builder()
-                .fileId(this.getFileId())
+                .fileId(String.valueOf(this.getFileId()))
                 .imageUrl(this.getImageUrl())
                 .fileName(this.getFileName())
                 .fileSize(this.getFileSize() / 1048576.0)
@@ -46,7 +46,7 @@ public class ResourceEntity {
 
     public SimpleFinishFileV0 getSimpleFinishFileV0() {
         return SimpleFinishFileV0.builder()
-                .fileId(this.getFileId())
+                .fileId(String.valueOf(this.getFileId()))
                 .fileName(this.getFileName())
                 .delete(false)
                 .build();

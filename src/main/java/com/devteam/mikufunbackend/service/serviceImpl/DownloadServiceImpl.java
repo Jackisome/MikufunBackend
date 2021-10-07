@@ -42,7 +42,7 @@ public class DownloadServiceImpl implements DownLoadService {
     private DownloadStatusDao downloadStatusDao;
 
     @Override
-    public boolean download(String link) throws DocumentException, IOException, Aria2Exception, InterruptedException {
+    public boolean download(String link) throws DocumentException, IOException, Aria2Exception {
         aria2Service.addUrl(link);
         new Thread(() -> {
             try {
@@ -51,7 +51,7 @@ public class DownloadServiceImpl implements DownLoadService {
                 e.printStackTrace();
             }
             // 在下载状态表中增加相应记录
-            List<Aria2StatusV0> aria2StatusV0s = null;
+            List<Aria2StatusV0> aria2StatusV0s = new ArrayList<>();
             try {
                 aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_WAITING);
             } catch (IOException e) {
@@ -131,9 +131,7 @@ public class DownloadServiceImpl implements DownLoadService {
     public List<FinishFileV0> getFinishFiles() {
         List<FinishFileV0> data = new ArrayList<>();
         List<ResourceEntity> resourceEntities = resourceInformationDao.findAllResourceInformation();
-        resourceEntities.forEach(resourceEntity -> {
-            data.add(resourceEntity.getFinishFileV0());
-        });
+        resourceEntities.forEach(resourceEntity -> data.add(resourceEntity.getFinishFileV0()));
         logger.info("get finish file, files: {}", data);
         return data;
     }
@@ -142,9 +140,7 @@ public class DownloadServiceImpl implements DownLoadService {
     public List<FinishFileV0> getFinishFilesByResourceId(int resourceId) {
         List<FinishFileV0> data = new ArrayList<>();
         List<ResourceEntity> resourceEntities = resourceInformationDao.findResourceInformationByResourceId(resourceId);
-        resourceEntities.forEach(resourceEntity -> {
-            data.add(resourceEntity.getFinishFileV0());
-        });
+        resourceEntities.forEach(resourceEntity -> data.add(resourceEntity.getFinishFileV0()));
         logger.info("get resource file by resourceId, files: {}", data);
         return data;
     }
@@ -153,12 +149,10 @@ public class DownloadServiceImpl implements DownLoadService {
     public List<ResourceResponseV0> getResourceList() {
         List<ResourceV0> resourceV0s = resourceInformationDao.findResourceList();
         List<ResourceResponseV0> data = new ArrayList<>();
-        resourceV0s.forEach(resourceV0 -> {
-            data.add(ResourceResponseV0.builder()
-                    .resourceId(String.valueOf(resourceV0.getResourceId()))
-                    .resourceName(resourceV0.getResourceName())
-                    .build());
-        });
+        resourceV0s.forEach(resourceV0 -> data.add(ResourceResponseV0.builder()
+                .resourceId(String.valueOf(resourceV0.getResourceId()))
+                .resourceName(resourceV0.getResourceName())
+                .build()));
         logger.info("get resource list, resources: {}", data);
         return data;
     }
@@ -180,9 +174,6 @@ public class DownloadServiceImpl implements DownLoadService {
                 simpleFinishFileV0 = resourceEntity.getSimpleFinishFileV0();
                 DownloadStatusEntity downloadStatusEntity = downloadStatusDao.findDownloadStatusRecordByFileName(resourceEntity.getFileName());
                 try {
-                    // todo: 需要进行清理
-                    // 清除Aria2记录
-//                    remove(resourceEntity.getGid());
                     // 如果源文件存在，先删除源文件
                     if (downloadStatusEntity.getIsSourceDelete() == 0) {
                         transferService.deleteFile(downloadStatusEntity.getFilePath());

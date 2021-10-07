@@ -4,7 +4,9 @@ import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.dao.DownloadStatusDao;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
+import com.devteam.mikufunbackend.handle.ShellException;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
+import com.devteam.mikufunbackend.service.serviceInterface.DownLoadService;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
 import com.devteam.mikufunbackend.util.ParamUtil;
@@ -21,7 +23,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -47,6 +48,9 @@ public class TransferServiceImpl implements TransferService {
     @Autowired
     private Aria2Service aria2Service;
 
+    @Autowired
+    private DownLoadService downloadService;
+
     @Value("${shell.path}")
     private String shellPath;
 
@@ -54,7 +58,7 @@ public class TransferServiceImpl implements TransferService {
     private String dandanPlayUrl;
 
     @Override
-    public void transfer() throws IOException, InterruptedException {
+    public void transfer() throws IOException {
         logger.info("begin schedule task: transfer");
         List<Aria2StatusV0> aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_STOPPED);
         aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE));
@@ -81,7 +85,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public boolean transferFile(Aria2FileV0 aria2FileV0, String gid) throws IOException, InterruptedException {
+    public boolean transferFile(Aria2FileV0 aria2FileV0, String gid) throws IOException {
         String filePath = aria2FileV0.getPath();
         String fileName = ResultUtil.getFileName(filePath);
         String type = ResultUtil.getFileType(filePath);
@@ -95,9 +99,12 @@ public class TransferServiceImpl implements TransferService {
             // 进行资源转码
             cmd = new String[]{"bash", shellPath, "transfer-" + type, filePath, uuid};
             logger.info("transfer file to m3u8, fileName: {}", fileName);
-//            Process process = Runtime.getRuntime().exec(cmd);
-//            int exitValue = process.waitFor();
-            int exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/transferLog");
+            int exitValue = -1;
+            try {
+                exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/transferLog");
+            } catch (ShellException e) {
+                logger.error(e.getMessage());
+            }
             if (exitValue == 0) {
                 logger.info("transfer file to m3u8 and ts file complete, fileName: {}", fileName);
                 resourceInformationDao.addResourceInformation(generateResourceEntity(aria2FileV0, gid, uuid));
@@ -118,13 +125,17 @@ public class TransferServiceImpl implements TransferService {
         List<DownloadStatusEntity> downloadStatusEntities = downloadStatusDao.findAbleDeleteResource();
         List<Aria2StatusV0> aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_STOPPED);
         Set<String> gids = new HashSet<>();
-        aria2StatusV0s.forEach(aria2StatusV0 -> {
-            gids.add(aria2StatusV0.getGid());
-        });
+        aria2StatusV0s.forEach(aria2StatusV0 -> gids.add(aria2StatusV0.getGid()));
         logger.info("begin to clean source file");
         downloadStatusEntities.forEach(downloadStatusEntity -> {
-            if (gids.contains(downloadStatusEntity.getGid())) {
+            String gid = downloadStatusEntity.getGid();
+            if (gids.contains(gid)) {
                 String filePath = downloadStatusEntity.getFilePath();
+                try {
+                    downloadService.remove(gid);
+                } catch (IOException e) {
+                    logger.error(e.toString());
+                }
                 try {
                     if (deleteFile(filePath)) {
                         downloadStatusDao.updateSourceDeleteTag(filePath);
@@ -141,9 +152,12 @@ public class TransferServiceImpl implements TransferService {
     public boolean deleteFile(String path) throws IOException, InterruptedException {
         String[] cmd = new String[]{"bash", shellPath, "delete", path};
         logger.info("delete source file, path: {}", path);
-//        Process process = Runtime.getRuntime().exec(cmd);
-//        int exitValue = process.waitFor();
-        int exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/deleteLog");
+        int exitValue = -1;
+        try {
+            exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/deleteLog");
+        } catch (ShellException e) {
+            logger.error(e.getMessage());
+        }
         if (exitValue == 0) {
             logger.info("delete source file complete, path: {}", path);
             return true;
@@ -204,12 +218,15 @@ public class TransferServiceImpl implements TransferService {
         return duration;
     }
 
-    private String makeResourceImage(String filePath, String uuid) throws IOException, InterruptedException {
+    private String makeResourceImage(String filePath, String uuid) throws IOException {
         String[] cmd = new String[]{"bash", shellPath, "make-image", filePath, uuid};
         logger.info("make image, filePath: {}", filePath);
-//        Process process = Runtime.getRuntime().exec(cmd);
-//        int exitValue = process.waitFor();
-        int exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/makeImageLog");
+        int exitValue = -1;
+        try {
+            exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/makeImageLog");
+        } catch (ShellException e) {
+            logger.error(e.getMessage());
+        }
         if (exitValue == 0) {
             logger.info("make image complete, filePath: {}", filePath);
             return "/docker/image/" + uuid + ".jpg";
@@ -249,7 +266,7 @@ public class TransferServiceImpl implements TransferService {
         return "";
     }
 
-    private ResourceEntity generateResourceEntity(Aria2FileV0 aria2FileV0, String gid, String uuid) throws IOException, InterruptedException {
+    private ResourceEntity generateResourceEntity(Aria2FileV0 aria2FileV0, String gid, String uuid) throws IOException {
         String filePath = aria2FileV0.getPath();
         String fileName = ResultUtil.getFileName(filePath);
         // 获取资源时长

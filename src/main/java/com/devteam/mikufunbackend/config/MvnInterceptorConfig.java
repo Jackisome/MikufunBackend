@@ -16,9 +16,6 @@ public class MvnInterceptorConfig extends WebMvcConfigurationSupport {
     @Autowired
     private SignInterceptor signInterceptor;
 
-//    @Value("${server.port}")
-//    private int port;
-
     @Override
     protected void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(signInterceptor)
@@ -27,16 +24,4 @@ public class MvnInterceptorConfig extends WebMvcConfigurationSupport {
                 .excludePathPatterns("/api/v1/login");
         super.addInterceptors(registry);
     }
-
-//    @Override
-//    protected void addCorsMappings(CorsRegistry registry) {
-//        // 增加跨域设置
-//        registry.addMapping("/**")
-//                .allowedOrigins("http://localhost:3088")
-//                .allowedMethods("POST", "GET", "PUT", "OPTIONS", "DELETE")
-//                .allowCredentials(true)
-//                .allowedHeaders("*")
-//                .maxAge(3600);
-//        super.addCorsMappings(registry);
-//    }
 }

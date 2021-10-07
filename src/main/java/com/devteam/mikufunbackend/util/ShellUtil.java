@@ -11,10 +11,6 @@ import java.util.concurrent.TimeUnit;
  * @author Jackisome
  * @date 2021/10/5
  */
-
-/**
- * 功能描述: Shell命令运行工具类封装
- */
 @Log4j2
 public class ShellUtil {
     /**

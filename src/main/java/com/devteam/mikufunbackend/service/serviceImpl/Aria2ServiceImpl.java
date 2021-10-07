@@ -11,7 +11,6 @@ import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
-import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,13 +27,13 @@ import java.util.Map;
 @Service
 public class Aria2ServiceImpl implements Aria2Service {
 
-    private Logger logger = LoggerFactory.getLogger(Aria2Service.class);
+    private final Logger logger = LoggerFactory.getLogger(Aria2Service.class);
 
     @Value("${aria2.url}")
     private String aria2RpcUrl;
 
     @Override
-    public String addUrl(String link) throws IOException, DocumentException, Aria2Exception {
+    public String addUrl(String link) throws IOException, Aria2Exception {
         Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
         aria2RequestV0.setMethod(Aria2Constant.METHOD_ADD_URI)
                 .addParam(new String[]{link});

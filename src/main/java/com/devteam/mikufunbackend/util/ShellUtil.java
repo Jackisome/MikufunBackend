@@ -81,9 +81,8 @@ public class ShellUtil {
      * 确保文件夹存在
      *
      * @param filePath 文件路径
-     * @throws IOException 创建文件夹异常抛出
      */
-    public static void ensureFilePathExists(String filePath) throws IOException {
+    public static void ensureFilePathExists(String filePath) {
         File path = new File(filePath);
         if (path.exists()) {
             return;

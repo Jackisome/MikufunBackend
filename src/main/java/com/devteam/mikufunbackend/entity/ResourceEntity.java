@@ -1,6 +1,5 @@
 package com.devteam.mikufunbackend.entity;
 
-import com.devteam.mikufunbackend.util.ResultUtil;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;

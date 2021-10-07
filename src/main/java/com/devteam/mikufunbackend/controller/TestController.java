@@ -78,7 +78,7 @@ public class TestController {
     @GetMapping("/test/match")
     Response testMatch() throws IOException {
         Map<String, Object> data = ResultUtil.getData();
-        List<ResourceMatchV0> resourceMatchV0s = transferService.matchResourceInformation("Dragon Quest The Adventure Of Dai - S01E51 VOSTFR 1080p WEB x264 -NanDesuKa (ADN).mkv", "8c7dd922ad47494fc02c388e12c00eac", 586814875, 1442);
+        List<ResourceMatchV0> resourceMatchV0s = transferService.matchResourceInformation("[UHA-WINGS][Kobayashi-san Chi no Maid Dragon S][10][x264 1080p][CHS]", "674f1a33a7f54d478062361875b8bec5", 588098798, 1420);
         data.put("resourceMatchV0s", resourceMatchV0s);
         return ResultUtil.success(data);
     }

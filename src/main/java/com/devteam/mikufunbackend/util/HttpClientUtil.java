@@ -104,6 +104,7 @@ public class HttpClientUtil {
      */
     public static Object convertJsonToObject(CloseableHttpResponse response, Class clazz) throws IOException {
         String jsonResponse = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
+        System.out.println("jsonResponse: " + jsonResponse);
         return JSONObject.parseObject(jsonResponse, clazz);
     }
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class DandanPlayMatchResponseV0 {
     boolean isMatched;
-    List<DandanPlayMatchV0> dandanPlayMatchV0s;
+    List<DandanPlayMatchV0> matches;
     int errorCode;
     boolean success;
     String errorMessage;

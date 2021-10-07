@@ -1,5 +1,6 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.dao.DownloadStatusDao;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
@@ -13,6 +14,7 @@ import com.devteam.mikufunbackend.util.ParamUtil;
 import com.devteam.mikufunbackend.util.ResultUtil;
 import com.devteam.mikufunbackend.util.ShellUtil;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FrameGrabber;
 import org.slf4j.Logger;
@@ -180,11 +182,12 @@ public class TransferServiceImpl implements TransferService {
         logger.info("match file to resource information, request: {}", dandanPlayMatchRequestV0.toString());
         CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(dandanPlayUrl + "/match", dandanPlayMatchRequestV0);
         DandanPlayMatchResponseV0 dandanPlayMatchResponseV0 = (DandanPlayMatchResponseV0) HttpClientUtil.convertJsonToObject(response, DandanPlayMatchResponseV0.class);
+        System.out.println("matchresponse: " + dandanPlayMatchResponseV0.toString());
         if (dandanPlayMatchResponseV0.getErrorCode() != 0) {
             logger.error("invoke dandanplay match fail, errorMessage: {}", dandanPlayMatchResponseV0.getErrorMessage());
             return data;
         }
-        List<DandanPlayMatchV0> dandanPlayMatchV0s = dandanPlayMatchResponseV0.getDandanPlayMatchV0s();
+        List<DandanPlayMatchV0> dandanPlayMatchV0s = dandanPlayMatchResponseV0.getMatches();
         if (dandanPlayMatchV0s == null || dandanPlayMatchV0s.size() == 0) {
             logger.error("invoke dandanplay match, no matches, fileName: {}", fileName);
             return data;

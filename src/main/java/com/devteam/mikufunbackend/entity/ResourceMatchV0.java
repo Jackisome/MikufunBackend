@@ -15,5 +15,5 @@ public class ResourceMatchV0 {
     String episodeTitle;
     String type;
     int episodeId;
-    int shift;
+    double shift;
 }

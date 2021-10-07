@@ -14,5 +14,5 @@ public class DandanPlayMatchV0 {
     String episodeTitle;
     String type;
     String typeDescription;
-    int shift;
+    double shift;
 }

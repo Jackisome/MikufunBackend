@@ -18,7 +18,7 @@ create table if not exists mikufun.mikufun_resource_information (
     episode_title varchar(1024)   comment '剧集标题',
     type varchar(100) comment '类型',
     episode_id    int comment '弹幕库id',
-    danmaku_shift int default 0   comment '弹幕延迟时间',
+    danmaku_shift double default 0.00   comment '弹幕延迟时间',
     gid   varchar(100)    NOT NULL comment '下载标识',
     primary key (file_id)
 ) comment '下载资源信息表';

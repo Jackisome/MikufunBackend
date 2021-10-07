@@ -21,7 +21,7 @@
         <result property="episodeTitle" column="episode_title" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="type" column="type" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="episodeId" column="episode_id" javaType="int" jdbcType="NUMERIC"/>
-        <result property="danmakuShift" column="danmaku_shift" javaType="int" jdbcType="NUMERIC"/>
+        <result property="danmakuShift" column="danmaku_shift" javaType="double" jdbcType="DOUBLE"/>
         <result property="gid" column="gid" javaType="java.lang.String" jdbcType="VARCHAR"/>
     </resultMap>
 

@@ -31,7 +31,7 @@ public class ResourceEntity {
     String episodeTitle;
     String type;
     int episodeId;
-    int danmakuShift;
+    double danmakuShift;
     String gid;
 
     public FinishFileV0 getFinishFileV0() {

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Jackisome
@@ -45,47 +46,55 @@ public class DownloadServiceImpl implements DownLoadService {
     public boolean download(String link) throws DocumentException, IOException, Aria2Exception {
         aria2Service.addUrl(link);
         new Thread(() -> {
-            try {
-                Thread.sleep(100 * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            // 在下载状态表中增加相应记录
-            List<Aria2StatusV0> aria2StatusV0s = new ArrayList<>();
-            try {
-                aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_WAITING);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            aria2StatusV0s.forEach(aria2StatusV0 -> {
-                logger.info("add record to downloadStatus table begin, aria2StatusV0: {}", aria2StatusV0.toString());
-                String gid = aria2StatusV0.getGid();
-                if (downloadStatusDao.findDownloadStatusRecordByGid(gid).size() == 0) {
-                    List<Aria2FileV0> aria2FileV0s = aria2StatusV0.getFiles();
-                    if (ParamUtil.isNotEmpty(aria2FileV0s)) {
-                        aria2FileV0s.forEach(aria2FileV0 -> {
-                            if (!ResultUtil.getFileName(aria2FileV0.getPath()).equals(aria2FileV0.getPath())) {
-                                DownloadStatusEntity downloadStatusEntity = DownloadStatusEntity.builder()
-                                        .gid(gid)
-                                        .link(link)
-                                        .fileName(ResultUtil.getFileName(aria2FileV0.getPath()))
-                                        .filePath(aria2FileV0.getPath())
-                                        .isFinish(0)
-                                        .isSourceDelete(0)
-                                        .status(aria2StatusV0.getStatus())
-                                        .build();
-                                downloadStatusDao.addDownloadStatusRecord(downloadStatusEntity);
-                                logger.info("add record to downloadStatus table, downloadStatusEntity: {}", downloadStatusEntity.toString());
-                            }
-                        });
+            AtomicInteger count = new AtomicInteger(0);
+            while (count.get() == 0) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // 在下载状态表中增加相应记录
+                List<Aria2StatusV0> aria2StatusV0s = new ArrayList<>();
+                try {
+                    aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_WAITING);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                for (Aria2StatusV0 aria2StatusV0 : aria2StatusV0s) {
+                    logger.info("add record to downloadStatus table begin, aria2StatusV0: {}", aria2StatusV0.toString());
+                    String gid = aria2StatusV0.getGid();
+                    // todo: 线程安全
+                    if (downloadStatusDao.findDownloadStatusRecordByGid(gid).size() == 0) {
+                        List<Aria2FileV0> aria2FileV0s = aria2StatusV0.getFiles();
+                        if (ParamUtil.isNotEmpty(aria2FileV0s)) {
+                            aria2FileV0s.forEach(aria2FileV0 -> {
+                                if (!ResultUtil.getFileName(aria2FileV0.getPath()).equals(aria2FileV0.getPath())) {
+                                    DownloadStatusEntity downloadStatusEntity = DownloadStatusEntity.builder()
+                                            .gid(gid)
+                                            .link(link)
+                                            .fileName(ResultUtil.getFileName(aria2FileV0.getPath()))
+                                            .filePath(aria2FileV0.getPath())
+                                            .isFinish(0)
+                                            .isSourceDelete(0)
+                                            .status(aria2StatusV0.getStatus())
+                                            .build();
+                                    downloadStatusDao.addDownloadStatusRecord(downloadStatusEntity);
+                                    count.addAndGet(1);
+                                    logger.info("add record to downloadStatus table, downloadStatusEntity: {}", downloadStatusEntity.toString());
+                                }
+                            });
+                        }
+                    }
+                    if (count.get() > 0) {
+                        break;
                     }
                 }
-            });
+            }
         }).start();
         return true;
     }

@@ -30,7 +30,7 @@ public class HistoryController {
     @GetMapping("/download")
     public Response recentDownload() throws Exception{
         Map<String,Object> data=ResultUtil.getData();
-        data.put("recentPlayFiles",recentService.recentPlay());
+        data.put("recentDownloadFiles",recentService.recentDownload());
         return ResultUtil.success(data);
     }
 }

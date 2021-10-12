@@ -25,7 +25,7 @@ mybatis:
     map-underscore-to-camel-case: true
 
 aria2:
-  url: http://72.44.78.113:6800/jsonrpc
+  url: http://209.141.59.25:6800/jsonrpc
 
 shell:
   path: /docker/transfer.sh

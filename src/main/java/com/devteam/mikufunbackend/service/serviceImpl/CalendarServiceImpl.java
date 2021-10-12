@@ -9,8 +9,12 @@ import com.devteam.mikufunbackend.entity.DownloadStatusV0;
 import com.devteam.mikufunbackend.service.serviceInterface.CalendarService;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,39 +39,40 @@ public class CalendarServiceImpl implements CalendarService {
     Logger logger = LoggerFactory.getLogger(CalendarServiceImpl.class);
 
     @Override
-    public List<CalendarInfoV0> calendar(AnimeTypeEnum type, int week) throws Exception{
+    public List<CalendarInfoV0> calendar(AnimeTypeEnum type, int week) {
 
         List<CalendarInfoV0> data = new ArrayList<>();
+
         String url1="https://api.acplay.net/api/v2/homepage?filterAdultContent=true";
         String url2="https://api.bgm.tv/calendar";
-        CloseableHttpResponse httpResponse1 = HttpClientUtil.sendGet(url1,null);
-        CloseableHttpResponse httpResponse2 = HttpClientUtil.sendGet(url2,null);
-
+        logger.info("pos1");
         try {
-            HttpEntity entity1 = httpResponse1.getEntity();
-            HttpEntity entity2 = httpResponse2.getEntity();
+            CloseableHttpClient client1 = HttpClients.createDefault();
+            HttpGet get1 = new HttpGet(url1);
+            HttpResponse response1 = client1.execute(get1);
+            HttpEntity entity1 = response1.getEntity();
+
+            CloseableHttpClient client2 = HttpClients.createDefault();
+            HttpGet get2 = new HttpGet(url2);
+            HttpResponse response2 = client2.execute(get2);
+            HttpEntity entity2 = response2.getEntity();
+
             if (entity1 != null && entity2 != null) {
                 parseJsonGet(data,EntityUtils.toString(entity1),EntityUtils.toString(entity2),week);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             logger.error(e.toString());
-        } finally {
-            try {
-                httpResponse1.close();
-                httpResponse2.close();
-            } catch (IOException e) {
-                logger.error(e.toString());
-            }
         }
+
         logger.info("get calendar infomation, info: {}", data);
         return data;
     }
 
-    public void parseJsonGet(List<CalendarInfoV0> data,String jsonString1,String jsonString2,int week){
+    public void parseJsonGet(List<CalendarInfoV0> data,String jsonString1,String jsonString2,int week) throws Exception{
         //dandanPlay数据
-        List<JSONObject> dataList1 = JSON.parseArray(JSONObject.parseObject(jsonString1)
+        List<JSONObject> dataList1 = JSON.parseArray((JSONObject.parseObject(jsonString1))
                 .getJSONArray("shinBangumiList").toJSONString(),JSONObject.class);
-        int week1=week==7?0:week;
+        int week1 = week==7 ? 0 : week;
         //Bangumi数据
         List<JSONObject> dataList2 = JSON.parseArray(jsonString2,JSONObject.class);
 
@@ -83,9 +88,9 @@ public class CalendarServiceImpl implements CalendarService {
                             try {
                                 CalendarInfoV0 calendarInfoV0 = CalendarInfoV0.builder()
                                         .resourceId(String.valueOf(k.getInteger("animeId")))
-                                        .resourceName(k.getString("animeTitle"))
+                                        .resourceName(j.getString("name_cn"))
                                         .airDate(fmt.parse(j.getString("air_date")))
-                                        .rating(k.getDoubleValue("rating"))
+                                        .rating(k.getDouble("rating"))
                                         .imageUrl(k.getString("imageUrl"))
                                         .build();
                                 data.add(calendarInfoV0);

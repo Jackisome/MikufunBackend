@@ -1,9 +1,6 @@
 package com.devteam.mikufunbackend.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.text.DecimalFormat;
 
@@ -15,22 +12,24 @@ import java.text.DecimalFormat;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class DanmakuV0 {
     double time;
-    int type;
+    int mode;
     int color;
-    String colorHex;
-    String comment;
-
+    //String colorHex;
+    String message;
+    /*
     @Override
     public String toString() {
         return "[" +
                 new DecimalFormat("0.000").format(time) + "," +
-                type + "," +
+                mode + "," +
                 color + "," +
-                colorHex + "," +
-                comment +
+                // colorHex + "," +
+                message +
                 "]";
 
     }
+     */
 }

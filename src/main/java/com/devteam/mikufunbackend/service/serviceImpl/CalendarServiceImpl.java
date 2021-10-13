@@ -47,14 +47,10 @@ public class CalendarServiceImpl implements CalendarService {
         String url2="https://api.bgm.tv/calendar";
         logger.info("pos1");
         try {
-            CloseableHttpClient client1 = HttpClients.createDefault();
-            HttpGet get1 = new HttpGet(url1);
-            HttpResponse response1 = client1.execute(get1);
+            CloseableHttpClient client1 = HttpClients.createDefault(),client2 = HttpClients.createDefault();
+            HttpGet get1 = new HttpGet(url1),get2 = new HttpGet(url2);
+            HttpResponse response1 = client1.execute(get1),response2 = client2.execute(get2);
             HttpEntity entity1 = response1.getEntity();
-
-            CloseableHttpClient client2 = HttpClients.createDefault();
-            HttpGet get2 = new HttpGet(url2);
-            HttpResponse response2 = client2.execute(get2);
             HttpEntity entity2 = response2.getEntity();
 
             if (entity1 != null && entity2 != null) {

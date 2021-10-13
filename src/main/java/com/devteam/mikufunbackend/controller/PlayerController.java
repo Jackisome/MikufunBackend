@@ -1,6 +1,7 @@
 package com.devteam.mikufunbackend.controller;
 
 import com.devteam.mikufunbackend.constant.ResponseEnum;
+import com.devteam.mikufunbackend.entity.DanmakuPostV0;
 import com.devteam.mikufunbackend.entity.ResourceEntity;
 import com.devteam.mikufunbackend.service.serviceImpl.PlayServiceImpl;
 import com.devteam.mikufunbackend.service.serviceInterface.PlayService;
@@ -44,6 +45,15 @@ public class PlayerController {
             return ResultUtil.fail(ResponseEnum.FILEID_ERROR);
     }
 
+    @PutMapping("/file/{fileId}/record/{videoTime}")
+    public void updatePos(@PathVariable int fileId,@PathVariable int videoTime) throws Exception{
+        if(playService.updatePos(fileId,videoTime)==true){
+            logger.info("update recentPlayPosition success");
+        }else{
+            logger.info("update recentPlayPosition failed");
+        }
+    }
+
     @GetMapping("/danmaku/{fileId}")
     public Response getDanmaku(@PathVariable int fileId) throws Exception{
         Map<String, Object> data = ResultUtil.getData();
@@ -53,4 +63,21 @@ public class PlayerController {
         else
             return ResultUtil.fail(ResponseEnum.FILEID_ERROR);
     }
+
+    @PostMapping("/danmaku")
+    public void postDanmaku(@RequestBody DanmakuPostV0 body) throws Exception{
+        if(playService.postDanmaku(body)==true){
+            logger.info("post Danmaku success");
+        }else{
+            logger.info("post Danmaku failed");
+        }
+    }
+
+    @GetMapping("/danmaku/rule")
+    public Response getRegex() throws Exception{
+        Map<String, Object> data = ResultUtil.getData();
+        data.put("regexs",playService.getRegex());
+        return ResultUtil.success(data);
+    }
+
 }

@@ -8,6 +8,7 @@ import com.devteam.mikufunbackend.service.serviceInterface.PlayService;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -19,7 +20,9 @@ import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class PlayServiceImpl implements PlayService {
@@ -82,5 +85,40 @@ public class PlayServiceImpl implements PlayService {
         }
         logger.info("get danmaku , info: {}", data);
         return data;
+    }
+
+    @Override
+    public Boolean postDanmaku(DanmakuPostV0 comment) throws Exception{
+
+        int episodeId = resourceInformationDao.findResourceInformationByFileId(
+                Integer.valueOf(comment.getFileId())
+        ).getEpisodeId();
+
+        String url1 = "https://api.acplay.net/api/v2/comment/"+episodeId;
+        try{
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost post = new HttpPost(url1);
+            HttpResponse response = client.execute(post);
+            HttpEntity entity1 = response.getEntity();
+
+        }catch (Exception e){
+            logger.error(e.toString());
+        }
+
+        return true;
+    }
+
+    @Override
+    public List<RegExpV0> getRegex(){
+        List<RegExpV0> data = new ArrayList<>();
+        return data;
+    }
+
+    @Override
+    public Boolean updatePos(int fileId,int videoTime){
+        if(resourceInformationDao.updatePlayPosition(fileId,videoTime)==1)
+            return true;
+        else
+            return false;
     }
 }

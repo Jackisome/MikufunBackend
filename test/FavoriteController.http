@@ -1,0 +1,5 @@
+### 为番剧设置收藏状态
+PUT http://localhost:8080/favorite/1/status/watched
+
+###
+PUT http://localhost:8080/favorite/1/status/watching

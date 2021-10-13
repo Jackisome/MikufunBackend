@@ -50,4 +50,12 @@ public class ExceptionHandle {
         logger.error(e.getMessage());
         return ResultUtil.fail(ResponseEnum.SHELL_ERROR);
     }
+
+    @ExceptionHandler(value = FavoriteException.class)
+    @ResponseBody
+    public Response favoriteExceptionHandle(FavoriteException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(ResponseEnum.FAVORITE_ERROR);
+    }
+
 }

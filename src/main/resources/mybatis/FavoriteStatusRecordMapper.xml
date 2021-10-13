@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.devteam.mikufunbackend.dao.FavoriteStatusRecordDao">
+  <resultMap id="BaseResultMap" type="com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="record_id" jdbcType="INTEGER" property="recordId" />
+    <result column="resource_id" jdbcType="INTEGER" property="resourceId" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <select id="findFavoriteStatusRecordByStatus" resultType="com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity">
+    select record_id, resource_id, status, update_time
+    from mikufun_favorite_status_record
+    where status = #{status}
+  </select>
+
+  <select id="findFavoriteStatusRecordByResourceId" resultType="com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity">
+    select record_id, resource_id, status, update_time
+    from mikufun_favorite_status_record
+    where resource_id = #{resourceId}
+  </select>
+
+  <insert id="addFavoriteStatusRecord">
+    insert into mikufun_favorite_status_record(resource_id, status)
+    values(#{resourceId}, #{status})
+  </insert>
+
+  <update id="updateFavoriteStatusRecord">
+    update mikufun_favorite_status_record
+    set status = #{status}
+    where record_id = #{recordId}
+  </update>
+</mapper>

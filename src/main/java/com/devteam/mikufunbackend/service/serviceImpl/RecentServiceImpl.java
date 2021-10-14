@@ -4,6 +4,7 @@ import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.RecentStatusV0;
 import com.devteam.mikufunbackend.entity.ResourceEntity;
 import com.devteam.mikufunbackend.service.serviceInterface.RecentService;
+import com.devteam.mikufunbackend.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +40,9 @@ public class RecentServiceImpl implements RecentService {
                 RecentStatusV0 recentStatusV0 = RecentStatusV0.builder()
                         .fileId(String.valueOf(k.getFileId()))
                         .resourceName(k.getResourceName())
-                        .time(new Date(k.getRecentPlayTime().getTime()))
+                        .time(TimeUtil.getFormattedTimeToDay(k.getRecentPlayTime()))
                         .imageUrl(k.getImageUrl())
-                        .episode(k.getEpisodeId())
+                        .episode(k.getEpisodeTitle())
                         .build();
                 data.add(recentStatusV0);
             });
@@ -60,9 +61,9 @@ public class RecentServiceImpl implements RecentService {
                 RecentStatusV0 recentStatusV0 = RecentStatusV0.builder()
                         .fileId(String.valueOf(k.getFileId()))
                         .resourceName(k.getResourceName())
-                        .time(new Date(k.getDownloadTime().getTime()))
+                        .time(TimeUtil.getFormattedTimeToDay(k.getDownloadTime()))
                         .imageUrl(k.getImageUrl())
-                        .episode(k.getEpisodeId())
+                        .episode(k.getEpisodeTitle())
                         .build();
                 data.add(recentStatusV0);
             });

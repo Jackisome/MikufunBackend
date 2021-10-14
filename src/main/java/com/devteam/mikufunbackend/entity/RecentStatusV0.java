@@ -16,7 +16,7 @@ import java.util.Date;
 public class RecentStatusV0 {
     String fileId;
     String resourceName;
-    Date time;
+    String time;
     String imageUrl;
-    int episode; //播放的集数
+    String episode; //播放的集数
 }

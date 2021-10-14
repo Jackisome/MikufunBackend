@@ -22,7 +22,7 @@ import java.util.Map;
  * @date 2021/9/26
  */
 @RestController
-@RequestMapping("/search")
+@RequestMapping("/api/v1/search")
 public class SearchController {
 
     @Resource

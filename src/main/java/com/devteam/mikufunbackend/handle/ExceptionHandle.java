@@ -58,4 +58,11 @@ public class ExceptionHandle {
         return ResultUtil.fail(ResponseEnum.FAVORITE_ERROR);
     }
 
+    @ExceptionHandler(value = PasswordErrorException.class)
+    @ResponseBody
+    public Response passwordErrorExceptionHandle(PasswordErrorException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(ResponseEnum.LOGIN_ERROR);
+    }
+
 }

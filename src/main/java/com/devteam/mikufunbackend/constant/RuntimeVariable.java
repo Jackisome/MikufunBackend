@@ -8,4 +8,6 @@ public class RuntimeVariable {
     // todo: 临时设为"token"用于测试，需默认为null
     // 表示用户sessionId，运行时可变
     public static String token = "token";
+
+    public static String password = null;
 }

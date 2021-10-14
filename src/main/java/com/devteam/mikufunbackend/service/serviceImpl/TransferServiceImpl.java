@@ -1,6 +1,5 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.dao.DownloadStatusDao;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;

@@ -25,7 +25,7 @@ public class SearchResourceIntroductionVO {
     /**
      * 上映日期
      */
-    private Date airDate;
+    private String airDate;
     /**
      * 番剧简介
      */

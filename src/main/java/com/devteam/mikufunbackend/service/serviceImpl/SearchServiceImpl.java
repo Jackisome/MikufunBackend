@@ -15,6 +15,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,7 +69,7 @@ public class SearchServiceImpl implements SearchService {
         } else {
             bangumiDetailDTOS = this.getResourceInfoById(resourceId);
         }
-        DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        DateFormat fmt = new SimpleDateFormat("yyyy-MM-dd");
         // convert
         return bangumiDetailDTOS.stream().map(bangumiDetailDTO -> {
             SearchResourceIntroductionVO searchResourceIntroductionVO = new SearchResourceIntroductionVO();
@@ -81,7 +82,8 @@ public class SearchServiceImpl implements SearchService {
             }
             // todo
             try {
-                searchResourceIntroductionVO.setAirDate(fmt.parse(bangumiDetailDTO.getEpisodes().get(0).getAirDate()));
+                Date airDate = fmt.parse(bangumiDetailDTO.getEpisodes().get(0).getAirDate());
+                searchResourceIntroductionVO.setAirDate(fmt.format(airDate));
             } catch (ParseException e) {
                 e.printStackTrace();
             }

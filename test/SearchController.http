@@ -1,0 +1,16 @@
+### 使用 resourceId 获取作品简介
+GET http://localhost:8080/search/introduction?keyword=n&resourceId=13252
+
+### 使用关键词获取作品介绍
+GET http://localhost:8080/search/introduction?keyword=木乃伊&resourceId=0
+
+### 使用关键词搜索资源
+GET http://localhost:8080/search/resource?keyword=木乃伊
+
+### 获取作品类型
+GET http://localhost:8080/search/type
+
+### 获取字幕组列表
+GET http://localhost:8080/search/group
+
+

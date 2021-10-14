@@ -13,7 +13,8 @@ public enum ResponseEnum {
     LOGIN_ERROR(2, "login error"),
     ARIA2_ERROR(3, "aria2 error"),
     FILEID_ERROR(4, "fileId error"),
-    SHELL_ERROR(5, "shell execute error");
+    SHELL_ERROR(5, "shell execute error"),
+    FAVORITE_ERROR(6, "favorite status update error");
 
     private final int statusCode;
     private final String message;

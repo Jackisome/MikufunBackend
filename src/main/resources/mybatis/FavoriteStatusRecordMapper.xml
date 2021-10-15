@@ -22,6 +22,17 @@
     where resource_id = #{resourceId}
   </select>
 
+  <select id="findFavoriteStatusRecordsByResourceId" resultType="com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity"
+  parameterType="java.util.List">
+    select record_id, resource_id, status, update_time
+    from mikufun_favorite_status_record
+    WHERE resource_id in
+    <foreach item="item" index="index" collection="list"
+             open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
   <insert id="addFavoriteStatusRecord">
     insert into mikufun_favorite_status_record(resource_id, status)
     values(#{resourceId}, #{status})

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.service.serviceInterface.PlayService;
+import com.devteam.mikufunbackend.util.HttpClientUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -12,13 +13,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,9 +25,6 @@ import java.util.Map;
 
 @Service
 public class PlayServiceImpl implements PlayService {
-
-    @Autowired
-    DataSource dataSource;
 
     @Autowired
     private ResourceInformationDao resourceInformationDao;
@@ -89,28 +85,18 @@ public class PlayServiceImpl implements PlayService {
 
     @Override
     public Boolean postDanmaku(DanmakuPostV0 comment) throws Exception{
-
-        int episodeId = resourceInformationDao.findResourceInformationByFileId(
-                Integer.valueOf(comment.getFileId())
-        ).getEpisodeId();
-
-        String url1 = "https://api.acplay.net/api/v2/comment/"+episodeId;
         try{
-            CloseableHttpClient client = HttpClients.createDefault();
-            HttpPost post = new HttpPost(url1);
-            HttpResponse response = client.execute(post);
-            HttpEntity entity1 = response.getEntity();
-
+            //todo
         }catch (Exception e){
             logger.error(e.toString());
         }
-
         return true;
     }
 
     @Override
     public List<RegExpV0> getRegex(){
         List<RegExpV0> data = new ArrayList<>();
+        //todo
         return data;
     }
 

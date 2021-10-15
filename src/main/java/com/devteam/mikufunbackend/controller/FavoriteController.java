@@ -12,7 +12,7 @@ import javax.annotation.Resource;
  * @date 2021/9/26
  */
 @RestController
-@RequestMapping("/favorite")
+@RequestMapping("/api/v1/favorite")
 public class FavoriteController {
 
     @Resource

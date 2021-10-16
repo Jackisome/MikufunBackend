@@ -284,7 +284,7 @@ public class TransferServiceImpl implements TransferService {
 
         ResourceEntity resourceEntity = ResourceEntity.builder()
                 .fileName(fileName)
-                .fileDirectory("docker/resource/" + uuid)
+                .fileDirectory("/docker/resource/" + uuid + "/index.m3u8")
                 .fileHash(md5)
                 .fileSize(aria2FileV0.getLength())
                 .videoDuration(videoDuration)

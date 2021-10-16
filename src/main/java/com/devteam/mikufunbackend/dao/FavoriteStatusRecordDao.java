@@ -16,6 +16,8 @@ public interface FavoriteStatusRecordDao {
 
     List<FavoriteStatusRecordEntity> findFavoriteStatusRecordByStatus(String status);
 
+    List<FavoriteStatusRecordEntity> findFavoriteStatusRecordsByResourceId(List<Integer> resourceIds);
+
 //    int deleteFavoriteStatusRecord(Integer recordId);
 
 }

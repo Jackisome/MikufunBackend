@@ -5,6 +5,7 @@ import com.devteam.mikufunbackend.feign.ResourceClient;
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+import feign.okhttp.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ public class FeignClientConfig {
         return Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
+                .client(new OkHttpClient())
                 .target(ResourceClient.class, "https://k.dandanplay.workers.dev");
     }
 
@@ -28,6 +30,7 @@ public class FeignClientConfig {
         return Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
+                .client(new OkHttpClient())
                 .target(ResourceInfoClient.class, dandanPlayUrl);
     }
 

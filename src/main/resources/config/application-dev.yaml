@@ -23,6 +23,7 @@ mybatis:
   mapper-locations: classpath*:**/mybatis/*Mapper.xml
   configuration:
     map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 aria2:
   url: http://localhost:6800/jsonrpc

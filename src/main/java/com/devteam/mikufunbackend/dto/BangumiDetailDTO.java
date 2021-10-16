@@ -5,7 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -69,5 +73,24 @@ public class BangumiDetailDTO {
      */
     @JsonProperty("rating")
     private Double rating;
+
+
+    public String reformatAirDate(DateFormat fmt) {
+        // 获取指定格式的日期, 番剧第一集的播出时间作为番剧的上映时间
+        if (CollectionUtils.isEmpty(episodes)) {
+            return "";
+        }
+        if (episodes.get(0).getAirDate() == null) {
+            return "";
+        }
+        // todo
+        try {
+            Date airDate = fmt.parse(episodes.get(0).getAirDate());
+            return fmt.format(airDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
 
 }

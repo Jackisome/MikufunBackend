@@ -28,55 +28,52 @@ public class PlayerController {
     Logger logger = LoggerFactory.getLogger(PlayerController.class);
 
     @GetMapping("/file/{fileId}")
-    public Response getFileAddr(@PathVariable int fileId) throws Exception{
+    public Response getFileAddr(@PathVariable int fileId) {
         Map<String, Object> data = ResultUtil.getData();
         try {
             ResourceEntity resourceEntity = playService.getFileAddr(fileId);
-            data.put("fileUrl", resourceEntity.getFileDirectory());
+            data.put("fileUrl", resourceEntity.getFileDirectory() + "/index.m3u8");
             data.put("fileName", resourceEntity.getFileName());
             data.put("ResourceId", resourceEntity.getResourceId());
             data.put("ResourceName", resourceEntity.getResourceName());
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.toString());
         }
-        if(data.get("fileUrl")!=null)
-            return ResultUtil.success(data);
-        else
-            return ResultUtil.fail(ResponseEnum.FILEID_ERROR);
+        return ResultUtil.success(data);
     }
 
     @PutMapping("/file/{fileId}/record/{videoTime}")
-    public void updatePos(@PathVariable int fileId,@PathVariable int videoTime) throws Exception{
-        if(playService.updatePos(fileId,videoTime)==true){
+    public void updatePos(@PathVariable int fileId, @PathVariable int videoTime) throws Exception {
+        if (playService.updatePos(fileId, videoTime) == true) {
             logger.info("update recentPlayPosition success");
-        }else{
+        } else {
             logger.info("update recentPlayPosition failed");
         }
     }
 
     @GetMapping("/danmaku/{fileId}")
-    public Response getDanmaku(@PathVariable int fileId) throws Exception{
+    public Response getDanmaku(@PathVariable int fileId) throws Exception {
         Map<String, Object> data = ResultUtil.getData();
-        data.put("danmu",playService.getDanmaku(fileId));
-        if(data.get("danmu")!=null)
+        data.put("danmu", playService.getDanmaku(fileId));
+        if (data.get("danmu") != null)
             return ResultUtil.success(data);
         else
             return ResultUtil.fail(ResponseEnum.FILEID_ERROR);
     }
 
     @PostMapping("/danmaku")
-    public void postDanmaku(@RequestBody DanmakuPostV0 body) throws Exception{
-        if(playService.postDanmaku(body)==true){
+    public void postDanmaku(@RequestBody DanmakuPostV0 body) throws Exception {
+        if (playService.postDanmaku(body) == true) {
             logger.info("post Danmaku success");
-        }else{
+        } else {
             logger.info("post Danmaku failed");
         }
     }
 
     @GetMapping("/danmaku/rule")
-    public Response getRegex() throws Exception{
+    public Response getRegex() throws Exception {
         Map<String, Object> data = ResultUtil.getData();
-        data.put("regexs",playService.getRegex());
+        data.put("regexs", playService.getRegex());
         return ResultUtil.success(data);
     }
 

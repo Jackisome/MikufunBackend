@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
+import com.devteam.mikufunbackend.handle.FileIdException;
 import com.devteam.mikufunbackend.service.serviceInterface.PlayService;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
 import org.apache.http.HttpEntity;
@@ -38,6 +39,9 @@ public class PlayServiceImpl implements PlayService {
             resourceEntity = resourceInformationDao.findResourceInformationByFileId(fileId);
         } catch (Exception e){
             logger.error(e.toString());
+        }
+        if (resourceEntity == null) {
+            throw new FileIdException("fileId对应记录不存在");
         }
         logger.info("get fileAddress, info: {}", resourceEntity);
         return resourceEntity;

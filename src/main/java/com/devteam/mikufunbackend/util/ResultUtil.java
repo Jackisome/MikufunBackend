@@ -3,6 +3,7 @@ package com.devteam.mikufunbackend.util;
 import com.devteam.mikufunbackend.constant.ResponseEnum;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,6 +42,14 @@ public class ResultUtil {
                 .message(responseEnum.getMessage())
                 .build();
         return response;
+    }
+
+    public static DanmakuResponse getDanmaku(List<List<Object>> data) {
+        DanmakuResponse danmakuResponse = DanmakuResponse.builder()
+                .code(0)
+                .data(data)
+                .build();
+        return danmakuResponse;
     }
 
     public static Map<String, Object> getData() {

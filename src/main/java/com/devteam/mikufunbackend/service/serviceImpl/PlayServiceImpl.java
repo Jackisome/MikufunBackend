@@ -48,8 +48,9 @@ public class PlayServiceImpl implements PlayService {
     }
 
     @Override
-    public List<DanmakuV0> getDanmaku(int fileId) throws Exception{
-        List<DanmakuV0> data = new ArrayList<>();
+    public List<List<Object>> getDanmaku(int fileId) throws Exception{
+//        List<DanmakuV0> data = new ArrayList<>();
+        List<List<Object>> data = new ArrayList<>();
         String url1 = "";
         ResourceEntity resourceEntity = null;
         try {
@@ -69,15 +70,22 @@ public class PlayServiceImpl implements PlayService {
                         .parseObject(EntityUtils.toString(entity1))
                         .getJSONArray("comments").toJSONString(),JSONObject.class);
                 dataList.forEach(k->{
+                    List<Object> danmaku = new ArrayList<>();
                     String[] temp = k.getString("p").split(",");
-                    DanmakuV0 danmakuV0 = DanmakuV0.builder()
-                                .time(Double.parseDouble(temp[0]))
-                                .mode(Integer.parseInt(temp[1]))
-                                .color(Integer.parseInt(temp[2]))
-                                .message(k.getString("m"))
-                                .build();
-                    data.add(danmakuV0);
-                    logger.info("add info to Danmaku, info: {}", danmakuV0.toString());
+                    danmaku.add(Double.parseDouble(temp[0]));
+                    danmaku.add(0);
+                    danmaku.add(Integer.parseInt(temp[2]));
+                    danmaku.add(temp[3]);
+                    danmaku.add(k.getString("m"));
+                    data.add(danmaku);
+//                    DanmakuV0 danmakuV0 = DanmakuV0.builder()
+//                                .time(Double.parseDouble(temp[0]))
+//                                .mode(Integer.parseInt(temp[1]))
+//                                .color(Integer.parseInt(temp[2]))
+//                                .message(k.getString("m"))
+//                                .build();
+//                    data.add(danmakuV0);
+//                    logger.info("add info to Danmaku, info: {}", danmakuV0.toString());
                 });
             }
         } catch (Exception e) {

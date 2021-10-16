@@ -27,7 +27,7 @@ public interface PlayService {
      * @return
      * @throws Exception
      */
-    List<DanmakuV0> getDanmaku(int fileId) throws Exception;
+    List<List<Object>> getDanmaku(int fileId) throws Exception;
 
     /**
      * 增加弹幕

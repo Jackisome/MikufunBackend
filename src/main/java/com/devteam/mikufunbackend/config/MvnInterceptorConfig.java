@@ -21,7 +21,8 @@ public class MvnInterceptorConfig extends WebMvcConfigurationSupport {
         registry.addInterceptor(signInterceptor)
                 .addPathPatterns("/api/v1/**")
                 .addPathPatterns("/test/**")
-                .excludePathPatterns("/api/v1/login");
+                .excludePathPatterns("/api/v1/login")
+                .excludePathPatterns("/api/v1/play/danmaku/v3");
         super.addInterceptors(registry);
     }
 }

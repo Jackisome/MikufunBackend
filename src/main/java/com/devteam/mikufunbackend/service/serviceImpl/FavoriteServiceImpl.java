@@ -5,6 +5,7 @@ import com.devteam.mikufunbackend.dao.FavoriteStatusRecordDao;
 import com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity;
 import com.devteam.mikufunbackend.handle.FavoriteException;
 import com.devteam.mikufunbackend.service.serviceInterface.FavoriteService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class FavoriteServiceImpl implements FavoriteService {
 
     @Resource
@@ -53,7 +55,9 @@ public class FavoriteServiceImpl implements FavoriteService {
 
     @Override
     public Map<Integer, String> getFavoriteStatusListById(List<Integer> resourceIds) {
+        log.info("start sql");
         List<FavoriteStatusRecordEntity> favoriteStatusRecordEntityList =  this.favoriteStatusRecordDao.findFavoriteStatusRecordsByResourceId(resourceIds);
+        log.info("complete sql");
         Map<Integer, String> favoriteStatusMap = new HashMap<>();
         if (CollectionUtils.isEmpty(favoriteStatusRecordEntityList)) {
             return favoriteStatusMap;

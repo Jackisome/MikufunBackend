@@ -102,9 +102,11 @@ public class SearchServiceImpl implements SearchService {
             return new ArrayList<>();
         }
         List<SearchAnimeDetailDTO> animeDetailDTOs = animeRespDTO.getAnimes();
+        log.info("start invoking third party api");
         List<BangumiRespDTO> bangumiRespDTOS = animeDetailDTOs.stream()
                 .map(animeDetailDTO -> resourceInfoClient.getResourceDetailById(animeDetailDTO.getAnimeId()))
                 .collect(Collectors.toList());
+        log.info("complete invoking third party api");
         return bangumiRespDTOS.stream().map(BangumiRespDTO::getBangumi).collect(Collectors.toList());
     }
 

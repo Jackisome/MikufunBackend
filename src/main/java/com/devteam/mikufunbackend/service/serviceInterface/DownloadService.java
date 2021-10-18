@@ -11,7 +11,7 @@ import java.util.List;
  * @author Jackisome
  * @date 2021/9/27
  */
-public interface DownLoadService {
+public interface DownloadService {
     /**
      * 下载指定链接的数据到本地
      * @param link 下载链接
@@ -62,4 +62,11 @@ public interface DownLoadService {
      * @throws InterruptedException
      */
     List<SimpleFinishFileV0> deleteLocalFiles(List<Integer> fileIds) throws IOException, InterruptedException;
+
+    /**
+     * 根据fileUuid寻找资源是否存在字幕文件
+     * @param fileUuid
+     * @return
+     */
+    String getSubtitlePath(String fileUuid);
 }

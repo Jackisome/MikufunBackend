@@ -6,7 +6,7 @@ import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
-import com.devteam.mikufunbackend.service.serviceInterface.DownLoadService;
+import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.ParamUtil;
 import com.devteam.mikufunbackend.util.ResultUtil;
@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2021/9/27
  */
 @Service
-public class DownloadServiceImpl implements DownLoadService {
+public class DownloadServiceImpl implements DownloadService {
 
     Logger logger = LoggerFactory.getLogger(DownloadServiceImpl.class);
 

@@ -33,3 +33,6 @@ shell:
 
 dandanplay:
   url: https://api.acplay.net/api/v2
+
+transfer:
+  format: mp4

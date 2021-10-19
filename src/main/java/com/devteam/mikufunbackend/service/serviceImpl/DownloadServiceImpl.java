@@ -182,6 +182,12 @@ public class DownloadServiceImpl implements DownloadService {
             } else {
                 simpleFinishFileV0 = resourceEntity.getSimpleFinishFileV0();
                 DownloadStatusEntity downloadStatusEntity = downloadStatusDao.findDownloadStatusRecordByFileName(resourceEntity.getFileName());
+                String gid = downloadStatusEntity.getGid();
+                try {
+                    remove(gid);
+                } catch (IOException e) {
+                    logger.error(e.toString());
+                }
                 try {
                     // 如果源文件存在，先删除源文件
                     if (downloadStatusEntity.getIsSourceDelete() == 0) {

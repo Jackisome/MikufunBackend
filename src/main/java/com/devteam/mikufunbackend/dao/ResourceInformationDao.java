@@ -106,4 +106,13 @@ public interface ResourceInformationDao {
      * @return
      */
     List<String> findAllGid();
+
+    /**
+     * 更新视频文件的字幕
+     * @param fileId
+     * @param subtitlePath
+     * @return
+     */
+    int updateSubtitlePath(int fileId,
+                           String subtitlePath);
 }

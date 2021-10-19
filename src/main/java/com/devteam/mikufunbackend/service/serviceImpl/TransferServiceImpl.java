@@ -6,7 +6,7 @@ import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.ShellException;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
-import com.devteam.mikufunbackend.service.serviceInterface.DownLoadService;
+import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
 import com.devteam.mikufunbackend.util.ParamUtil;
@@ -49,13 +49,16 @@ public class TransferServiceImpl implements TransferService {
     private Aria2Service aria2Service;
 
     @Autowired
-    private DownLoadService downloadService;
+    private DownloadService downloadService;
 
     @Value("${shell.path}")
     private String shellPath;
 
     @Value("${dandanplay.url}")
     private String dandanPlayUrl;
+
+    @Value("${transfer.format}")
+    private String transferFormat;
 
     @Override
     public void transfer() throws IOException {
@@ -97,8 +100,8 @@ public class TransferServiceImpl implements TransferService {
         String uuid = ParamUtil.getUUID();
         if (ParamUtil.validateType(type)) {
             // 进行资源转码
-            cmd = new String[]{"bash", shellPath, "transfer-" + type, filePath, uuid};
-            logger.info("transfer file to m3u8, fileName: {}", fileName);
+            cmd = new String[]{"bash", shellPath, "transfer-" + type + "-" + transferFormat, filePath, uuid};
+            logger.info("transfer file to {}, fileName: {}", transferFormat, fileName);
             int exitValue = -1;
             try {
                 exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/transferLog");
@@ -106,12 +109,12 @@ public class TransferServiceImpl implements TransferService {
                 logger.error(e.getMessage());
             }
             if (exitValue == 0) {
-                logger.info("transfer file to m3u8 and ts file complete, fileName: {}", fileName);
-                resourceInformationDao.addResourceInformation(generateResourceEntity(aria2FileV0, gid, uuid));
+                logger.info("transfer file to {} and ts file complete, fileName: {}", transferFormat, fileName);
+                resourceInformationDao.addResourceInformation(generateResourceEntity(aria2FileV0, gid, uuid, transferFormat));
                 downloadStatusDao.updateFinishTag(filePath);
                 return true;
             } else {
-                logger.error("transfer file to m3u8 and ts file fail, fileName: {}", fileName);
+                logger.error("transfer file to {} and ts file fail, fileName: {}", transferFormat, fileName);
                 return false;
             }
         } else {
@@ -267,7 +270,14 @@ public class TransferServiceImpl implements TransferService {
         return "";
     }
 
-    private ResourceEntity generateResourceEntity(Aria2FileV0 aria2FileV0, String gid, String uuid) throws IOException {
+    @Override
+    public String getDefaultSubtitlePath(String fileUuid) {
+        String subtitlePath = "/docker/subtitle/" + fileUuid + ".vtt";
+        File subtitleFile = new File(subtitlePath);
+        return subtitleFile.exists()? subtitlePath: "";
+    }
+
+    private ResourceEntity generateResourceEntity(Aria2FileV0 aria2FileV0, String gid, String uuid, String transferFormat) throws IOException {
         String filePath = aria2FileV0.getPath();
         String fileName = ResultUtil.getFileName(filePath);
         // 获取资源时长
@@ -284,11 +294,13 @@ public class TransferServiceImpl implements TransferService {
 
         ResourceEntity resourceEntity = ResourceEntity.builder()
                 .fileName(fileName)
-                .fileDirectory("/docker/resource/" + uuid)
+                .fileUuid(uuid)
                 .fileHash(md5)
                 .fileSize(aria2FileV0.getLength())
+                .transferFormat(transferFormat)
                 .videoDuration(videoDuration)
                 .imageUrl(imageUrl)
+                .subtitlePath(getDefaultSubtitlePath(uuid))
                 .gid(gid)
                 .build();
         if (resourceMatchV0s.size() != 0) {

@@ -1,6 +1,9 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
-import com.devteam.mikufunbackend.entity.*;
+import com.devteam.mikufunbackend.entity.DownloadStatusV0;
+import com.devteam.mikufunbackend.entity.FinishFileV0;
+import com.devteam.mikufunbackend.entity.ResourceResponseV0;
+import com.devteam.mikufunbackend.entity.SimpleFinishFileV0;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import org.dom4j.DocumentException;
 
@@ -11,7 +14,7 @@ import java.util.List;
  * @author Jackisome
  * @date 2021/9/27
  */
-public interface DownLoadService {
+public interface DownloadService {
     /**
      * 下载指定链接的数据到本地
      * @param link 下载链接

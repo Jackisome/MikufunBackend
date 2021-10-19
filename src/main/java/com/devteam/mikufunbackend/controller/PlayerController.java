@@ -4,6 +4,7 @@ import com.devteam.mikufunbackend.constant.ResponseEnum;
 import com.devteam.mikufunbackend.entity.DanmakuPostV0;
 import com.devteam.mikufunbackend.entity.ResourceEntity;
 import com.devteam.mikufunbackend.service.serviceImpl.PlayServiceImpl;
+import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.PlayService;
 import com.devteam.mikufunbackend.util.DanmakuResponse;
 import com.devteam.mikufunbackend.util.Response;
@@ -27,6 +28,9 @@ public class PlayerController {
     @Autowired
     PlayService playService;
 
+    @Autowired
+    DownloadService downloadService;
+
     Logger logger = LoggerFactory.getLogger(PlayerController.class);
 
     @GetMapping("/file/{fileId}")
@@ -34,10 +38,13 @@ public class PlayerController {
         Map<String, Object> data = ResultUtil.getData();
         try {
             ResourceEntity resourceEntity = playService.getFileAddr(fileId);
-            data.put("fileUrl", resourceEntity.getFileDirectory() + "/index.m3u8");
+            data.put("fileUrl", "/docker/resource/" + resourceEntity.getFileUuid() + "/index." + resourceEntity.getTransferFormat());
             data.put("fileName", resourceEntity.getFileName());
             data.put("ResourceId", resourceEntity.getResourceId());
             data.put("ResourceName", resourceEntity.getResourceName());
+            data.put("subtitleUrl", resourceEntity.getSubtitlePath());
+            data.put("videoTime", resourceEntity.getRecentPlayPosition());
+            data.put("format", resourceEntity.getTransferFormat());
         } catch (Exception e) {
             logger.error(e.toString());
         }

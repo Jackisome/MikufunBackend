@@ -6,7 +6,7 @@ import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
-import com.devteam.mikufunbackend.service.serviceInterface.DownLoadService;
+import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.ParamUtil;
 import com.devteam.mikufunbackend.util.ResultUtil;
@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2021/9/27
  */
 @Service
-public class DownloadServiceImpl implements DownLoadService {
+public class DownloadServiceImpl implements DownloadService {
 
     Logger logger = LoggerFactory.getLogger(DownloadServiceImpl.class);
 
@@ -182,13 +182,19 @@ public class DownloadServiceImpl implements DownLoadService {
             } else {
                 simpleFinishFileV0 = resourceEntity.getSimpleFinishFileV0();
                 DownloadStatusEntity downloadStatusEntity = downloadStatusDao.findDownloadStatusRecordByFileName(resourceEntity.getFileName());
+                String gid = downloadStatusEntity.getGid();
+                try {
+                    remove(gid);
+                } catch (IOException e) {
+                    logger.error(e.toString());
+                }
                 try {
                     // 如果源文件存在，先删除源文件
                     if (downloadStatusEntity.getIsSourceDelete() == 0) {
                         transferService.deleteFile(downloadStatusEntity.getFilePath());
                     }
                     // 删除转码文件，清除数据表记录
-                    if (transferService.deleteFile(resourceEntity.getImageUrl()) && transferService.deleteFile(resourceEntity.getFileDirectory())) {
+                    if (transferService.deleteFile(resourceEntity.getImageUrl()) && transferService.deleteFile(ParamUtil.getFileDirectory(resourceEntity.getFileUuid()))) {
                         resourceInformationDao.deleteResourceInformationByFileId(fileId);
                         logger.info("delete record in resourceInformation table by fileId, fileId: {}", fileId);
                         downloadStatusDao.deleteDownloadStatusRecordByGidAndFileName(resourceEntity.getGid(), resourceEntity.getFileName());

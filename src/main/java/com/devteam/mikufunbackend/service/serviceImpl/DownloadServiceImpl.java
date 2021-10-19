@@ -44,6 +44,9 @@ public class DownloadServiceImpl implements DownloadService {
 
     @Override
     public boolean download(String link) throws DocumentException, IOException, Aria2Exception {
+        if (downloadStatusDao.findDownloadStatusRecordByLink(link).size() > 0) {
+            return false;
+        }
         aria2Service.addUrl(link);
         new Thread(() -> {
             AtomicInteger count = new AtomicInteger(0);

@@ -80,6 +80,12 @@
         where file_id = #{fileId}
     </update>
 
+    <update id="updateRecentPlayTime">
+        update mikufun_resource_information
+        set recent_play_time = CURRENT_TIMESTAMP()
+        where file_id = #{fileId}
+    </update>
+
     <select id="findResourceInformationByFileId" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
         select file_id, file_name, file_uuid, file_hash, file_size, transfer_format, video_duration, image_url, subtitle_path,
                recent_play_time, recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title,

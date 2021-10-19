@@ -110,7 +110,7 @@ public class TransferServiceImpl implements TransferService {
             }
             if (exitValue == 0) {
                 logger.info("transfer file to {} and ts file complete, fileName: {}", transferFormat, fileName);
-                resourceInformationDao.addResourceInformation(generateResourceEntity(aria2FileV0, gid, uuid, "mkv".equals(type) && "mp4".equals(transferFormat), transferFormat));
+                resourceInformationDao.addResourceInformation(generateResourceEntity(aria2FileV0, gid, uuid, transferFormat));
                 downloadStatusDao.updateFinishTag(filePath);
                 return true;
             } else {
@@ -277,7 +277,7 @@ public class TransferServiceImpl implements TransferService {
         return subtitleFile.exists()? subtitlePath: "";
     }
 
-    private ResourceEntity generateResourceEntity(Aria2FileV0 aria2FileV0, String gid, String uuid, boolean containSubtitle, String transferFormat) throws IOException {
+    private ResourceEntity generateResourceEntity(Aria2FileV0 aria2FileV0, String gid, String uuid, String transferFormat) throws IOException {
         String filePath = aria2FileV0.getPath();
         String fileName = ResultUtil.getFileName(filePath);
         // 获取资源时长

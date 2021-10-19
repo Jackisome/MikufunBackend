@@ -58,6 +58,13 @@ public interface ResourceInformationDao {
                            int recentPlayPosition);
 
     /**
+     * 更新视频最近播放时间
+     * @param fileId
+     * @return
+     */
+    int updateRecentPlayTime(int fileId);
+
+    /**
      * 根据文件id寻找相应记录
      *
      * @param fileId

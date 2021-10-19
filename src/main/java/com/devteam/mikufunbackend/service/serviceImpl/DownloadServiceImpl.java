@@ -188,7 +188,7 @@ public class DownloadServiceImpl implements DownloadService {
                         transferService.deleteFile(downloadStatusEntity.getFilePath());
                     }
                     // 删除转码文件，清除数据表记录
-                    if (transferService.deleteFile(resourceEntity.getImageUrl()) && transferService.deleteFile(resourceEntity.getFileDirectory())) {
+                    if (transferService.deleteFile(resourceEntity.getImageUrl()) && transferService.deleteFile(ParamUtil.getFileDirectory(resourceEntity.getFileUuid()))) {
                         resourceInformationDao.deleteResourceInformationByFileId(fileId);
                         logger.info("delete record in resourceInformation table by fileId, fileId: {}", fileId);
                         downloadStatusDao.deleteDownloadStatusRecordByGidAndFileName(resourceEntity.getGid(), resourceEntity.getFileName());

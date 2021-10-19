@@ -47,4 +47,10 @@ public interface TransferService {
      */
     List<ResourceMatchV0> matchResourceInformation(String fileName, String fileHash, int fileSize, int videoDuration) throws IOException;
 
+    /**
+     * 根据fileUuid寻找资源是否存在字幕文件
+     * @param fileUuid
+     * @return
+     */
+    String getDefaultSubtitlePath(String fileUuid);
 }

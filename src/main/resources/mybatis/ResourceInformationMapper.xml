@@ -13,6 +13,7 @@
         <result property="transferFormat" column="transfer_format" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="videoDuration" column="video_duration" javaType="int" jdbcType="NUMERIC"/>
         <result property="imageUrl" column="image_url" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="subtitlePath" column="subtitle_path"  javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="recentPlayTime" column="recent_play_time" javaType="java.sql.Timestamp" jdbcType="TIMESTAMP"/>
         <result property="recentPlayPosition" column="recent_play_position" javaType="int" jdbcType="NUMERIC"/>
         <result property="downloadTime" column="download_time" javaType="java.sql.Timestamp" jdbcType="TIMESTAMP"/>
@@ -35,6 +36,7 @@
         transfer_format,
         video_duration,
         image_url,
+        subtitle_path,
         exact_match,
         resource_id,
         resource_name,
@@ -45,7 +47,7 @@
         gid
         )
         values (
-        #{fileName}, #{fileUuid}, #{fileHash}, #{fileSize}, #{transferFormat}, #{videoDuration}, #{imageUrl},
+        #{fileName}, #{fileUuid}, #{fileHash}, #{fileSize}, #{transferFormat}, #{videoDuration}, #{imageUrl}, #{subtitlePath}
         #{exactMatch}, #{resourceId}, #{resourceName}, #{episodeTitle}, #{type}, #{episodeId}, #{danmakuShift}, #{gid}
         )
     </insert>
@@ -72,27 +74,33 @@
         where file_id = #{fileId}
     </update>
 
+    <update id="updateSubtitlePath">
+        update mikufun_resource_information
+        set subtitle_path = #{subtitlePath}
+        where file_id = #{fileId}
+    </update>
+
     <select id="findResourceInformationByFileId" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
-        select file_id, file_name, fileUuid, file_hash, file_size, transfer_format, video_duration, image_url, recent_play_time,
-               recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title, type, episode_id,
-               danmaku_shift, gid
+        select file_id, file_name, fileUuid, file_hash, file_size, transfer_format, video_duration, image_url, subtitle_path,
+               recent_play_time, recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title,
+               type, episode_id, danmaku_shift, gid
         from mikufun_resource_information
         where file_id = #{fileId}
     </select>
 
     <select id="findRecentPlayResource" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
-        select file_id, file_name, fileUuid, file_hash, file_size, transfer_format, video_duration, image_url, recent_play_time,
-               recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title, type, episode_id,
-               danmaku_shift, gid
+        select file_id, file_name, fileUuid, file_hash, file_size, transfer_format, video_duration, image_url, subtitle_path,
+               recent_play_time, recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title,
+               type, episode_id, danmaku_shift, gid
         from mikufun_resource_information
         order by recent_play_time DESC
         limit 20
     </select>
 
     <select id="findRecentDownloadResource" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
-        select file_id, file_name, fileUuid, file_hash, file_size, transfer_format, video_duration, image_url, recent_play_time,
-               recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title, type, episode_id,
-               danmaku_shift, gid
+        select file_id, file_name, fileUuid, file_hash, file_size, transfer_format, video_duration, image_url, subtitle_path,
+               recent_play_time, recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title,
+               type, episode_id, danmaku_shift, gid
         from mikufun_resource_information
         order by download_time DESC
         limit 20
@@ -100,9 +108,9 @@
 
     <select id="findResourceInformationByResourceId"
             resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
-        select file_id, file_name, fileUuid, file_hash, file_size, transfer_format, video_duration, image_url, recent_play_time,
-               recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title, type, episode_id,
-               danmaku_shift, gid
+        select file_id, file_name, fileUuid, file_hash, file_size, transfer_format, video_duration, image_url, subtitle_path,
+               recent_play_time, recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title,
+               type, episode_id, danmaku_shift, gid
         from mikufun_resource_information
         where resource_id = #{resourceId}
         order by file_name
@@ -114,9 +122,9 @@
     </select>
 
     <select id="findAllResourceInformation" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
-        select file_id, file_name, fileUuid, file_hash, file_size, transfer_format, video_duration, image_url, recent_play_time,
-               recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title, type, episode_id,
-               danmaku_shift, gid
+        select file_id, file_name, fileUuid, file_hash, file_size, transfer_format, video_duration, image_url, subtitle_path,
+               recent_play_time, recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title,
+               type, episode_id, danmaku_shift, gid
         from mikufun_resource_information
         order by file_name
     </select>

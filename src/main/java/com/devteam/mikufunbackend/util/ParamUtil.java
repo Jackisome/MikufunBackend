@@ -36,6 +36,10 @@ public class ParamUtil {
         return UUID.randomUUID().toString();
     }
 
+    public static String getFileDirectory(String uuid) {
+        return "/docker/resource/" + uuid;
+    }
+
     public static boolean validateType(String type) {
         return (type != null) && (type.equals("mkv") || type.equals("mp4"));
     }

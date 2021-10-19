@@ -270,7 +270,8 @@ public class TransferServiceImpl implements TransferService {
         return "";
     }
 
-    public String getSubtitlePath(String fileUuid) {
+    @Override
+    public String getDefaultSubtitlePath(String fileUuid) {
         String subtitlePath = "/docker/subtitle/" + fileUuid + ".vtt";
         File subtitleFile = new File(subtitlePath);
         return subtitleFile.exists()? subtitlePath: "";
@@ -299,6 +300,7 @@ public class TransferServiceImpl implements TransferService {
                 .transferFormat(transferFormat)
                 .videoDuration(videoDuration)
                 .imageUrl(imageUrl)
+                .subtitlePath(getDefaultSubtitlePath(uuid))
                 .gid(gid)
                 .build();
         if (resourceMatchV0s.size() != 0) {

@@ -22,6 +22,7 @@ public class ResourceEntity {
     String transferFormat;
     int videoDuration;
     String imageUrl;
+    String subtitlePath;
     Timestamp recentPlayTime;
     int recentPlayPosition;
     Timestamp downloadTime;

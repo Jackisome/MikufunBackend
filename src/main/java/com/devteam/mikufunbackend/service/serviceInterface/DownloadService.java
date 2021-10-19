@@ -62,11 +62,4 @@ public interface DownloadService {
      * @throws InterruptedException
      */
     List<SimpleFinishFileV0> deleteLocalFiles(List<Integer> fileIds) throws IOException, InterruptedException;
-
-    /**
-     * 根据fileUuid寻找资源是否存在字幕文件
-     * @param fileUuid
-     * @return
-     */
-    String getSubtitlePath(String fileUuid);
 }

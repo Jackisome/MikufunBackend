@@ -14,6 +14,14 @@ import java.util.Map;
  */
 public interface PlayService {
     /**
+     * 获取视频地址
+     * @param fileId
+     * @return
+     * @throws Exception
+     */
+    ResourceEntity getFileAddr(int fileId) throws Exception;
+
+    /**
      * 获取弹幕
      * @param fileId
      * @return
@@ -41,18 +49,4 @@ public interface PlayService {
      * @throws Exception
      */
     Boolean updatePos(int fileId,int videoTime) throws Exception;
-
-    /**
-     * 更新视频最近播放时间
-     * @param fileId
-     * @return
-     */
-    boolean updateRecentPlayTime(int fileId);
-
-    /**
-     * 寻找播放视频所需信息
-     * @param fileId
-     * @return
-     */
-    Map<String, Object> findPlayInformation(int fileId);
 }

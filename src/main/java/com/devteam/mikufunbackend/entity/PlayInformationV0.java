@@ -1,6 +1,5 @@
 package com.devteam.mikufunbackend.entity;
 
-import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -8,7 +7,6 @@ import lombok.Data;
  * @date 2021/10/19
  */
 @Data
-@Builder
 public class PlayInformationV0 {
     String fileUrl;
     String fileName;

@@ -6,11 +6,9 @@ import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.FileIdException;
 import com.devteam.mikufunbackend.service.serviceInterface.PlayService;
-import com.devteam.mikufunbackend.util.HttpClientUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -31,21 +29,6 @@ public class PlayServiceImpl implements PlayService {
     private ResourceInformationDao resourceInformationDao;
 
     Logger logger = LoggerFactory.getLogger(PlayServiceImpl.class);
-
-    @Override
-    public ResourceEntity getFileAddr(int fileId){
-        ResourceEntity resourceEntity = null;
-        try {
-            resourceEntity = resourceInformationDao.findResourceInformationByFileId(fileId);
-        } catch (Exception e){
-            logger.error(e.toString());
-        }
-        if (resourceEntity == null) {
-            throw new FileIdException("fileId对应记录不存在");
-        }
-        logger.info("get fileAddress, info: {}", resourceEntity);
-        return resourceEntity;
-    }
 
     @Override
     public List<List<Object>> getDanmaku(int fileId) throws Exception{
@@ -118,5 +101,28 @@ public class PlayServiceImpl implements PlayService {
             return true;
         else
             return false;
+    }
+
+    @Override
+    public boolean updateRecentPlayTime(int fileId) {
+        return resourceInformationDao.updateRecentPlayTime(fileId) == 1;
+    }
+
+    @Override
+    public Map<String, Object> findPlayInformation(int fileId) {
+        ResourceEntity resourceEntity = resourceInformationDao.findResourceInformationByFileId(fileId);
+        logger.info("find resource information by fileId, resourceEntity: {}", resourceEntity);
+        if (resourceEntity == null) {
+            throw new FileIdException("未找到fileId对应文件");
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("fileUrl", "/docker/resource/" + resourceEntity.getFileUuid() + "/index." + resourceEntity.getTransferFormat());
+        data.put("fileName", resourceEntity.getFileName());
+        data.put("ResourceId", resourceEntity.getResourceId());
+        data.put("ResourceName", resourceEntity.getResourceName());
+        data.put("subtitleUrl", resourceEntity.getSubtitlePath());
+        data.put("videoTime", resourceEntity.getRecentPlayPosition());
+        data.put("format", resourceEntity.getTransferFormat());
+        return data;
     }
 }

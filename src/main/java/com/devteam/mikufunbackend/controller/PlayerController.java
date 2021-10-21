@@ -3,7 +3,9 @@ package com.devteam.mikufunbackend.controller;
 import com.devteam.mikufunbackend.constant.ResponseEnum;
 import com.devteam.mikufunbackend.entity.DanmakuPostV0;
 import com.devteam.mikufunbackend.entity.ResourceEntity;
+import com.devteam.mikufunbackend.handle.FileIdException;
 import com.devteam.mikufunbackend.service.serviceImpl.PlayServiceImpl;
+import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.PlayService;
 import com.devteam.mikufunbackend.util.DanmakuResponse;
 import com.devteam.mikufunbackend.util.Response;
@@ -27,20 +29,15 @@ public class PlayerController {
     @Autowired
     PlayService playService;
 
+    @Autowired
+    DownloadService downloadService;
+
     Logger logger = LoggerFactory.getLogger(PlayerController.class);
 
     @GetMapping("/file/{fileId}")
-    public Response getFileAddr(@PathVariable int fileId) {
-        Map<String, Object> data = ResultUtil.getData();
-        try {
-            ResourceEntity resourceEntity = playService.getFileAddr(fileId);
-            data.put("fileUrl", resourceEntity.getFileDirectory() + "/index.m3u8");
-            data.put("fileName", resourceEntity.getFileName());
-            data.put("ResourceId", resourceEntity.getResourceId());
-            data.put("ResourceName", resourceEntity.getResourceName());
-        } catch (Exception e) {
-            logger.error(e.toString());
-        }
+    public Response getFileAddr(@PathVariable int fileId) throws Exception {
+        Map<String, Object> data = playService.findPlayInformation(fileId);
+        playService.updateRecentPlayTime(fileId);
         return ResultUtil.success(data);
     }
 

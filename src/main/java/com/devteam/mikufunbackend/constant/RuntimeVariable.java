@@ -1,5 +1,10 @@
 package com.devteam.mikufunbackend.constant;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * @author Jackisome
  * @date 2021/9/27
@@ -10,4 +15,8 @@ public class RuntimeVariable {
     public static String token = "token";
 
     public static String password = null;
+
+    public static Set<String> visitorPassword = new HashSet<>(3);
+
+    public static Map<String, String> visitorToken = new HashMap<>(3);
 }

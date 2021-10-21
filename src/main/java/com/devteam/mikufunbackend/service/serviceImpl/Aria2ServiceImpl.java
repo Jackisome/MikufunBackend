@@ -50,40 +50,52 @@ public class Aria2ServiceImpl implements Aria2Service {
     }
 
     @Override
-    public boolean removeDownloadingFile(String gid) throws IOException {
+    public boolean pauseAllDownloadingFile() throws IOException {
         Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
-        aria2RequestV0.setMethod(Aria2Constant.METHOD_REMOVE_DOWNLOAD_RESULT)
-                .addParam(gid);
-        logger.info("begin remove downloading file, gid: {}", gid);
+        aria2RequestV0.setMethod(Aria2Constant.METHOD_PAUSE_ALL);
+        logger.info("begin pause all downloading file");
         CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
         String entityString = EntityUtils.toString(response.getEntity());
         System.out.println(entityString);
         if (!HttpClientUtil.validateResponse(response)) {
-            logger.error("Aria2下载未正常移除, gid: {}", gid);
-            throw new Aria2Exception("移除下载未正常进行");
+            logger.error("Aria2未正常暂停所有下载");
+            throw new Aria2Exception("暂停所有下载未正常进行");
         }
-        logger.info("send to aria2 for removing finished, gid: {}", gid);
+        logger.info("send to aria2 for pause all finished");
         return true;
     }
 
     @Override
-    public boolean pauseDownloadingFile(String gid) {
-        return false;
+    public boolean unpauseAllDownloadingFile() throws IOException {
+        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
+        aria2RequestV0.setMethod(Aria2Constant.METHOD_UNPAUSE_ALL);
+        logger.info("begin unpause all downloading file");
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        String entityString = EntityUtils.toString(response.getEntity());
+        System.out.println(entityString);
+        if (!HttpClientUtil.validateResponse(response)) {
+            logger.error("Aria2未正常恢复所有下载");
+            throw new Aria2Exception("恢复所有下载未正常进行");
+        }
+        logger.info("send to aria2 for unpause all finished");
+        return true;
     }
 
     @Override
-    public boolean pauseAllDownloadingFile() {
-        return false;
-    }
-
-    @Override
-    public boolean unpauseDownloadingFile(String gid) {
-        return false;
-    }
-
-    @Override
-    public boolean unpauseAllDownloadingFile() {
-        return false;
+    public boolean transferDownloadStatus(String gid, String method) throws IOException {
+        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
+        aria2RequestV0.setMethod(method)
+                .addParam(gid);
+        logger.info("begin transfer status of downloading file, gid: {}, method: {}", gid, method);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        String entityString = EntityUtils.toString(response.getEntity());
+        System.out.println(entityString);
+        if (!HttpClientUtil.validateResponse(response)) {
+            logger.error("Aria2状态切换未正常进行, gid: {}, method: {}", gid, method);
+            throw new Aria2Exception("下载状态未正常切换");
+        }
+        logger.info("send to aria2 for transfer file status finished, gid: {}, method: {}", gid, method);
+        return true;
     }
 
     @Override

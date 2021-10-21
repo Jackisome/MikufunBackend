@@ -105,8 +105,37 @@ public class DownloadServiceImpl implements DownloadService {
     }
 
     @Override
-    public boolean remove(String gid) throws IOException {
-        return aria2Service.removeDownloadingFile(gid);
+    public boolean changeDownloadStatus(String gid, Aria2Constant.downloadAction downloadAction) throws IOException {
+        switch (downloadAction) {
+            case PAUSE:
+                return aria2Service.transferDownloadStatus(gid, Aria2Constant.METHOD_PAUSE);
+            case UNPAUSE:
+                return aria2Service.transferDownloadStatus(gid, Aria2Constant.METHOD_UNPAUSE);
+            case REMOVE:
+                return aria2Service.transferDownloadStatus(gid, Aria2Constant.METHOD_REMOVE_DOWNLOAD_RESULT);
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public List<DownloadStatusTransferV0> changeDownloadStatus(List<String> gids, Aria2Constant.downloadAction downloadAction) {
+        List<DownloadStatusTransferV0> data = new ArrayList<>();
+        if (ParamUtil.isNotEmpty(gids)) {
+            gids.forEach(gid -> {
+                DownloadStatusTransferV0 downloadStatusTransferV0 = null;
+                try {
+                    downloadStatusTransferV0 = DownloadStatusTransferV0.builder()
+                            .gid(gid)
+                            .status(changeDownloadStatus(gid, downloadAction))
+                            .build();
+                } catch (IOException e) {
+                    logger.error(e.toString());
+                }
+                data.add(downloadStatusTransferV0);
+            });
+        }
+        return data;
     }
 
     @Override
@@ -189,7 +218,7 @@ public class DownloadServiceImpl implements DownloadService {
                 DownloadStatusEntity downloadStatusEntity = downloadStatusDao.findDownloadStatusRecordByFileName(resourceEntity.getFileName());
                 String gid = downloadStatusEntity.getGid();
                 try {
-                    remove(gid);
+                    changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE);
                 } catch (IOException e) {
                     logger.error(e.toString());
                 }

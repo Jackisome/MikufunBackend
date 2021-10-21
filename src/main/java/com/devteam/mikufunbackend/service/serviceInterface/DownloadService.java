@@ -1,9 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
-import com.devteam.mikufunbackend.entity.DownloadStatusV0;
-import com.devteam.mikufunbackend.entity.FinishFileV0;
-import com.devteam.mikufunbackend.entity.ResourceResponseV0;
-import com.devteam.mikufunbackend.entity.SimpleFinishFileV0;
+import com.devteam.mikufunbackend.constant.Aria2Constant;
+import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import org.dom4j.DocumentException;
 
@@ -24,12 +22,22 @@ public interface DownloadService {
     boolean download(String link) throws DocumentException, IOException, Aria2Exception, InterruptedException;
 
     /**
-     * 删除一个下载中的文件
+     * 单个文件下载状态变更
      * @param gid
+     * @param downloadAction
      * @return
      * @throws IOException
      */
-    boolean remove(String gid) throws IOException;
+    boolean changeDownloadStatus(String gid, Aria2Constant.downloadAction downloadAction) throws IOException;
+
+    /**
+     * 多个文件下载状态变更
+     * @param gids
+     * @param downloadAction
+     * @return
+     * @throws IOException
+     */
+    List<DownloadStatusTransferV0> changeDownloadStatus(List<String> gids, Aria2Constant.downloadAction downloadAction) throws IOException;
 
     /**
      * 获取下载中的所有文件（状态为waiting、active、stopped）

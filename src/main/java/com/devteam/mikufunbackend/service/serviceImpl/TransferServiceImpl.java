@@ -135,7 +135,7 @@ public class TransferServiceImpl implements TransferService {
             if (gids.contains(gid)) {
                 String filePath = downloadStatusEntity.getFilePath();
                 try {
-                    downloadService.remove(gid);
+                    downloadService.changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE);
                 } catch (IOException e) {
                     logger.error(e.toString());
                 }

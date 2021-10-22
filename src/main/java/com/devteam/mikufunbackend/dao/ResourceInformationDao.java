@@ -58,6 +58,13 @@ public interface ResourceInformationDao {
                            int recentPlayPosition);
 
     /**
+     * 更新视频最近播放时间
+     * @param fileId
+     * @return
+     */
+    int updateRecentPlayTime(int fileId);
+
+    /**
      * 根据文件id寻找相应记录
      *
      * @param fileId
@@ -106,4 +113,13 @@ public interface ResourceInformationDao {
      * @return
      */
     List<String> findAllGid();
+
+    /**
+     * 更新视频文件的字幕
+     * @param fileId
+     * @param subtitlePath
+     * @return
+     */
+    int updateSubtitlePath(int fileId,
+                           String subtitlePath);
 }

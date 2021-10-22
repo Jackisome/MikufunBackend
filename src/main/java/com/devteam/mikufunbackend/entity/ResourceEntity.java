@@ -16,11 +16,13 @@ import java.sql.Timestamp;
 public class ResourceEntity {
     int fileId;
     String fileName;
-    String fileDirectory;
+    String fileUuid;
     String fileHash;
     int fileSize;
+    String transferFormat;
     int videoDuration;
     String imageUrl;
+    String subtitlePath;
     Timestamp recentPlayTime;
     int recentPlayPosition;
     Timestamp downloadTime;

@@ -2,7 +2,7 @@ package com.devteam.mikufunbackend.controller;
 
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.handle.FileIdException;
-import com.devteam.mikufunbackend.service.serviceInterface.DownLoadService;
+import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
 import org.dom4j.DocumentException;
@@ -22,7 +22,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/download")
 public class DownloadController {
     @Autowired
-    DownLoadService downloadService;
+    DownloadService downloadService;
 
     @PostMapping("")
     public Response download(@RequestParam("link") String link) throws Aria2Exception, IOException, DocumentException, InterruptedException {

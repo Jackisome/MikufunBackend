@@ -57,8 +57,6 @@ public class SearchServiceImpl implements SearchService {
         return resourceRespDTO.getResources().stream().map(resourceDTO -> {
             SearchResourceRespVO searchResourceRespVO = new SearchResourceRespVO();
             BeanUtils.copyProperties(resourceDTO, searchResourceRespVO);
-            // todo
-            searchResourceRespVO.setDownloadStatus("undownload");
             return searchResourceRespVO;
         }).collect(Collectors.toList());
     }

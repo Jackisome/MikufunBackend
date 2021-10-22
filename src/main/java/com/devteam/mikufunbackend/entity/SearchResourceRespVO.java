@@ -24,10 +24,8 @@ public class SearchResourceRespVO {
     private String link;
 
     /**
-     * 下载状态
-     *
-     * enum {'undownload', 'downloading', 'downloaded'}
+     * 资源更新时间， 2000-01-01 00:00:00
      */
-    private String downloadStatus;
+    private String publishDate;
 
 }

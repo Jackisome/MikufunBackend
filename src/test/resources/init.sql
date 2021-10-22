@@ -37,3 +37,15 @@ create table if not exists mikufun.mikufun_download_status (
     status    varchar(20) comment '下载状态',
     primary key (id)
 ) comment '下载和保存状态信息表';
+
+-- 自动下载规则
+create table if not exists mikufun.mikufun_auto_download_rule (
+    rule_id int AUTO_INCREMENT comment '规则标识',
+    rule_name   VARCHAR(100)    NOT NULL comment '规则名',
+    keyword VARCHAR(1024)   NOT NULL comment '搜索关键词',
+    active_resource_time timestamp default '1990-01-01 01:00:00'    comment '只下载该时间之后资源',
+    create_time timestamp default CURRENT_TIMESTAMP comment '规则创建时间',
+    update_time timestamp   comment '已下载的最新资源时间',
+    active int default 0    comment '规则激活状态',
+    primary key (rule_id)
+) comment '自动下载规则表';

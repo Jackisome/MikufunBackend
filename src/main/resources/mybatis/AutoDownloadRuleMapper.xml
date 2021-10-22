@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.devteam.mikufunbackend.dao.AutoDownloadRuleDao">
+    <resultMap id="autoDownloadRuleMap" type="com.devteam.mikufunbackend.entity.AutoDownloadRuleEntity">
+        <result property="ruleId" column="rule_id" javaType="int" jdbcType="NUMERIC"/>
+        <result property="ruleName" column="rule_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="keyword" column="keyword" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="activeResourceTime" column="active_resource_time" javaType="java.sql.Timestamp"
+                jdbcType="TIMESTAMP"/>
+        <result property="createTime" column="create_time" javaType="java.sql.Timestamp" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" javaType="java.sql.Timestamp" jdbcType="TIMESTAMP"/>
+        <result property="active" column="active" javaType="int" jdbcType="NUMERIC"/>
+    </resultMap>
+
+    <insert id="addAutoDownloadRule">
+        insert into mikufun_auto_download_rule (rule_id, rule_name, keyword, active_resource_time, create_time,
+                                                update_time, active)
+        values (#{ruleId}, #{ruleName}, #{keyword}, #{activeResourceTime}, CURRENT_TIMESTAMP(), #{updateTime},
+                #{active})
+    </insert>
+
+    <delete id="deleteAutoDownloadRule">
+        delete
+        from mikufun_auto_download_rule
+        where rule_id = #{ruleId}
+    </delete>
+
+    <update id="updateAutoDownloadRuleStatus">
+        update mikufun_auto_download_rule
+        set active = #{active}
+        where rule_id = #{ruleId}
+    </update>
+
+    <select id="getAllAutoDownloadRules" resultType="com.devteam.mikufunbackend.entity.AutoDownloadRuleEntity">
+        select rule_id, rule_name, keyword, active_resource_time, create_time, update_time, active
+        from mikufun_auto_download_rule
+    </select>
+
+    <select id="getAutoDownloadRuleStatus" resultType="java.lang.Integer">
+        select active
+        from mikufun_auto_download_rule
+        where rule_id = #{ruleId}
+    </select>
+    <select id="getActiveAutoDownloadRuleStatus" resultType="com.devteam.mikufunbackend.entity.AutoDownloadRuleEntity">
+        select rule_id, rule_name, keyword, active_resource_time, create_time, update_time, active
+        from mikufun_auto_download_rule
+        where active = 1
+    </select>
+</mapper>

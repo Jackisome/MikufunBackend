@@ -53,7 +53,13 @@ public class AutoDownloadController {
     }
 
     @PostMapping("/rule")
-    public Response addAutoDownloadRule(@RequestParam AutoDownloadRuleRequestV0 autoDownloadRuleRequestV0) throws ParseException {
+    public Response addAutoDownloadRule(@RequestParam String ruleName, @RequestParam String keyword, @RequestParam String activeResourceTime, @RequestParam boolean active) throws ParseException {
+        AutoDownloadRuleRequestV0 autoDownloadRuleRequestV0 = AutoDownloadRuleRequestV0.builder()
+                .ruleName(ruleName)
+                .keyword(keyword)
+                .activeResourceTime(activeResourceTime)
+                .active(active)
+                .build();
         if (autoDownloadService.addAutoDownloadRule(autoDownloadRuleRequestV0)) {
             return ResultUtil.success();
         } else {

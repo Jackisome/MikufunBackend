@@ -15,8 +15,8 @@ public class AutoDownloadRuleResponseV0 {
     String ruleId;
     String ruleName;
     String keyword;
-    Timestamp activeResourceTime;
-    Timestamp createTime;
-    Timestamp updateTime;
-    int active;
+    String activeResourceTime;
+    String createTime;
+    String updateTime;
+    boolean active;
 }

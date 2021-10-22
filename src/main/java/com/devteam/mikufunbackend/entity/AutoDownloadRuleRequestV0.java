@@ -1,5 +1,6 @@
 package com.devteam.mikufunbackend.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -7,6 +8,7 @@ import lombok.Data;
  * @date 2021/10/22
  */
 @Data
+@Builder
 public class AutoDownloadRuleRequestV0 {
     String ruleName;
     String keyword;

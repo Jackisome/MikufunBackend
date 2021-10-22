@@ -45,6 +45,16 @@ public class ParamUtil {
         return new Timestamp(simpleDateFormat.parse(time).getTime());
     }
 
+    public static String getStringFromDate(Timestamp date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return simpleDateFormat.format(date);
+    }
+
+    public static String getStringFromTime(Timestamp time) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return simpleDateFormat.format(time);
+    }
+
     public static String getUUID() {
         return UUID.randomUUID().toString();
     }

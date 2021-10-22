@@ -78,10 +78,10 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
                     .ruleId(String.valueOf(autoDownloadRuleEntity.getRuleId()))
                     .ruleName(autoDownloadRuleEntity.getRuleName())
                     .keyword(autoDownloadRuleEntity.getKeyword())
-                    .activeResourceTime(autoDownloadRuleEntity.getActiveResourceTime())
-                    .createTime(autoDownloadRuleEntity.getCreateTime())
-                    .updateTime(autoDownloadRuleEntity.getUpdateTime())
-                    .active(autoDownloadRuleEntity.getActive())
+                    .activeResourceTime(ParamUtil.getStringFromDate(autoDownloadRuleEntity.getActiveResourceTime()))
+                    .createTime(ParamUtil.getStringFromTime(autoDownloadRuleEntity.getCreateTime()))
+                    .updateTime(ParamUtil.getStringFromTime(autoDownloadRuleEntity.getUpdateTime()))
+                    .active(autoDownloadRuleEntity.getActive() == 1)
                     .build());
         });
         logger.info("get all auto download rules, data: {}", data);

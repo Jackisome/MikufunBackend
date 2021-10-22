@@ -1,9 +1,19 @@
 package com.devteam.mikufunbackend.controller;
 
+import com.devteam.mikufunbackend.constant.ResponseEnum;
+import com.devteam.mikufunbackend.entity.AutoDownloadRuleEntity;
 import com.devteam.mikufunbackend.entity.AutoDownloadRuleRequestV0;
+import com.devteam.mikufunbackend.entity.AutoDownloadRuleResponseV0;
+import com.devteam.mikufunbackend.service.serviceInterface.AutoDownloadService;
 import com.devteam.mikufunbackend.util.Response;
+import com.devteam.mikufunbackend.util.ResultUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Jackisome
@@ -12,23 +22,42 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/autodownload")
 public class AutoDownloadController {
+
+    @Autowired
+    private AutoDownloadService autoDownloadService;
+
     @GetMapping("/rule")
     public Response getAutoDownloadRules() {
-        return null;
+        Map<String, Object> data = ResultUtil.getData();
+        List<AutoDownloadRuleResponseV0> autoDownloadRuleEntities = autoDownloadService.getAllAutoDownloadRules();
+        data.put("rules", autoDownloadRuleEntities);
+        return ResultUtil.success(data);
     }
 
     @PutMapping("/rule/status/{ruleId}")
-    public Response changeAutoDownloadRuleStatus(@PathVariable int ruleId) {
-        return null;
+    public Response changeAutoDownloadRuleStatus(@PathVariable String ruleId) {
+        if (autoDownloadService.updateAutoDonwloadRuleStatus(ruleId)) {
+            return ResultUtil.success();
+        } else {
+            return ResultUtil.fail(ResponseEnum.AUTO_DOWNLOAD_ERROR);
+        }
     }
 
     @DeleteMapping("/rule/{ruleId}")
-    public Response deleteAutoDownloadRule(@PathVariable int ruleId) {
-        return null;
+    public Response deleteAutoDownloadRule(@PathVariable String ruleId) {
+        if (autoDownloadService.deleteAutoDownloadRule(ruleId)) {
+            return ResultUtil.success();
+        } else {
+            return ResultUtil.fail(ResponseEnum.AUTO_DOWNLOAD_ERROR);
+        }
     }
 
     @PostMapping("/rule")
-    public Response addAutoDownloadRule(@RequestParam AutoDownloadRuleRequestV0 autoDownloadRuleRequestV0) {
-        return null;
+    public Response addAutoDownloadRule(@RequestParam AutoDownloadRuleRequestV0 autoDownloadRuleRequestV0) throws ParseException {
+        if (autoDownloadService.addAutoDownloadRule(autoDownloadRuleRequestV0)) {
+            return ResultUtil.success();
+        } else {
+            return ResultUtil.fail(ResponseEnum.AUTO_DOWNLOAD_ERROR);
+        }
     }
 }

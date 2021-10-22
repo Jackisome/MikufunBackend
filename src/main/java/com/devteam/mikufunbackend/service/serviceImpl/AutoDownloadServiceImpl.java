@@ -3,6 +3,7 @@ package com.devteam.mikufunbackend.service.serviceImpl;
 import com.devteam.mikufunbackend.dao.AutoDownloadRuleDao;
 import com.devteam.mikufunbackend.entity.AutoDownloadRuleEntity;
 import com.devteam.mikufunbackend.entity.AutoDownloadRuleRequestV0;
+import com.devteam.mikufunbackend.entity.AutoDownloadRuleResponseV0;
 import com.devteam.mikufunbackend.entity.SearchResourceRespVO;
 import com.devteam.mikufunbackend.handle.ParameterErrorException;
 import com.devteam.mikufunbackend.service.serviceInterface.AutoDownloadService;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -68,10 +70,22 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
     }
 
     @Override
-    public List<AutoDownloadRuleEntity> getAllAutoDownloadRules() {
+    public List<AutoDownloadRuleResponseV0> getAllAutoDownloadRules() {
         List<AutoDownloadRuleEntity> autoDownloadRuleEntities = autoDownloadRuleDao.getAllAutoDownloadRules();
-        logger.info("get all auto download rules, autoDownloadRuleEntities: {}", autoDownloadRuleEntities);
-        return autoDownloadRuleEntities;
+        List<AutoDownloadRuleResponseV0> data = new ArrayList<>();
+        autoDownloadRuleEntities.forEach(autoDownloadRuleEntity -> {
+            data.add(AutoDownloadRuleResponseV0.builder()
+                    .ruleId(String.valueOf(autoDownloadRuleEntity.getRuleId()))
+                    .ruleName(autoDownloadRuleEntity.getRuleName())
+                    .keyword(autoDownloadRuleEntity.getKeyword())
+                    .activeResourceTime(autoDownloadRuleEntity.getActiveResourceTime())
+                    .createTime(autoDownloadRuleEntity.getCreateTime())
+                    .updateTime(autoDownloadRuleEntity.getUpdateTime())
+                    .active(autoDownloadRuleEntity.getActive())
+                    .build());
+        });
+        logger.info("get all auto download rules, data: {}", data);
+        return data;
     }
 
     @Override

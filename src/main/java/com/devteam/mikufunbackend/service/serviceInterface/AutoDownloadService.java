@@ -2,6 +2,7 @@ package com.devteam.mikufunbackend.service.serviceInterface;
 
 import com.devteam.mikufunbackend.entity.AutoDownloadRuleEntity;
 import com.devteam.mikufunbackend.entity.AutoDownloadRuleRequestV0;
+import com.devteam.mikufunbackend.entity.AutoDownloadRuleResponseV0;
 import org.dom4j.DocumentException;
 
 import java.io.IOException;
@@ -17,7 +18,7 @@ public interface AutoDownloadService {
 
     boolean updateAutoDonwloadRuleStatus(String ruleId);
 
-    List<AutoDownloadRuleEntity> getAllAutoDownloadRules();
+    List<AutoDownloadRuleResponseV0> getAllAutoDownloadRules();
 
     boolean deleteAutoDownloadRule(String ruleId);
 

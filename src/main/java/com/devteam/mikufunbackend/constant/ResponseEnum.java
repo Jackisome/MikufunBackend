@@ -15,7 +15,8 @@ public enum ResponseEnum {
     FILEID_ERROR(4, "fileId error"),
     SHELL_ERROR(5, "shell execute error"),
     FAVORITE_ERROR(6, "favorite status update error"),
-    PARAMETER_ERROR(7, "parameter error");
+    PARAMETER_ERROR(7, "parameter error"),
+    AUTO_DOWNLOAD_ERROR(8, "auto download error");
 
     private final int statusCode;
     private final String message;

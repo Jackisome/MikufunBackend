@@ -32,6 +32,11 @@
         set active = #{active}
         where rule_id = #{ruleId}
     </update>
+    <update id="updateAutoDownloadRuleUpdateTime">
+        update mikufun_auto_download_rule
+        set update_time = #{updateTime}
+        where rule_id = #{ruleId}
+    </update>
 
     <select id="getAllAutoDownloadRules" resultType="com.devteam.mikufunbackend.entity.AutoDownloadRuleEntity">
         select rule_id, rule_name, keyword, active_resource_time, create_time, update_time, active

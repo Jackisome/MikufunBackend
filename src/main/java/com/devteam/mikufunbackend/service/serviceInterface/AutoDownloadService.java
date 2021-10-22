@@ -2,7 +2,9 @@ package com.devteam.mikufunbackend.service.serviceInterface;
 
 import com.devteam.mikufunbackend.entity.AutoDownloadRuleEntity;
 import com.devteam.mikufunbackend.entity.AutoDownloadRuleRequestV0;
+import org.dom4j.DocumentException;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -19,5 +21,5 @@ public interface AutoDownloadService {
 
     boolean deleteAutoDownloadRule(String ruleId);
 
-    void findDownloadableResource();
+    void findDownloadableResource() throws ParseException, DocumentException, IOException, InterruptedException;
 }

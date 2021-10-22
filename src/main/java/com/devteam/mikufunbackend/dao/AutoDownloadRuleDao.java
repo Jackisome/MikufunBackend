@@ -3,6 +3,7 @@ package com.devteam.mikufunbackend.dao;
 import com.devteam.mikufunbackend.entity.AutoDownloadRuleEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -20,6 +21,8 @@ public interface AutoDownloadRuleDao {
     int addAutoDownloadRule(AutoDownloadRuleEntity autoDownloadRuleEntity);
 
     int updateAutoDownloadRuleStatus(int ruleId, int active);
+
+    int updateAutoDownloadRuleUpdateTime(int ruleId, Timestamp updateTime);
 
     int deleteAutoDownloadRule(int ruleId);
 }

@@ -3,12 +3,17 @@ package com.devteam.mikufunbackend.service.serviceImpl;
 import com.devteam.mikufunbackend.dao.AutoDownloadRuleDao;
 import com.devteam.mikufunbackend.entity.AutoDownloadRuleEntity;
 import com.devteam.mikufunbackend.entity.AutoDownloadRuleRequestV0;
+import com.devteam.mikufunbackend.entity.SearchResourceRespVO;
 import com.devteam.mikufunbackend.handle.ParameterErrorException;
 import com.devteam.mikufunbackend.service.serviceInterface.AutoDownloadService;
+import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.SearchService;
 import com.devteam.mikufunbackend.util.ParamUtil;
+import org.dom4j.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.List;
@@ -17,6 +22,7 @@ import java.util.List;
  * @author Jackisome
  * @date 2021/10/22
  */
+@Service
 public class AutoDownloadServiceImpl implements AutoDownloadService {
 
     @Autowired
@@ -24,6 +30,9 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
 
     @Autowired
     private SearchService searchService;
+
+    @Autowired
+    private DownloadService downloadService;
 
     @Override
     public boolean addAutoDownloadRule(AutoDownloadRuleRequestV0 autoDownloadRuleRequestV0) throws ParseException {
@@ -63,11 +72,26 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
     }
 
     @Override
-    public void findDownloadableResource() {
+    public void findDownloadableResource() throws ParseException, DocumentException, IOException, InterruptedException {
         List<AutoDownloadRuleEntity> autoDownloadRuleEntities = autoDownloadRuleDao.getActiveAutoDownloadRuleStatus();
         for (AutoDownloadRuleEntity autoDownloadRuleEntity : autoDownloadRuleEntities) {
             Timestamp updateTime = autoDownloadRuleEntity.getUpdateTime();
             Timestamp biggestUpdateTime = updateTime;
+            int ruleId = autoDownloadRuleEntity.getRuleId();
+            List<SearchResourceRespVO> searchResourceRespV0s = searchService.getResource(autoDownloadRuleEntity.getKeyword(), 0, 0);
+            for (SearchResourceRespVO searchResourceRespV0 : searchResourceRespV0s) {
+                Timestamp resourceTime = ParamUtil.getTimeFromString(searchResourceRespV0.getPublishDate());
+                if (resourceTime.after(updateTime)) {
+                    downloadService.download(searchResourceRespV0.getLink());
+                    if (biggestUpdateTime.before(resourceTime)) {
+                        biggestUpdateTime = resourceTime;
+                        Thread.sleep(60000);
+                    }
+                }
+            }
+            if (biggestUpdateTime.after(updateTime)) {
+                autoDownloadRuleDao.updateAutoDownloadRuleUpdateTime(ruleId, biggestUpdateTime);
+            }
         }
     }
 }

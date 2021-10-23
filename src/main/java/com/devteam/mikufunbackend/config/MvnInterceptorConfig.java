@@ -28,6 +28,7 @@ public class MvnInterceptorConfig extends WebMvcConfigurationSupport {
                 .addPathPatterns("/api/v1/download/finish/list")
                 .addPathPatterns("/api/v1/download/finish/resource/**")
                 .addPathPatterns("/api/v1/download/diskspace")
+                .addPathPatterns("/api/v1/freedownload/finish")
                 .addPathPatterns("/api/v1/play/file/**");
         registry.addInterceptor(userInterceptor)
                 .addPathPatterns("/api/v1/**")
@@ -38,6 +39,7 @@ public class MvnInterceptorConfig extends WebMvcConfigurationSupport {
                 .excludePathPatterns("/api/v1/download/finish/list")
                 .excludePathPatterns("/api/v1/download/finish/resource/**")
                 .excludePathPatterns("/api/v1/download/diskspace")
+                .excludePathPatterns("/api/v1/freedownload/finish")
                 .excludePathPatterns("/api/v1/play/file/**")
                 .excludePathPatterns("/api/v1/play/danmaku/v3");
         super.addInterceptors(registry);

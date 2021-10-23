@@ -40,6 +40,15 @@ create table if not exists mikufun.mikufun_download_status
     primary key (id)
 ) comment '下载和保存状态信息表';
 
+CREATE TABLE IF NOT EXISTS `mikufun_favorite_status_record`
+(
+    `record_id`   int(11)     NOT NULL AUTO_INCREMENT COMMENT 'id',
+    `resource_id` int(11)     NOT NULL COMMENT '番剧标识',
+    `status`      varchar(20) NOT NULL COMMENT '收藏状态',
+    `update_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    PRIMARY KEY (`record_id`)
+)
+
 -- 自动下载规则
 create table if not exists mikufun.mikufun_auto_download_rule
 (

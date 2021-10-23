@@ -1,6 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.devteam.mikufunbackend.constant.Aria2Constant;
+import com.devteam.mikufunbackend.constant.RuntimeVariable;
 import com.devteam.mikufunbackend.dao.DownloadStatusDao;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
@@ -61,9 +62,6 @@ public class TransferServiceImpl implements TransferService {
     @Value("${dandanplay.url}")
     private String dandanPlayUrl;
 
-    @Value("${transfer.format}")
-    private String transferFormat;
-
     @Value("${freedownload.path}")
     private String freeDownloadPath;
 
@@ -99,6 +97,7 @@ public class TransferServiceImpl implements TransferService {
         String filePath = aria2FileV0.getPath();
         String fileName = ResultUtil.getFileName(filePath);
         String type = ResultUtil.getFileType(filePath);
+        String transferFormat = RuntimeVariable.transferType.getFormat();
         if (ResultUtil.getFileName(filePath).startsWith("[METADATA]")) {
             return true;
         }

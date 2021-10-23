@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
         if (ParamUtil.isNotEmpty(RuntimeVariable.password)) {
             if (RuntimeVariable.password.equals(inputPassword)) {
                 return UserTypeEnum.USER;
-            } else if (RuntimeVariable.visitorPassword.contains(inputPassword)) {
+            } else if (RuntimeVariable.visitorPasswords.contains(inputPassword)) {
                 return UserTypeEnum.VISITOR;
             } else {
                 throw new PasswordErrorException("密码不正确!");

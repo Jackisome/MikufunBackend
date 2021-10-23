@@ -78,4 +78,11 @@ public class ExceptionHandle {
         logger.error(e.getMessage());
         return ResultUtil.fail(ResponseEnum.DOWNLOADED_EXCEPTION);
     }
+
+    @ExceptionHandler(value = OrganizeErrorException.class)
+    @ResponseBody
+    public Response organizeErrorExceptionHandle(OrganizeErrorException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(ResponseEnum.ORGANIZE_ERROR);
+    }
 }

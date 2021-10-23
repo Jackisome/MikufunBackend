@@ -18,7 +18,8 @@ public enum ResponseEnum {
     PARAMETER_ERROR(7, "parameter error"),
     AUTO_DOWNLOAD_ERROR(8, "auto download error"),
     FILE_ERROR(9, "file error"),
-    DOWNLOADED_EXCEPTION(10, "downloaded exception");
+    DOWNLOADED_EXCEPTION(10, "downloaded exception"),
+    ORGANIZE_ERROR(11, "organize error");
 
     private final int statusCode;
     private final String message;

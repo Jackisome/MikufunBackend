@@ -5,6 +5,7 @@ import com.devteam.mikufunbackend.dao.DownloadStatusDao;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
+import com.devteam.mikufunbackend.handle.DownloadedException;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.LocalServerService;
@@ -49,7 +50,7 @@ public class DownloadServiceImpl implements DownloadService {
     @Override
     public boolean download(String link) throws DocumentException, IOException, Aria2Exception {
         if (downloadStatusDao.findDownloadStatusRecordByLink(link).size() > 0) {
-            return false;
+            throw new DownloadedException("文件已下载");
         }
         aria2Service.addUrl(link);
         new Thread(() -> {

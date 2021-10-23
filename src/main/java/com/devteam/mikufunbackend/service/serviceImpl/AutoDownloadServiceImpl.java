@@ -89,35 +89,64 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
     }
 
     @Override
-    public boolean deleteAutoDownloadRule(String ruleId) {
-        int ruleIdInInteger = Integer.parseInt(ruleId);
-        int changeLine = autoDownloadRuleDao.deleteAutoDownloadRule(ruleIdInInteger);
-        logger.info("delete auto download rule, ruleId: {}", ruleIdInInteger);
-        return changeLine == 1;
+    public boolean deleteAutoDownloadRule(List<String> ruleIds) {
+        if (ParamUtil.isNotEmpty(ruleIds)) {
+            throw new ParameterErrorException("没有需要删除的自动下载规则");
+        }
+        int deleteCount = 0;
+        for (String ruleId : ruleIds) {
+            int ruleIdInInteger = Integer.parseInt(ruleId);
+            if (autoDownloadRuleDao.deleteAutoDownloadRule(ruleIdInInteger) == 1) {
+                deleteCount += 1;
+                logger.info("delete auto download rule, ruleId: {}", ruleIdInInteger);
+            } else {
+                logger.error("no delete auto download rule, ruleId: {}", ruleIdInInteger);
+            }
+        }
+        return ruleIds.size() == deleteCount;
     }
 
     @Override
     public void findDownloadableResource() throws ParseException, DocumentException, IOException, InterruptedException {
         List<AutoDownloadRuleEntity> autoDownloadRuleEntities = autoDownloadRuleDao.getActiveAutoDownloadRuleStatus();
         for (AutoDownloadRuleEntity autoDownloadRuleEntity : autoDownloadRuleEntities) {
-            Timestamp updateTime = autoDownloadRuleEntity.getUpdateTime();
-            Timestamp biggestUpdateTime = updateTime;
-            int ruleId = autoDownloadRuleEntity.getRuleId();
-            List<SearchResourceRespVO> searchResourceRespV0s = searchService.getResource(autoDownloadRuleEntity.getKeyword(), 0, 0);
-            for (SearchResourceRespVO searchResourceRespV0 : searchResourceRespV0s) {
-                Timestamp resourceTime = ParamUtil.getTimeFromString(searchResourceRespV0.getPublishDate());
-                if (resourceTime.after(updateTime)) {
-                    logger.info("begin auto download new resource, file name: {}", searchResourceRespV0.getFileName());
-                    downloadService.download(searchResourceRespV0.getLink());
-                    if (biggestUpdateTime.before(resourceTime)) {
-                        biggestUpdateTime = resourceTime;
-                        Thread.sleep(60000);
-                    }
+            findAndUpdateResource(autoDownloadRuleEntity);
+        }
+    }
+
+    @Override
+    public void findDownloadableResource(List<String> ruleIds) throws DocumentException, ParseException, IOException, InterruptedException {
+        if (ParamUtil.isNotEmpty(ruleIds)) {
+            throw new ParameterErrorException("没有需要运行的自动下载规则");
+        }
+        for (String ruleId : ruleIds) {
+            int ruleIdInInteger = Integer.parseInt(ruleId);
+            AutoDownloadRuleEntity autoDownloadRuleEntity = autoDownloadRuleDao.getAutoDownloadRuleByRuleId(ruleIdInInteger);
+            if (autoDownloadRuleEntity == null) {
+                throw new ParameterErrorException("ruleId对应规则不存在");
+            }
+            findAndUpdateResource(autoDownloadRuleEntity);
+        }
+    }
+
+    private void findAndUpdateResource(AutoDownloadRuleEntity autoDownloadRuleEntity) throws ParseException, DocumentException, IOException, InterruptedException {
+        Timestamp updateTime = autoDownloadRuleEntity.getUpdateTime();
+        Timestamp biggestUpdateTime = updateTime;
+        int ruleId = autoDownloadRuleEntity.getRuleId();
+        List<SearchResourceRespVO> searchResourceRespV0s = searchService.getResource(autoDownloadRuleEntity.getKeyword(), 0, 0);
+        for (SearchResourceRespVO searchResourceRespV0 : searchResourceRespV0s) {
+            Timestamp resourceTime = ParamUtil.getTimeFromString(searchResourceRespV0.getPublishDate());
+            if (resourceTime.after(updateTime)) {
+                logger.info("begin auto download new resource, file name: {}", searchResourceRespV0.getFileName());
+                downloadService.download(searchResourceRespV0.getLink());
+                if (biggestUpdateTime.before(resourceTime)) {
+                    biggestUpdateTime = resourceTime;
+                    Thread.sleep(60000);
                 }
             }
-            if (biggestUpdateTime.after(updateTime)) {
-                autoDownloadRuleDao.updateAutoDownloadRuleUpdateTime(ruleId, biggestUpdateTime);
-            }
+        }
+        if (biggestUpdateTime.after(updateTime)) {
+            autoDownloadRuleDao.updateAutoDownloadRuleUpdateTime(ruleId, biggestUpdateTime);
         }
     }
 }

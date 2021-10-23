@@ -16,6 +16,8 @@ public interface AutoDownloadRuleDao {
 
     int getAutoDownloadRuleStatus(int ruleId);
 
+    AutoDownloadRuleEntity getAutoDownloadRuleByRuleId(int ruleId);
+
     List<AutoDownloadRuleEntity> getActiveAutoDownloadRuleStatus();
 
     int addAutoDownloadRule(AutoDownloadRuleEntity autoDownloadRuleEntity);

@@ -20,7 +20,9 @@ public interface AutoDownloadService {
 
     List<AutoDownloadRuleResponseV0> getAllAutoDownloadRules();
 
-    boolean deleteAutoDownloadRule(String ruleId);
+    boolean deleteAutoDownloadRule(List<String> ruleIds);
 
     void findDownloadableResource() throws ParseException, DocumentException, IOException, InterruptedException;
+
+    void findDownloadableResource(List<String> ruleIds) throws DocumentException, ParseException, IOException, InterruptedException;
 }

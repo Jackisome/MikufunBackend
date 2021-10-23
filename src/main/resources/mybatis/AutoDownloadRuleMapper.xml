@@ -53,4 +53,10 @@
         from mikufun_auto_download_rule
         where active = 1
     </select>
+    <select id="getAutoDownloadRuleByRuleId"
+            resultType="com.devteam.mikufunbackend.entity.AutoDownloadRuleEntity">
+        select rule_id, rule_name, keyword, active_resource_time, create_time, update_time, active
+        from mikufun_auto_download_rule
+        where rule_id = #{ruleId}
+    </select>
 </mapper>

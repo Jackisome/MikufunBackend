@@ -7,6 +7,7 @@ import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.ShellException;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
+import com.devteam.mikufunbackend.service.serviceInterface.LocalServerService;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
 import com.devteam.mikufunbackend.util.ParamUtil;
@@ -50,6 +51,9 @@ public class TransferServiceImpl implements TransferService {
 
     @Autowired
     private DownloadService downloadService;
+
+    @Autowired
+    private LocalServerService localServerService;
 
     @Value("${shell.path}")
     private String shellPath;
@@ -142,35 +146,12 @@ public class TransferServiceImpl implements TransferService {
                 } catch (IOException e) {
                     logger.error(e.toString());
                 }
-                try {
-                    if (deleteFile(filePath)) {
-                        downloadStatusDao.updateSourceDeleteTag(filePath);
-                        logger.info("clean source file and update record in downloadStatus table, filePath: {}", filePath);
-                    }
-                } catch (IOException | InterruptedException e) {
-                    logger.error(e.toString());
+                if (localServerService.deleteFile(filePath) > 0) {
+                    downloadStatusDao.updateSourceDeleteTag(filePath);
+                    logger.info("clean source file and update record in downloadStatus table, filePath: {}", filePath);
                 }
             }
         });
-    }
-
-    @Override
-    public boolean deleteFile(String path) throws IOException, InterruptedException {
-        String[] cmd = new String[]{"bash", shellPath, "delete", path};
-        logger.info("delete source file, path: {}", path);
-        int exitValue = -1;
-        try {
-            exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/deleteLog");
-        } catch (ShellException e) {
-            logger.error(e.getMessage());
-        }
-        if (exitValue == 0) {
-            logger.info("delete source file complete, path: {}", path);
-            return true;
-        } else {
-            logger.error("delete source file fail, filePath: {}", path);
-            return false;
-        }
     }
 
     @Override
@@ -277,7 +258,7 @@ public class TransferServiceImpl implements TransferService {
     public String getDefaultSubtitlePath(String fileUuid) {
         String subtitlePath = "/docker/subtitle/" + fileUuid + ".vtt";
         File subtitleFile = new File(subtitlePath);
-        return subtitleFile.exists()? subtitlePath: "";
+        return subtitleFile.exists() ? subtitlePath : "";
     }
 
     private ResourceEntity generateResourceEntity(Aria2FileV0 aria2FileV0, String gid, String uuid, String transferFormat) throws IOException {
@@ -308,7 +289,7 @@ public class TransferServiceImpl implements TransferService {
                 .build();
         if (resourceMatchV0s.size() != 0) {
             ResourceMatchV0 matchV0 = resourceMatchV0s.get(0);
-            resourceEntity.setExactMatch(resourceMatchV0s.size() == 1? 1: 0)
+            resourceEntity.setExactMatch(resourceMatchV0s.size() == 1 ? 1 : 0)
                     .setResourceId(matchV0.getResourceId())
                     .setResourceName(matchV0.getResourceName())
                     .setEpisodeTitle(matchV0.getEpisodeTitle())

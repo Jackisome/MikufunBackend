@@ -7,6 +7,7 @@ import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
+import com.devteam.mikufunbackend.service.serviceInterface.LocalServerService;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.ParamUtil;
 import com.devteam.mikufunbackend.util.ResultUtil;
@@ -35,6 +36,9 @@ public class DownloadServiceImpl implements DownloadService {
 
     @Autowired
     private TransferService transferService;
+
+    @Autowired
+    private LocalServerService localServerService;
 
     @Autowired
     private ResourceInformationDao resourceInformationDao;
@@ -222,21 +226,17 @@ public class DownloadServiceImpl implements DownloadService {
                 } catch (IOException e) {
                     logger.error(e.toString());
                 }
-                try {
-                    // 如果源文件存在，先删除源文件
-                    if (downloadStatusEntity.getIsSourceDelete() == 0) {
-                        transferService.deleteFile(downloadStatusEntity.getFilePath());
-                    }
-                    // 删除转码文件，清除数据表记录
-                    if (transferService.deleteFile(resourceEntity.getImageUrl()) && transferService.deleteFile(ParamUtil.getFileDirectory(resourceEntity.getFileUuid()))) {
-                        resourceInformationDao.deleteResourceInformationByFileId(fileId);
-                        logger.info("delete record in resourceInformation table by fileId, fileId: {}", fileId);
-                        downloadStatusDao.deleteDownloadStatusRecordByGidAndFileName(resourceEntity.getGid(), resourceEntity.getFileName());
-                        logger.info("delete record in downloadStatus table by gid and fileName, gid: {}, fileName: {}", resourceEntity.getGid(), resourceEntity.getFileName());
-                        simpleFinishFileV0.setDelete(true);
-                    }
-                } catch (IOException | InterruptedException e) {
-                    logger.error(e.toString());
+                // 如果源文件存在，先删除源文件
+                if (downloadStatusEntity.getIsSourceDelete() == 0) {
+                    localServerService.deleteFile(downloadStatusEntity.getFilePath());
+                }
+                // 删除转码文件，清除数据表记录
+                if (localServerService.deleteFile(resourceEntity.getImageUrl()) > 0 && localServerService.deleteFile(ParamUtil.getFileDirectory(resourceEntity.getFileUuid())) > 0) {
+                    resourceInformationDao.deleteResourceInformationByFileId(fileId);
+                    logger.info("delete record in resourceInformation table by fileId, fileId: {}", fileId);
+                    downloadStatusDao.deleteDownloadStatusRecordByGidAndFileName(resourceEntity.getGid(), resourceEntity.getFileName());
+                    logger.info("delete record in downloadStatus table by gid and fileName, gid: {}, fileName: {}", resourceEntity.getGid(), resourceEntity.getFileName());
+                    simpleFinishFileV0.setDelete(true);
                 }
             }
             data.add(simpleFinishFileV0);

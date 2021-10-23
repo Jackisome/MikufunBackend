@@ -1,7 +1,10 @@
-package com.devteam.mikufunbackend.service.serviceInterface;
+package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.devteam.mikufunbackend.entity.FileV0;
 import com.devteam.mikufunbackend.handle.ParameterErrorException;
+import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
+import com.devteam.mikufunbackend.service.serviceInterface.FreeDownloadService;
+import com.devteam.mikufunbackend.service.serviceInterface.LocalServerService;
 import com.devteam.mikufunbackend.util.ParamUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

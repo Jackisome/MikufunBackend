@@ -60,6 +60,9 @@ public class TransferServiceImpl implements TransferService {
     @Value("${transfer.format}")
     private String transferFormat;
 
+    @Value("${freedownload.path}")
+    private String freeDownloadPath;
+
     @Override
     public void transfer() throws IOException {
         logger.info("begin schedule task: transfer");
@@ -73,7 +76,7 @@ public class TransferServiceImpl implements TransferService {
                 if (Aria2Constant.downloadStatus.COMPLETE.getDescription().equals(aria2StatusV0.getStatus())
                         || (Aria2Constant.downloadStatus.ACTIVE.getDescription().equals(aria2StatusV0.getStatus()) && aria2StatusV0.getCompletedLength() == aria2StatusV0.getTotalLength())) {
                     for (Aria2FileV0 file : aria2StatusV0.getFiles()) {
-                        if (!ResultUtil.getFileName(file.getPath()).equals(file.getPath())) {
+                        if (!ResultUtil.getFileName(file.getPath()).equals(file.getPath()) && !file.getPath().contains(freeDownloadPath)) {
                             logger.info("begin transfer resource, file: {}", file);
                             if (transferFile(file, gid)) {
                                 logger.info("transfer file complete, gid: {}, file{}", gid, file);

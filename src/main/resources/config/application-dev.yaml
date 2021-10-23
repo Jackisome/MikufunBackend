@@ -39,3 +39,6 @@ dandanplay:
 
 transfer:
   format: m3u8
+
+freedownload:
+  path: /docker/freedownload/

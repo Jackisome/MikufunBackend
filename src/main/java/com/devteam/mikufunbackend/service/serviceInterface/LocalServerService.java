@@ -1,7 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
 import com.devteam.mikufunbackend.entity.DiskSpaceV0;
-import com.devteam.mikufunbackend.entity.FreeDownloadFileV0;
+import com.devteam.mikufunbackend.entity.FileV0;
 
 import java.util.List;
 
@@ -12,5 +12,12 @@ import java.util.List;
 public interface LocalServerService {
     DiskSpaceV0 getDiskSpace();
 
-    List<FreeDownloadFileV0> getFreeDownloadFiles();
+    /**
+     * 删除文件或目录，并返回删除的文件个数
+     * @param path
+     * @return
+     */
+    int deleteFile(String path);
+
+    List<FileV0> getFileInformation(String path);
 }

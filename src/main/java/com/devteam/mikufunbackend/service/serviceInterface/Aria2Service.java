@@ -21,7 +21,15 @@ public interface Aria2Service {
      * @throws IOException
      * @throws DocumentException
      */
-    String addUrl(String link) throws IOException, DocumentException;
+    boolean addUrl(String link) throws IOException, DocumentException;
+
+    /**
+     * 添加下载任务，并指定存放目录
+     * @param link
+     * @param path
+     * @return
+     */
+    boolean addUrl(String link, String path) throws IOException;
 
     /**
      * 暂停所有文件的下载

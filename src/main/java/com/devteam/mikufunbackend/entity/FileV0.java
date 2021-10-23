@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class FreeDownloadFileV0 {
+public class FileV0 {
     String fileName;
     String fileSize;
     String fileUrl;

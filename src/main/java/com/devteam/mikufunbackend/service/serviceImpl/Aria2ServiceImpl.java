@@ -1,8 +1,10 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.devteam.mikufunbackend.constant.Aria2Constant;
+import com.devteam.mikufunbackend.entity.Aria2OptionV0;
 import com.devteam.mikufunbackend.entity.Aria2RequestV0;
 import com.devteam.mikufunbackend.entity.Aria2ResponseV0;
 import com.devteam.mikufunbackend.entity.Aria2StatusV0;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +36,7 @@ public class Aria2ServiceImpl implements Aria2Service {
     private String aria2RpcUrl;
 
     @Override
-    public String addUrl(String link) throws IOException, Aria2Exception {
+    public boolean addUrl(String link) throws IOException, Aria2Exception {
         Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
         aria2RequestV0.setMethod(Aria2Constant.METHOD_ADD_URI)
                 .addParam(new String[]{link});
@@ -45,8 +48,30 @@ public class Aria2ServiceImpl implements Aria2Service {
         }
         logger.info("send to aria2 for downloading finished, link: {}", link);
         String entityString = EntityUtils.toString(response.getEntity());
-        Map<String, String> entityMap = JSON.parseObject(entityString, new TypeReference<Map<String, String>>(){});
-        return entityMap.get("result");
+        Map<String, String> entityMap = JSON.parseObject(entityString, new TypeReference<Map<String, String>>() {
+        });
+        return true;
+    }
+
+    @Override
+    public boolean addUrl(String link, String path) throws IOException {
+        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
+        aria2RequestV0.setMethod(Aria2Constant.METHOD_ADD_URI)
+                .addParam(new String[]{link})
+                .addParam(Aria2OptionV0.builder()
+                        .dir(path)
+                        .build());
+        logger.info("begin download, link: {}", link);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        if (!HttpClientUtil.validateResponse(response)) {
+            logger.error("Aria2下载未正常进行，下载链接: {}", link);
+            throw new Aria2Exception("下载未正常进行");
+        }
+        logger.info("send to aria2 for downloading finished, link: {}", link);
+        String entityString = EntityUtils.toString(response.getEntity());
+        Map<String, String> entityMap = JSON.parseObject(entityString, new TypeReference<Map<String, String>>() {
+        });
+        return true;
     }
 
     @Override

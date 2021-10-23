@@ -65,4 +65,11 @@ public class ExceptionHandle {
         return ResultUtil.fail(ResponseEnum.LOGIN_ERROR);
     }
 
+    @ExceptionHandler(value = FileErrorException.class)
+    @ResponseBody
+    public Response fileErrorExceptionHandle(FileErrorException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(ResponseEnum.FILE_ERROR);
+    }
+
 }

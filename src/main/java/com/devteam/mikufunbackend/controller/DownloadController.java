@@ -1,8 +1,11 @@
 package com.devteam.mikufunbackend.controller;
 
+import com.devteam.mikufunbackend.constant.Aria2Constant;
+import com.devteam.mikufunbackend.entity.DownloadStatusTransferV0;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.handle.FileIdException;
 import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
+import com.devteam.mikufunbackend.service.serviceInterface.LocalServerService;
 import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
 import org.dom4j.DocumentException;
@@ -24,17 +27,36 @@ public class DownloadController {
     @Autowired
     DownloadService downloadService;
 
+    @Autowired
+    LocalServerService localServerService;
+
     @PostMapping("")
     public Response download(@RequestParam("link") String link) throws Aria2Exception, IOException, DocumentException, InterruptedException {
         downloadService.download(link);
         return ResultUtil.success();
     }
 
-    @DeleteMapping("/{gid}")
-    public Response remove(@PathVariable String gid) throws IOException {
-        downloadService.remove(gid);
+    @PutMapping("/remove/{gids}")
+    public Response remove(@PathVariable List<String> gids) throws IOException {
+        List<DownloadStatusTransferV0> downloadStatusTransferV0s = downloadService.changeDownloadStatus(gids, Aria2Constant.downloadAction.REMOVE);
         Map<String, Object> data = ResultUtil.getData();
-        data.put("removed", gid);
+        data.put("downloadEntries", downloadStatusTransferV0s);
+        return ResultUtil.success(data);
+    }
+
+    @PutMapping("/pause/{gids}")
+    public Response pause(@PathVariable List<String> gids) throws IOException {
+        List<DownloadStatusTransferV0> downloadStatusTransferV0s = downloadService.changeDownloadStatus(gids, Aria2Constant.downloadAction.PAUSE);
+        Map<String, Object> data = ResultUtil.getData();
+        data.put("downloadEntries", downloadStatusTransferV0s);
+        return ResultUtil.success(data);
+    }
+
+    @PutMapping("/unpause/{gids}")
+    public Response unpause(@PathVariable List<String> gids) throws IOException {
+        List<DownloadStatusTransferV0> downloadStatusTransferV0s = downloadService.changeDownloadStatus(gids, Aria2Constant.downloadAction.UNPAUSE);
+        Map<String, Object> data = ResultUtil.getData();
+        data.put("downloadEntries", downloadStatusTransferV0s);
         return ResultUtil.success(data);
     }
 
@@ -80,6 +102,13 @@ public class DownloadController {
             }
         }
         data.put("deleteFiles", downloadService.deleteLocalFiles(fileIds));
+        return ResultUtil.success(data);
+    }
+
+    @GetMapping("/diskspace")
+    Response getDiskSpace() {
+        Map<String, Object> data = ResultUtil.getData();
+        data.put("diskSpace", localServerService.getDiskSpace());
         return ResultUtil.success(data);
     }
 }

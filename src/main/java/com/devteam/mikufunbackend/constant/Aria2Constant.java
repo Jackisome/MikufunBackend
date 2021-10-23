@@ -36,4 +36,20 @@ public class Aria2Constant {
             return description;
         }
     }
+
+    public enum downloadAction {
+        PAUSE("pause"),
+        UNPAUSE("unpause"),
+        REMOVE("remove");
+
+        private final String description;
+
+        private downloadAction(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+    }
 }

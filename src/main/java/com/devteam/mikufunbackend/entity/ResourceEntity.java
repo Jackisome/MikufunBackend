@@ -42,6 +42,7 @@ public class ResourceEntity {
                 .fileName(this.getFileName())
                 .fileSize(this.getFileSize() / 1048576.0)
                 .resourceName(this.getResourceName())
+                .episode(this.getEpisodeTitle())
                 .build();
     }
 

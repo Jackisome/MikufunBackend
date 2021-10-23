@@ -5,10 +5,12 @@ import lombok.Data;
 
 /**
  * @author Jackisome
- * @date 2021/9/27
+ * @date 2021/10/21
  */
 @Data
 @Builder
-public class Aria2OptionV0 {
-    String dir;
+public class FileV0 {
+    String fileName;
+    String fileSize;
+    String fileUrl;
 }

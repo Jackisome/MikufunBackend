@@ -1,5 +1,8 @@
 package com.devteam.mikufunbackend.util;
 
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -30,6 +33,26 @@ public class ParamUtil {
     public static boolean isLegalTime(String time) {
         String TIME_REGEX = "^([0-1][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$";
         return Pattern.matches(TIME_REGEX, time);
+    }
+
+    public static Timestamp getDateFromString(String date) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return new Timestamp(simpleDateFormat.parse(date).getTime());
+    }
+
+    public static Timestamp getTimeFromString(String time) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return new Timestamp(simpleDateFormat.parse(time).getTime());
+    }
+
+    public static String getStringFromDate(Timestamp date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return simpleDateFormat.format(date);
+    }
+
+    public static String getStringFromTime(Timestamp time) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return simpleDateFormat.format(time);
     }
 
     public static String getUUID() {

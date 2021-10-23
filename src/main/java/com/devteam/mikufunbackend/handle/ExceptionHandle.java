@@ -65,4 +65,24 @@ public class ExceptionHandle {
         return ResultUtil.fail(ResponseEnum.LOGIN_ERROR);
     }
 
+    @ExceptionHandler(value = FileErrorException.class)
+    @ResponseBody
+    public Response fileErrorExceptionHandle(FileErrorException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(ResponseEnum.FILE_ERROR);
+    }
+
+    @ExceptionHandler(value = DownloadedException.class)
+    @ResponseBody
+    public Response downloadedExceptionHandle(DownloadedException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(ResponseEnum.DOWNLOADED_EXCEPTION);
+    }
+
+    @ExceptionHandler(value = OrganizeErrorException.class)
+    @ResponseBody
+    public Response organizeErrorExceptionHandle(OrganizeErrorException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(ResponseEnum.ORGANIZE_ERROR);
+    }
 }

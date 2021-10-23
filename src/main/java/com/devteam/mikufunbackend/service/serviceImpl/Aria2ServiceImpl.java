@@ -1,8 +1,10 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.devteam.mikufunbackend.constant.Aria2Constant;
+import com.devteam.mikufunbackend.entity.Aria2OptionV0;
 import com.devteam.mikufunbackend.entity.Aria2RequestV0;
 import com.devteam.mikufunbackend.entity.Aria2ResponseV0;
 import com.devteam.mikufunbackend.entity.Aria2StatusV0;
@@ -17,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +36,7 @@ public class Aria2ServiceImpl implements Aria2Service {
     private String aria2RpcUrl;
 
     @Override
-    public String addUrl(String link) throws IOException, Aria2Exception {
+    public boolean addUrl(String link) throws IOException, Aria2Exception {
         Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
         aria2RequestV0.setMethod(Aria2Constant.METHOD_ADD_URI)
                 .addParam(new String[]{link});
@@ -45,45 +48,79 @@ public class Aria2ServiceImpl implements Aria2Service {
         }
         logger.info("send to aria2 for downloading finished, link: {}", link);
         String entityString = EntityUtils.toString(response.getEntity());
-        Map<String, String> entityMap = JSON.parseObject(entityString, new TypeReference<Map<String, String>>(){});
-        return entityMap.get("result");
-    }
-
-    @Override
-    public boolean removeDownloadingFile(String gid) throws IOException {
-        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
-        aria2RequestV0.setMethod(Aria2Constant.METHOD_REMOVE_DOWNLOAD_RESULT)
-                .addParam(gid);
-        logger.info("begin remove downloading file, gid: {}", gid);
-        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
-        String entityString = EntityUtils.toString(response.getEntity());
-        System.out.println(entityString);
-        if (!HttpClientUtil.validateResponse(response)) {
-            logger.error("Aria2下载未正常移除, gid: {}", gid);
-            throw new Aria2Exception("移除下载未正常进行");
-        }
-        logger.info("send to aria2 for removing finished, gid: {}", gid);
+        Map<String, String> entityMap = JSON.parseObject(entityString, new TypeReference<Map<String, String>>() {
+        });
         return true;
     }
 
     @Override
-    public boolean pauseDownloadingFile(String gid) {
-        return false;
+    public boolean addUrl(String link, String path) throws IOException {
+        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
+        aria2RequestV0.setMethod(Aria2Constant.METHOD_ADD_URI)
+                .addParam(new String[]{link})
+                .addParam(Aria2OptionV0.builder()
+                        .dir(path)
+                        .build());
+        logger.info("begin download, link: {}", link);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        if (!HttpClientUtil.validateResponse(response)) {
+            logger.error("Aria2下载未正常进行，下载链接: {}", link);
+            throw new Aria2Exception("下载未正常进行");
+        }
+        logger.info("send to aria2 for downloading finished, link: {}", link);
+        String entityString = EntityUtils.toString(response.getEntity());
+        Map<String, String> entityMap = JSON.parseObject(entityString, new TypeReference<Map<String, String>>() {
+        });
+        return true;
     }
 
     @Override
-    public boolean pauseAllDownloadingFile() {
-        return false;
+    public boolean pauseAllDownloadingFile() throws IOException {
+        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
+        aria2RequestV0.setMethod(Aria2Constant.METHOD_PAUSE_ALL);
+        logger.info("begin pause all downloading file");
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        String entityString = EntityUtils.toString(response.getEntity());
+        System.out.println(entityString);
+        if (!HttpClientUtil.validateResponse(response)) {
+            logger.error("Aria2未正常暂停所有下载");
+            throw new Aria2Exception("暂停所有下载未正常进行");
+        }
+        logger.info("send to aria2 for pause all finished");
+        return true;
     }
 
     @Override
-    public boolean unpauseDownloadingFile(String gid) {
-        return false;
+    public boolean unpauseAllDownloadingFile() throws IOException {
+        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
+        aria2RequestV0.setMethod(Aria2Constant.METHOD_UNPAUSE_ALL);
+        logger.info("begin unpause all downloading file");
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        String entityString = EntityUtils.toString(response.getEntity());
+        System.out.println(entityString);
+        if (!HttpClientUtil.validateResponse(response)) {
+            logger.error("Aria2未正常恢复所有下载");
+            throw new Aria2Exception("恢复所有下载未正常进行");
+        }
+        logger.info("send to aria2 for unpause all finished");
+        return true;
     }
 
     @Override
-    public boolean unpauseAllDownloadingFile() {
-        return false;
+    public boolean transferDownloadStatus(String gid, String method) throws IOException {
+        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
+        aria2RequestV0.setMethod(method)
+                .addParam(gid);
+        logger.info("begin transfer status of downloading file, gid: {}, method: {}", gid, method);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        String entityString = EntityUtils.toString(response.getEntity());
+        System.out.println(entityString);
+        if (!HttpClientUtil.validateResponse(response)) {
+            logger.error("Aria2状态切换未正常进行, gid: {}, method: {}", gid, method);
+            throw new Aria2Exception("下载状态未正常切换");
+        }
+        logger.info("send to aria2 for transfer file status finished, gid: {}, method: {}", gid, method);
+        return true;
     }
 
     @Override

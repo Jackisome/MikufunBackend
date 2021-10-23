@@ -1,5 +1,6 @@
 package com.devteam.mikufunbackend.controller;
 
+import com.devteam.mikufunbackend.entity.LoginV0;
 import com.devteam.mikufunbackend.service.serviceInterface.UserService;
 import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
@@ -23,9 +24,9 @@ public class UserController {
 
     @PostMapping("")
     public Response login(@RequestParam String password) {
-        userService.validatePassword(password);
         Map<String, Object> data = ResultUtil.getData();
-        data.put("token", userService.getAuthToken());
+        LoginV0 loginV0 = userService.getAuthToken(password);
+        data.put("user", loginV0);
         return ResultUtil.success(data);
     }
 }

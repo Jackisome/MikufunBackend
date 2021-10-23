@@ -7,12 +7,19 @@ import com.devteam.mikufunbackend.constant.RuntimeVariable;
  * @date 2021/9/27
  */
 public class TokenUtil {
-    public static boolean validateToken(String userToken) {
+    public static boolean validateUserToken(String userToken) {
         if (userToken == null || RuntimeVariable.token == null) {
             return false;
         }
 
         // todo: 临时测试使用
         return RuntimeVariable.token.equals(userToken) || "token".equals(userToken);
+    }
+
+    public static boolean validateVisitorToken(String visitorToken) {
+        if (visitorToken == null || RuntimeVariable.visitorToken.size() == 0) {
+            return false;
+        }
+        return RuntimeVariable.visitorToken.containsValue(visitorToken);
     }
 }

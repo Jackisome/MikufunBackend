@@ -20,8 +20,8 @@ import java.io.IOException;
  * controller拦截器，用于用户登录状态验证
  */
 @Component
-public class SignInterceptor implements HandlerInterceptor {
-    Logger logger = LoggerFactory.getLogger(SignInterceptor.class);
+public class UserInterceptor implements HandlerInterceptor {
+    Logger logger = LoggerFactory.getLogger(UserInterceptor.class);
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
@@ -36,15 +36,15 @@ public class SignInterceptor implements HandlerInterceptor {
             }
         }
 
-        if(!TokenUtil.validateToken(token)){
+        if(!TokenUtil.validateUserToken(token)){
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write(ResultUtil.fail(ResponseEnum.LOGIN_ERROR).toString());
-            logger.info("unauthorized");
+            logger.info("user unauthorized");
             return false;
         }
-        logger.info("authorized");
+        logger.info("user authorized");
         return true;
     }
 }

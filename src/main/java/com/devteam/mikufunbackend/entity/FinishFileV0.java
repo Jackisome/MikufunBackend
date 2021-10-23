@@ -15,4 +15,5 @@ public class FinishFileV0 {
     String fileName;
     double fileSize;
     String resourceName;
+    String episode;
 }

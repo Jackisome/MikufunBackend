@@ -1,12 +1,14 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.devteam.mikufunbackend.constant.Aria2Constant;
+import com.devteam.mikufunbackend.constant.RuntimeVariable;
 import com.devteam.mikufunbackend.dao.DownloadStatusDao;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.ShellException;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
+import com.devteam.mikufunbackend.service.serviceInterface.LocalServerService;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
 import com.devteam.mikufunbackend.util.ParamUtil;
@@ -51,14 +53,17 @@ public class TransferServiceImpl implements TransferService {
     @Autowired
     private DownloadService downloadService;
 
+    @Autowired
+    private LocalServerService localServerService;
+
     @Value("${shell.path}")
     private String shellPath;
 
     @Value("${dandanplay.url}")
     private String dandanPlayUrl;
 
-    @Value("${transfer.format}")
-    private String transferFormat;
+    @Value("${freedownload.path}")
+    private String freeDownloadPath;
 
     @Override
     public void transfer() throws IOException {
@@ -73,7 +78,7 @@ public class TransferServiceImpl implements TransferService {
                 if (Aria2Constant.downloadStatus.COMPLETE.getDescription().equals(aria2StatusV0.getStatus())
                         || (Aria2Constant.downloadStatus.ACTIVE.getDescription().equals(aria2StatusV0.getStatus()) && aria2StatusV0.getCompletedLength() == aria2StatusV0.getTotalLength())) {
                     for (Aria2FileV0 file : aria2StatusV0.getFiles()) {
-                        if (!ResultUtil.getFileName(file.getPath()).equals(file.getPath())) {
+                        if (!ResultUtil.getFileName(file.getPath()).equals(file.getPath()) && !file.getPath().contains(freeDownloadPath)) {
                             logger.info("begin transfer resource, file: {}", file);
                             if (transferFile(file, gid)) {
                                 logger.info("transfer file complete, gid: {}, file{}", gid, file);
@@ -92,6 +97,7 @@ public class TransferServiceImpl implements TransferService {
         String filePath = aria2FileV0.getPath();
         String fileName = ResultUtil.getFileName(filePath);
         String type = ResultUtil.getFileType(filePath);
+        String transferFormat = RuntimeVariable.transferType.getFormat();
         if (ResultUtil.getFileName(filePath).startsWith("[METADATA]")) {
             return true;
         }
@@ -135,39 +141,16 @@ public class TransferServiceImpl implements TransferService {
             if (gids.contains(gid)) {
                 String filePath = downloadStatusEntity.getFilePath();
                 try {
-                    downloadService.remove(gid);
+                    downloadService.changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE);
                 } catch (IOException e) {
                     logger.error(e.toString());
                 }
-                try {
-                    if (deleteFile(filePath)) {
-                        downloadStatusDao.updateSourceDeleteTag(filePath);
-                        logger.info("clean source file and update record in downloadStatus table, filePath: {}", filePath);
-                    }
-                } catch (IOException | InterruptedException e) {
-                    logger.error(e.toString());
+                if (localServerService.deleteFile(filePath) > 0) {
+                    downloadStatusDao.updateSourceDeleteTag(filePath);
+                    logger.info("clean source file and update record in downloadStatus table, filePath: {}", filePath);
                 }
             }
         });
-    }
-
-    @Override
-    public boolean deleteFile(String path) throws IOException, InterruptedException {
-        String[] cmd = new String[]{"bash", shellPath, "delete", path};
-        logger.info("delete source file, path: {}", path);
-        int exitValue = -1;
-        try {
-            exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/deleteLog");
-        } catch (ShellException e) {
-            logger.error(e.getMessage());
-        }
-        if (exitValue == 0) {
-            logger.info("delete source file complete, path: {}", path);
-            return true;
-        } else {
-            logger.error("delete source file fail, filePath: {}", path);
-            return false;
-        }
     }
 
     @Override
@@ -274,7 +257,7 @@ public class TransferServiceImpl implements TransferService {
     public String getDefaultSubtitlePath(String fileUuid) {
         String subtitlePath = "/docker/subtitle/" + fileUuid + ".vtt";
         File subtitleFile = new File(subtitlePath);
-        return subtitleFile.exists()? subtitlePath: "";
+        return subtitleFile.exists() ? subtitlePath : "";
     }
 
     private ResourceEntity generateResourceEntity(Aria2FileV0 aria2FileV0, String gid, String uuid, String transferFormat) throws IOException {
@@ -305,7 +288,7 @@ public class TransferServiceImpl implements TransferService {
                 .build();
         if (resourceMatchV0s.size() != 0) {
             ResourceMatchV0 matchV0 = resourceMatchV0s.get(0);
-            resourceEntity.setExactMatch(resourceMatchV0s.size() == 1? 1: 0)
+            resourceEntity.setExactMatch(resourceMatchV0s.size() == 1 ? 1 : 0)
                     .setResourceId(matchV0.getResourceId())
                     .setResourceName(matchV0.getResourceName())
                     .setEpisodeTitle(matchV0.getEpisodeTitle())

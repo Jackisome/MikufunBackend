@@ -14,7 +14,12 @@ public enum ResponseEnum {
     ARIA2_ERROR(3, "aria2 error"),
     FILEID_ERROR(4, "fileId error"),
     SHELL_ERROR(5, "shell execute error"),
-    FAVORITE_ERROR(6, "favorite status update error");
+    FAVORITE_ERROR(6, "favorite status update error"),
+    PARAMETER_ERROR(7, "parameter error"),
+    AUTO_DOWNLOAD_ERROR(8, "auto download error"),
+    FILE_ERROR(9, "file error"),
+    DOWNLOADED_EXCEPTION(10, "downloaded exception"),
+    ORGANIZE_ERROR(11, "organize error");
 
     private final int statusCode;
     private final String message;

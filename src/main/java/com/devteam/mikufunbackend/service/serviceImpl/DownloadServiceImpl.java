@@ -5,8 +5,10 @@ import com.devteam.mikufunbackend.dao.DownloadStatusDao;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
+import com.devteam.mikufunbackend.handle.DownloadedException;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
+import com.devteam.mikufunbackend.service.serviceInterface.LocalServerService;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.ParamUtil;
 import com.devteam.mikufunbackend.util.ResultUtil;
@@ -37,6 +39,9 @@ public class DownloadServiceImpl implements DownloadService {
     private TransferService transferService;
 
     @Autowired
+    private LocalServerService localServerService;
+
+    @Autowired
     private ResourceInformationDao resourceInformationDao;
 
     @Autowired
@@ -45,7 +50,7 @@ public class DownloadServiceImpl implements DownloadService {
     @Override
     public boolean download(String link) throws DocumentException, IOException, Aria2Exception {
         if (downloadStatusDao.findDownloadStatusRecordByLink(link).size() > 0) {
-            return false;
+            throw new DownloadedException("文件已下载");
         }
         aria2Service.addUrl(link);
         new Thread(() -> {
@@ -105,8 +110,37 @@ public class DownloadServiceImpl implements DownloadService {
     }
 
     @Override
-    public boolean remove(String gid) throws IOException {
-        return aria2Service.removeDownloadingFile(gid);
+    public boolean changeDownloadStatus(String gid, Aria2Constant.downloadAction downloadAction) throws IOException {
+        switch (downloadAction) {
+            case PAUSE:
+                return aria2Service.transferDownloadStatus(gid, Aria2Constant.METHOD_PAUSE);
+            case UNPAUSE:
+                return aria2Service.transferDownloadStatus(gid, Aria2Constant.METHOD_UNPAUSE);
+            case REMOVE:
+                return aria2Service.transferDownloadStatus(gid, Aria2Constant.METHOD_REMOVE_DOWNLOAD_RESULT);
+            default:
+                return false;
+        }
+    }
+
+    @Override
+    public List<DownloadStatusTransferV0> changeDownloadStatus(List<String> gids, Aria2Constant.downloadAction downloadAction) {
+        List<DownloadStatusTransferV0> data = new ArrayList<>();
+        if (ParamUtil.isNotEmpty(gids)) {
+            gids.forEach(gid -> {
+                DownloadStatusTransferV0 downloadStatusTransferV0 = null;
+                try {
+                    downloadStatusTransferV0 = DownloadStatusTransferV0.builder()
+                            .gid(gid)
+                            .status(changeDownloadStatus(gid, downloadAction))
+                            .build();
+                } catch (IOException e) {
+                    logger.error(e.toString());
+                }
+                data.add(downloadStatusTransferV0);
+            });
+        }
+        return data;
     }
 
     @Override
@@ -189,25 +223,21 @@ public class DownloadServiceImpl implements DownloadService {
                 DownloadStatusEntity downloadStatusEntity = downloadStatusDao.findDownloadStatusRecordByFileName(resourceEntity.getFileName());
                 String gid = downloadStatusEntity.getGid();
                 try {
-                    remove(gid);
+                    changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE);
                 } catch (IOException e) {
                     logger.error(e.toString());
                 }
-                try {
-                    // 如果源文件存在，先删除源文件
-                    if (downloadStatusEntity.getIsSourceDelete() == 0) {
-                        transferService.deleteFile(downloadStatusEntity.getFilePath());
-                    }
-                    // 删除转码文件，清除数据表记录
-                    if (transferService.deleteFile(resourceEntity.getImageUrl()) && transferService.deleteFile(ParamUtil.getFileDirectory(resourceEntity.getFileUuid()))) {
-                        resourceInformationDao.deleteResourceInformationByFileId(fileId);
-                        logger.info("delete record in resourceInformation table by fileId, fileId: {}", fileId);
-                        downloadStatusDao.deleteDownloadStatusRecordByGidAndFileName(resourceEntity.getGid(), resourceEntity.getFileName());
-                        logger.info("delete record in downloadStatus table by gid and fileName, gid: {}, fileName: {}", resourceEntity.getGid(), resourceEntity.getFileName());
-                        simpleFinishFileV0.setDelete(true);
-                    }
-                } catch (IOException | InterruptedException e) {
-                    logger.error(e.toString());
+                // 如果源文件存在，先删除源文件
+                if (downloadStatusEntity.getIsSourceDelete() == 0) {
+                    localServerService.deleteFile(downloadStatusEntity.getFilePath());
+                }
+                // 删除转码文件，清除数据表记录
+                if (localServerService.deleteFile(resourceEntity.getImageUrl()) > 0 && localServerService.deleteFile(ParamUtil.getFileDirectory(resourceEntity.getFileUuid())) > 0) {
+                    resourceInformationDao.deleteResourceInformationByFileId(fileId);
+                    logger.info("delete record in resourceInformation table by fileId, fileId: {}", fileId);
+                    downloadStatusDao.deleteDownloadStatusRecordByGidAndFileName(resourceEntity.getGid(), resourceEntity.getFileName());
+                    logger.info("delete record in downloadStatus table by gid and fileName, gid: {}, fileName: {}", resourceEntity.getGid(), resourceEntity.getFileName());
+                    simpleFinishFileV0.setDelete(true);
                 }
             }
             data.add(simpleFinishFileV0);

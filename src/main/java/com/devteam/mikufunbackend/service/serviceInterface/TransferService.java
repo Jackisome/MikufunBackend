@@ -31,13 +31,6 @@ public interface TransferService {
     void cleanSourceFiles() throws IOException, InterruptedException;
 
     /**
-     * 删除转码完成的源文件并更新对应的数据表记录
-     * @param path
-     * @return
-     */
-    boolean deleteFile(String path) throws IOException, InterruptedException;
-
-    /**
      * 根据资源信息匹配匹配可能的番剧和聚集，并获取对应的弹幕库
      * @param fileName
      * @param fileHash

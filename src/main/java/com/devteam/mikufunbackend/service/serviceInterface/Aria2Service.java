@@ -1,5 +1,6 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
+import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.entity.Aria2StatusV0;
 import com.devteam.mikufunbackend.entity.DownloadStatusV0;
 import org.dom4j.DocumentException;
@@ -20,41 +21,35 @@ public interface Aria2Service {
      * @throws IOException
      * @throws DocumentException
      */
-    String addUrl(String link) throws IOException, DocumentException;
+    boolean addUrl(String link) throws IOException, DocumentException;
 
     /**
-     * 移除下载中文件
-     * @param gid
-     * @return
-     * @throws IOException
-     */
-    boolean removeDownloadingFile(String gid) throws IOException;
-
-    /**
-     * 暂停指定gid文件的下载
-     * @param gid
+     * 添加下载任务，并指定存放目录
+     * @param link
+     * @param path
      * @return
      */
-    boolean pauseDownloadingFile(String gid);
+    boolean addUrl(String link, String path) throws IOException;
 
     /**
      * 暂停所有文件的下载
      * @return
      */
-    boolean pauseAllDownloadingFile();
-
-    /**
-     * 恢复指定文件的下载
-     * @param gid
-     * @return
-     */
-    boolean unpauseDownloadingFile(String gid);
+    boolean pauseAllDownloadingFile() throws IOException;
 
     /**
      * 恢复所有暂停文件的下载
      * @return
      */
-    boolean unpauseAllDownloadingFile();
+    boolean unpauseAllDownloadingFile() throws IOException;
+
+    /**
+     * 切换文件的下载状态
+     * @param gid
+     * @param method
+     * @return
+     */
+    boolean transferDownloadStatus(String gid, String method) throws IOException;
 
     /**
      * 获取指定文件的下载状态

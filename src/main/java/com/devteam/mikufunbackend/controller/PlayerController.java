@@ -42,7 +42,7 @@ public class PlayerController {
     }
 
     @PutMapping("/file/{fileId}/record/{videoTime}")
-    public void updatePos(@PathVariable int fileId, @PathVariable int videoTime) throws Exception {
+    public void updatePos(@PathVariable int fileId, @PathVariable double videoTime) throws Exception {
         if (playService.updatePos(fileId, videoTime) == true) {
             logger.info("update recentPlayPosition success");
         } else {

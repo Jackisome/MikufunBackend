@@ -96,8 +96,8 @@ public class PlayServiceImpl implements PlayService {
     }
 
     @Override
-    public Boolean updatePos(int fileId,int videoTime){
-        if(resourceInformationDao.updatePlayPosition(fileId,videoTime)==1)
+    public Boolean updatePos(int fileId,double videoTime){
+        if(resourceInformationDao.updatePlayPosition(fileId,(int)videoTime)==1)
             return true;
         else
             return false;
@@ -120,6 +120,7 @@ public class PlayServiceImpl implements PlayService {
         data.put("fileName", resourceEntity.getFileName());
         data.put("ResourceId", resourceEntity.getResourceId());
         data.put("ResourceName", resourceEntity.getResourceName());
+        data.put("episode",resourceEntity.getEpisodeTitle());
         data.put("subtitleUrl", resourceEntity.getSubtitlePath());
         data.put("videoTime", resourceEntity.getRecentPlayPosition());
         data.put("format", resourceEntity.getTransferFormat());

@@ -40,7 +40,7 @@ public interface PlayService {
      * @return
      * @throws Exception
      */
-    Boolean updatePos(int fileId,int videoTime) throws Exception;
+    Boolean updatePos(int fileId,double videoTime) throws Exception;
 
     /**
      * 更新视频最近播放时间

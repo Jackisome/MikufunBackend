@@ -30,7 +30,7 @@ public class RuntimeVariable {
     public static String fontSize = "20px";
 
     // 字幕颜色
-    public static String fontColor = "#fff";
+    public static String fontColor = "#ffffff";
 
     // 字幕距播放器底部距离
     public static String fontBottom = "10px";

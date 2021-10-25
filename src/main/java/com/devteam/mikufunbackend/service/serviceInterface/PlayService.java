@@ -1,10 +1,8 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
-import com.devteam.mikufunbackend.entity.DanmakuPostV0;
-import com.devteam.mikufunbackend.entity.DanmakuV0;
-import com.devteam.mikufunbackend.entity.RegExpV0;
-import com.devteam.mikufunbackend.entity.ResourceEntity;
+import com.devteam.mikufunbackend.entity.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -55,4 +53,18 @@ public interface PlayService {
      * @return
      */
     Map<String, Object> findPlayInformation(int fileId);
+
+    /**
+     * 搜索资源关联的弹幕
+     * @param fileId 文件id
+     * @return 关联弹幕剧集列表
+     */
+    List<MatchEpisodeRespVO> getMatchEpisodes(Integer fileId) throws IOException;
+
+    /**
+     * 更新视频关联的弹幕信息
+     * @param matchEpisodePutReqVO 请求 VO
+     */
+    void putMatchEpisode(MatchEpisodePutReqVO matchEpisodePutReqVO);
+
 }

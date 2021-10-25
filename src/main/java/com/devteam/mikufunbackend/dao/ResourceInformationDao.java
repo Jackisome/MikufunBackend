@@ -55,7 +55,7 @@ public interface ResourceInformationDao {
      * @return
      */
     int updatePlayPosition(int fileId,
-                           int recentPlayPosition);
+                           double recentPlayPosition);
 
     /**
      * 更新视频最近播放时间

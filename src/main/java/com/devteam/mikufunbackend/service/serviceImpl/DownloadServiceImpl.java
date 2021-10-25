@@ -149,28 +149,31 @@ public class DownloadServiceImpl implements DownloadService {
         aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_WAITING));
         aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_STOPPED));
         List<DownloadStatusV0> data = new ArrayList<>();
-        aria2StatusV0s.forEach(k -> {
-            String gid = k.getGid();
-            int downloadSpeed = k.getDownloadSpeed();
-            int uploadSpeed = k.getUploadSpeed();
-            String status = k.getStatus();
+        for (Aria2StatusV0 aria2StatusV0 : aria2StatusV0s) {
+            String gid = aria2StatusV0.getGid();
+            int downloadSpeed = aria2StatusV0.getDownloadSpeed();
+            int uploadSpeed = aria2StatusV0.getUploadSpeed();
+            String status = aria2StatusV0.getStatus();
+            if ("active".equals(status) && aria2StatusV0.getCompletedLength() == aria2StatusV0.getTotalLength()) {
+                status = "seeding";
+            }
             if (!"complete".equals(status) && !"removed".equals(status)) {
-                k.getFiles().forEach(fileV0 -> {
-                    if (fileV0.isSelected() && !ResultUtil.getFileName(fileV0.getPath()).equals(fileV0.getPath())) {
+                for (Aria2FileV0 file : aria2StatusV0.getFiles()) {
+                    if (file.isSelected() && !ResultUtil.getFileName(file.getPath()).equals(file.getPath())) {
                         DownloadStatusV0 downloadStatusV0 = DownloadStatusV0.builder()
                                 .gid(gid)
-                                .fileName(ResultUtil.getFileName(fileV0.getPath()))
-                                .completedLength(fileV0.getCompletedLength() / (1024.0 * 1024))
-                                .fileSize(fileV0.getLength() / (1024.0 * 1024))
+                                .fileName(ResultUtil.getFileName(file.getPath()))
+                                .completedLength(file.getCompletedLength() / (1024.0 * 1024))
+                                .fileSize(file.getLength() / (1024.0 * 1024))
                                 .downloadSpeed(downloadSpeed / (1024.0 * 1024))
                                 .uploadSpeed(uploadSpeed / (1024.0 * 1024))
                                 .status(status)
                                 .build();
                         data.add(downloadStatusV0);
                     }
-                });
+                }
             }
-        });
+        }
         logger.info("get downloading file, files: {}", data);
         return data;
     }

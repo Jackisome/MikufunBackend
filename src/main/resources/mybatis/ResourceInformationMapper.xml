@@ -15,7 +15,7 @@
         <result property="imageUrl" column="image_url" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="subtitlePath" column="subtitle_path"  javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="recentPlayTime" column="recent_play_time" javaType="java.sql.Timestamp" jdbcType="TIMESTAMP"/>
-        <result property="recentPlayPosition" column="recent_play_position" javaType="int" jdbcType="NUMERIC"/>
+        <result property="recentPlayPosition" column="recent_play_position" javaType="double" jdbcType="DOUBLE"/>
         <result property="downloadTime" column="download_time" javaType="java.sql.Timestamp" jdbcType="TIMESTAMP"/>
         <result property="exactMatch" column="exact_match" javaType="int" jdbcType="NUMERIC"/>
         <result property="resourceId" column="resource_id" javaType="int" jdbcType="NUMERIC"/>

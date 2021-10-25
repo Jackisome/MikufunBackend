@@ -24,7 +24,7 @@ public class ResourceEntity {
     String imageUrl;
     String subtitlePath;
     Timestamp recentPlayTime;
-    int recentPlayPosition;
+    double recentPlayPosition;
     Timestamp downloadTime;
     int exactMatch;
     int resourceId;

@@ -8,15 +8,17 @@ import java.util.Date;
 
 /**
  * @author Wooyuwen
- * @date 2021-10-06
+ * @date 2021-10-24
  */
 @Data
 @Accessors(chain = true)
 @Builder
-public class RecentStatusV0 {
+public class RecentStatusV1 {
     String fileId;
+    String fileName;
     String resourceName;
     String time;
     String imageUrl;
     String episode;
+    String videoTime;
 }

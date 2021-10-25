@@ -9,15 +9,12 @@ import com.devteam.mikufunbackend.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.convert.PeriodFormat;
 import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 
 import java.sql.*;
-import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -45,7 +42,7 @@ public class RecentServiceImpl implements RecentService {
                             .time(TimeUtil.getFormattedTimeToDay(k.getRecentPlayTime()))
                             .imageUrl(k.getImageUrl())
                             .episode(k.getEpisodeTitle())
-                            .videoTime(TimeUtil.getFormattedTimeFromSec(k.getRecentPlayPosition()))
+                            .videoTime(TimeUtil.getFormattedTimeFromSec((int) k.getRecentPlayPosition()))
                             .build();
                     data.add(recentStatusV1);
                     logger.info("timestamp:{}",k.getRecentPlayTime());

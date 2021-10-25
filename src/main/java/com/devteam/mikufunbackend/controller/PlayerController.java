@@ -2,9 +2,8 @@ package com.devteam.mikufunbackend.controller;
 
 import com.devteam.mikufunbackend.constant.ResponseEnum;
 import com.devteam.mikufunbackend.entity.DanmakuPostV0;
-import com.devteam.mikufunbackend.entity.ResourceEntity;
-import com.devteam.mikufunbackend.handle.FileIdException;
-import com.devteam.mikufunbackend.service.serviceImpl.PlayServiceImpl;
+import com.devteam.mikufunbackend.entity.MatchEpisodePutReqVO;
+import com.devteam.mikufunbackend.entity.MatchEpisodeRespVO;
 import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.PlayService;
 import com.devteam.mikufunbackend.util.DanmakuResponse;
@@ -15,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -78,6 +78,20 @@ public class PlayerController {
         Map<String, Object> data = ResultUtil.getData();
         data.put("regexs", playService.getRegex());
         return ResultUtil.success(data);
+    }
+
+    @GetMapping("/match/{fileId}")
+    public Response getMatchEpisodes(@PathVariable Integer fileId) throws IOException {
+        List<MatchEpisodeRespVO> matchEpisodeRespVOs = playService.getMatchEpisodes(fileId);
+        Map<String, Object> data = ResultUtil.getData();
+        data.put("matchEpisodes", matchEpisodeRespVOs);
+        return ResultUtil.success(data);
+    }
+
+    @PutMapping("/match")
+    public Response putMatchEpisode(@RequestBody MatchEpisodePutReqVO matchEpisodePutReqVO){
+        playService.putMatchEpisode(matchEpisodePutReqVO);
+        return ResultUtil.success();
     }
 
 }

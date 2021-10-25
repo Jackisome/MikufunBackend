@@ -13,7 +13,7 @@ create table if not exists mikufun.mikufun_resource_information
     image_url            text comment '番剧图片地址',
     subtitle_path        varchar(1024) default '' comment '字幕路径',
     recent_play_time     timestamp     default '2000-01-01 01:00:00' comment '最近播放时间',
-    recent_play_position int           default 0 comment '最近播放位置，单位为秒',
+    recent_play_position double           default   0.00    comment '最近播放位置，单位为秒',
     download_time        timestamp     default CURRENT_TIMESTAMP comment '下载时间，实际为文件处理完成的保存时间',
     exact_match          int           default 0 comment '对应的番剧名和集数是否精确匹配',
     resource_id          int           default 0 comment '番剧标识',

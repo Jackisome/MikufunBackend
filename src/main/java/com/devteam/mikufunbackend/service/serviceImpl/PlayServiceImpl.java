@@ -38,15 +38,15 @@ public class PlayServiceImpl implements PlayService {
     Logger logger = LoggerFactory.getLogger(PlayServiceImpl.class);
 
     @Override
-    public List<List<Object>> getDanmaku(int fileId) throws Exception{
+    public List<List<Object>> getDanmaku(int fileId) throws Exception {
 //        List<DanmakuV0> data = new ArrayList<>();
         List<List<Object>> data = new ArrayList<>();
         String url1 = "";
         ResourceEntity resourceEntity = null;
         try {
             resourceEntity = resourceInformationDao.findResourceInformationByFileId(fileId);
-            url1="https://api.acplay.net/api/v2/comment/"+resourceEntity.getEpisodeId()+"?withRelated=true";
-        }catch(Exception e){
+            url1 = "https://api.acplay.net/api/v2/comment/" + resourceEntity.getEpisodeId() + "?withRelated=true";
+        } catch (Exception e) {
             logger.error(e.toString());
         }
         try {
@@ -58,8 +58,8 @@ public class PlayServiceImpl implements PlayService {
             if (entity1 != null) {
                 List<JSONObject> dataList = JSON.parseArray(JSONObject
                         .parseObject(EntityUtils.toString(entity1))
-                        .getJSONArray("comments").toJSONString(),JSONObject.class);
-                dataList.forEach(k->{
+                        .getJSONArray("comments").toJSONString(), JSONObject.class);
+                dataList.forEach(k -> {
                     // 过滤弹幕
                     if (!checkDanmuku(k.getString("m"))) {
                         return;
@@ -83,32 +83,32 @@ public class PlayServiceImpl implements PlayService {
                 });
             }
         } catch (Exception e) {
-            logger.info("error info : {}",e.toString());
+            logger.info("error info : {}", e.toString());
         }
         logger.info("get danmaku , info: {}", data);
         return data;
     }
 
     @Override
-    public Boolean postDanmaku(DanmakuPostV0 comment) throws Exception{
-        try{
+    public Boolean postDanmaku(DanmakuPostV0 comment) throws Exception {
+        try {
             //todo
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.error(e.toString());
         }
         return true;
     }
 
     @Override
-    public List<RegExpV0> getRegex(){
+    public List<RegExpV0> getRegex() {
         List<RegExpV0> data = new ArrayList<>();
         //todo
         return data;
     }
 
     @Override
-    public Boolean updatePos(int fileId,double videoTime){
-        if(resourceInformationDao.updatePlayPosition(fileId,(int)videoTime)==1)
+    public Boolean updatePos(int fileId, double videoTime) {
+        if (resourceInformationDao.updatePlayPosition(fileId, videoTime) == 1)
             return true;
         else
             return false;
@@ -131,13 +131,13 @@ public class PlayServiceImpl implements PlayService {
         data.put("fileName", resourceEntity.getFileName());
         data.put("ResourceId", resourceEntity.getResourceId());
         data.put("ResourceName", resourceEntity.getResourceName());
-        data.put("episode",resourceEntity.getEpisodeTitle());
+        data.put("episode", resourceEntity.getEpisodeTitle());
         data.put("subtitleUrl", resourceEntity.getSubtitlePath());
         data.put("videoTime", resourceEntity.getRecentPlayPosition());
         data.put("format", resourceEntity.getTransferFormat());
-        data.put("fontSize",RuntimeVariable.fontSize);
-        data.put("fontBottom",RuntimeVariable.fontBottom);
-        data.put("fontColor",RuntimeVariable.fontColor);
+        data.put("fontSize", RuntimeVariable.fontSize);
+        data.put("fontBottom", RuntimeVariable.fontBottom);
+        data.put("fontColor", RuntimeVariable.fontColor);
         return data;
     }
 
@@ -198,9 +198,9 @@ public class PlayServiceImpl implements PlayService {
         if (rule == null) {
             return true;
         }
-        StringTokenizer tokenizer = new StringTokenizer(rule,"\n");
+        StringTokenizer tokenizer = new StringTokenizer(rule, "\n");
         List<Pattern> rules = new ArrayList<>();
-        while(tokenizer.hasMoreTokens()) {
+        while (tokenizer.hasMoreTokens()) {
             String tempRule = tokenizer.nextToken();
             try {
                 Pattern pattern = Pattern.compile(tempRule);
@@ -210,9 +210,9 @@ public class PlayServiceImpl implements PlayService {
             }
         }
         // 若匹配某一屏蔽规则，返回 false;
-        for (Pattern pattern:rules) {
+        for (Pattern pattern : rules) {
             Matcher matcher = pattern.matcher(comment);
-            if(matcher.find()) {
+            if (matcher.find()) {
                 return false;
             }
         }

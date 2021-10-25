@@ -13,7 +13,7 @@ public class PlayInformationV0 {
     String resourceId;
     String resourceName;
     String subtitleUrl;
-    int videoTime;
+    double videoTime;
     String format;
 
     public PlayInformationV0(ResourceEntity resourceEntity) {

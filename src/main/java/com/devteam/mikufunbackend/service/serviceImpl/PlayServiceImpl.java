@@ -135,6 +135,9 @@ public class PlayServiceImpl implements PlayService {
         data.put("subtitleUrl", resourceEntity.getSubtitlePath());
         data.put("videoTime", resourceEntity.getRecentPlayPosition());
         data.put("format", resourceEntity.getTransferFormat());
+        data.put("fontSize",RuntimeVariable.fontSize);
+        data.put("fontBottom",RuntimeVariable.fontBottom);
+        data.put("fontColor",RuntimeVariable.fontColor);
         return data;
     }
 

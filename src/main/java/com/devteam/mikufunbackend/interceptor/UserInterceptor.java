@@ -37,11 +37,19 @@ public class UserInterceptor implements HandlerInterceptor {
         }
 
         if(!TokenUtil.validateUserToken(token)){
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json;charset=UTF-8");
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write(ResultUtil.fail(ResponseEnum.LOGIN_ERROR).toString());
-            logger.info("user unauthorized");
+            if (!TokenUtil.validateVisitorToken(token)) {
+                response.setCharacterEncoding("UTF-8");
+                response.setContentType("application/json;charset=UTF-8");
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.getWriter().write(ResultUtil.fail(ResponseEnum.LOGIN_ERROR).toString());
+                logger.info("user unauthorized");
+            } else {
+                response.setCharacterEncoding("UTF-8");
+                response.setContentType("application/json;charset=UTF-8");
+                response.setStatus(HttpStatus.OK.value());
+                response.getWriter().write(ResultUtil.fail(ResponseEnum.VISITOR_STOP).toString());
+                logger.info("visitor stop to visit");
+            }
             return false;
         }
         logger.info("user authorized");

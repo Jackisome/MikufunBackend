@@ -19,7 +19,8 @@ public enum ResponseEnum {
     AUTO_DOWNLOAD_ERROR(8, "auto download error"),
     FILE_ERROR(9, "file error"),
     DOWNLOADED_EXCEPTION(10, "downloaded exception"),
-    ORGANIZE_ERROR(11, "organize error");
+    ORGANIZE_ERROR(11, "organize error"),
+    VISITOR_STOP(12, "访客无权访问");
 
     private final int statusCode;
     private final String message;

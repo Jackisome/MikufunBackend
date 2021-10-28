@@ -1,9 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
-import com.devteam.mikufunbackend.constant.AnimeTypeEnum;
-import com.devteam.mikufunbackend.entity.CalendarInfoV0;
-import com.devteam.mikufunbackend.entity.RecentStatusV0;
-import com.devteam.mikufunbackend.entity.RecentStatusV1;
+import com.devteam.mikufunbackend.entity.RecentDownloadV0;
+import com.devteam.mikufunbackend.entity.RecentPlayV0;
 
 import java.util.List;
 
@@ -16,11 +14,11 @@ public interface RecentService {
      * 获取最近播放
      * @return
      */
-    List<RecentStatusV1> recentPlay() throws Exception;
+    List<RecentPlayV0> recentPlay() throws Exception;
 
     /**
      * 获取最近下载
      * @return
      */
-    List<RecentStatusV0> recentDownload() throws Exception;
+    List<RecentDownloadV0> recentDownload() throws Exception;
 }

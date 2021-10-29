@@ -1,5 +1,6 @@
 package com.devteam.mikufunbackend.interceptor;
 
+import com.alibaba.fastjson.JSONObject;
 import com.devteam.mikufunbackend.constant.ResponseEnum;
 import com.devteam.mikufunbackend.util.ResultUtil;
 import com.devteam.mikufunbackend.util.TokenUtil;
@@ -38,7 +39,7 @@ public class VisitorInterceptor implements HandlerInterceptor {
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.getWriter().write(ResultUtil.fail(ResponseEnum.LOGIN_ERROR).toString());
+            response.getWriter().write(JSONObject.toJSONString(ResultUtil.fail(ResponseEnum.LOGIN_ERROR)));
             logger.info("user or visitor unauthorized");
             return false;
         }

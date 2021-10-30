@@ -1,6 +1,8 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
 
+import com.devteam.mikufunbackend.entity.SearchResourceIntroductionVO;
+
 import java.util.List;
 import java.util.Map;
 
@@ -29,5 +31,12 @@ public interface FavoriteService {
      * @return 番剧 Id 及其收藏状态映射
      */
     Map<Integer, String> getFavoriteStatusListById(List<Integer> resourceIds);
+
+    /**
+     * 根据观看状态返回收藏的番剧
+     * @param status
+     * @return
+     */
+    List<SearchResourceIntroductionVO> getFavoriteResourceByStatus(String status);
 
 }

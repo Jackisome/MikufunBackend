@@ -8,9 +8,9 @@ import java.util.List;
 @Mapper
 public interface FavoriteStatusRecordDao {
 
-    int addFavoriteStatusRecord(Integer resourceId, String status);
+    int addFavoriteStatusRecord(FavoriteStatusRecordEntity favoriteStatusRecordEntity);
 
-    int updateFavoriteStatusRecord(Integer recordId, Integer resourceId, String status);
+    int updateFavoriteStatusRecord(Integer resourceId, String status);
 
     FavoriteStatusRecordEntity findFavoriteStatusRecordByResourceId(Integer resourceId);
 
@@ -18,6 +18,5 @@ public interface FavoriteStatusRecordDao {
 
     List<FavoriteStatusRecordEntity> findFavoriteStatusRecordsByResourceId(List<Integer> resourceIds);
 
-//    int deleteFavoriteStatusRecord(Integer recordId);
-
+    int deleteFavoriteStatusRecord(int resourceId);
 }

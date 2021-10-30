@@ -18,6 +18,10 @@ spring:
     url: jdbc:mysql://72.44.78.113:13306/mikufun?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false
     username: root
     password: 123456
+  servlet:
+    multipart:
+      max-request-size: 5GB
+      max-file-size: 5GB
 ## mybatis 配置
 mybatis:
   mapper-locations: classpath*:**/mybatis/*Mapper.xml

@@ -7,6 +7,7 @@ import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -46,5 +47,11 @@ public class FreeDownloadController {
         int deleteFileNumber = localServerService.deleteFile(fileUrl);
         data.put("deleteFileNumber", deleteFileNumber);
         return ResultUtil.success(data);
+    }
+
+    @PostMapping("/update")
+    public Response uploadFiles(@RequestParam("file") MultipartFile[] multipartFiles) {
+        freeDownloadService.saveFiles(multipartFiles);
+        return ResultUtil.success();
     }
 }

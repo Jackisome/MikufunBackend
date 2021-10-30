@@ -21,7 +21,8 @@ public enum ResponseEnum {
     DOWNLOADED_EXCEPTION(10, "downloaded exception"),
     ORGANIZE_ERROR(11, "organize error"),
     VISITOR_STOP(12, "访客无权访问"),
-    TOKEN_ERROR(13, "token_error");
+    TOKEN_ERROR(13, "token_error"),
+    FILE_UPLOAD_ERROR(14, "file upload error");
 
     private final int statusCode;
     private final String message;

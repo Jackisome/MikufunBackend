@@ -92,4 +92,11 @@ public class ExceptionHandle {
         logger.error(e.getMessage());
         return ResultUtil.fail(ResponseEnum.TOKEN_ERROR);
     }
+
+    @ExceptionHandler(value = FileUploadException.class)
+    @ResponseBody
+    public Response fileUploadExceptionHandle(FileUploadException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(ResponseEnum.FILE_UPLOAD_ERROR);
+    }
 }

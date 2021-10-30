@@ -1,46 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.devteam.mikufunbackend.dao.FavoriteStatusRecordDao">
-  <resultMap id="BaseResultMap" type="com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity">
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="record_id" jdbcType="INTEGER" property="recordId" />
-    <result column="resource_id" jdbcType="INTEGER" property="resourceId" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-  </resultMap>
-  <select id="findFavoriteStatusRecordByStatus" resultType="com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity">
-    select record_id, resource_id, status, update_time
-    from mikufun_favorite_status_record
-    where status = #{status}
-  </select>
+    <resultMap id="BaseResultMap" type="com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <result property="resourceId" column="resource_id" javaType="int" jdbcType="NUMERIC"/>
+        <result property="resourceName" column="resource_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="airDate" column="air_date" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="description" column="description" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="imageUrl" column="image_url" javaType="java.lang.String" jdbcType="VARCHAR"/>
+        <result property="rating" column="rating" javaType="double" jdbcType="DOUBLE"/>
+        <result property="status" column="status" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    </resultMap>
 
-  <select id="findFavoriteStatusRecordByResourceId" resultType="com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity">
-    select record_id, resource_id, status, update_time
-    from mikufun_favorite_status_record
-    where resource_id = #{resourceId}
-  </select>
+    <insert id="addFavoriteStatusRecord">
+        insert into mikufun_favorite_status_record(resource_id, resource_name, air_date, description, image_url, rating,
+                                                   status)
+        values (#{resourceId}, #{resourceName}, #{airDate}, #{description}, #{imageUrl}, #{rating}, #{status})
+    </insert>
 
-  <select id="findFavoriteStatusRecordsByResourceId" resultType="com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity"
-  parameterType="java.util.List">
-    select record_id, resource_id, status, update_time
-    from mikufun_favorite_status_record
-    WHERE resource_id in
-    <foreach item="item" index="index" collection="list"
-             open="(" separator="," close=")">
-      #{item}
-    </foreach>
-  </select>
+    <delete id="deleteFavoriteStatusRecord">
+        delete
+        from mikufun_favorite_status_record
+        where resource_id = #{resourceId}
+    </delete>
 
-  <insert id="addFavoriteStatusRecord">
-    insert into mikufun_favorite_status_record(resource_id, status)
-    values(#{resourceId}, #{status})
-  </insert>
+    <update id="updateFavoriteStatusRecord">
+        update mikufun_favorite_status_record
+        set status = #{status}
+        where resource_id = #{resourceId}
+    </update>
 
-  <update id="updateFavoriteStatusRecord">
-    update mikufun_favorite_status_record
-    set status = #{status}
-    where record_id = #{recordId}
-  </update>
+    <select id="findFavoriteStatusRecordByStatus"
+            resultType="com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity">
+        select resource_id, resource_name, air_date, description, image_url, rating, status
+        from mikufun_favorite_status_record
+        where status = #{status}
+        order by update_time DESC
+    </select>
+
+    <select id="findFavoriteStatusRecordByResourceId"
+            resultType="com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity">
+        select resource_id, resource_name, air_date, description, image_url, rating, status
+        from mikufun_favorite_status_record
+        where resource_id = #{resourceId}
+    </select>
+
+    <select id="findFavoriteStatusRecordsByResourceId"
+            resultType="com.devteam.mikufunbackend.entity.FavoriteStatusRecordEntity"
+            parameterType="java.util.List">
+        select resource_id, resource_name, air_date, description, image_url, rating, status
+        from mikufun_favorite_status_record
+        WHERE resource_id in
+        <foreach item="item" index="index" collection="list"
+                 open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

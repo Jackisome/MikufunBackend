@@ -1,5 +1,6 @@
 package com.devteam.mikufunbackend.entity;
 
+import com.devteam.mikufunbackend.constant.FavoriteStatusEnum;
 import lombok.*;
 
 import java.util.Date;
@@ -10,22 +11,33 @@ import java.util.Date;
 @Data
 public class FavoriteStatusRecordEntity {
     /**
-     * id
+     * 资源 Id
      */
-    private Integer recordId;
-
+    private int resourceId;
     /**
-     * 番剧标识
+     * 资源标题
      */
-    private Integer resourceId;
-
+    private String resourceName;
     /**
-     * 收藏状态
+     * 上映日期
+     */
+    private String airDate;
+    /**
+     * 番剧简介
+     */
+    private String description;
+    /**
+     * 海报图片地址
+     */
+    private String imageUrl;
+    /**
+     * 综合评分
+     */
+    private Double rating;
+    /**
+     * 播放状态
+     *
+     * 枚举 {@link FavoriteStatusEnum}
      */
     private String status;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 }

@@ -6,6 +6,7 @@ import com.devteam.mikufunbackend.util.ResultUtil;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * @author Jackisome
@@ -18,11 +19,18 @@ public class FavoriteController {
     @Resource
     private FavoriteService favoriteService;
 
-    @PutMapping("/{resourceId}/status/{status}")
+    @PutMapping("/resource/{resourceId}/status/{status}")
     public Response setFavoriteStatus(@PathVariable("resourceId") Integer resourceId,
                                         @PathVariable("status") String status){
         favoriteService.setFavoriteStatus(resourceId, status);
         return ResultUtil.success();
+    }
+
+    @GetMapping("/status/{status}")
+    public Response getFavoriteResourceByStatus(@PathVariable("status") String status) {
+        Map<String, Object> data = ResultUtil.getData();
+        data.put("entries", favoriteService.getFavoriteResourceByStatus(status));
+        return ResultUtil.success(data);
     }
 
 }

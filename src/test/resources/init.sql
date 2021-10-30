@@ -44,10 +44,17 @@ CREATE TABLE IF NOT EXISTS `mikufun_favorite_status_record`
 (
     `record_id`   int(11)     NOT NULL AUTO_INCREMENT COMMENT 'id',
     `resource_id` int(11)     NOT NULL COMMENT '番剧标识',
+    `resource_name` varchar(100)    NOT NULL    COMMENT '番剧名',
+    `air_date`  varchar(20) COMMENT '上映日期',
+    `description`   varchar(1024)   COMMENT '番剧简介',
+    `image_url` varchar(1024)   COMMENT '番剧图片地址',
+    `rating`    double  default 0.00    COMMENT '番剧评分',
     `status`      varchar(20) NOT NULL COMMENT '收藏状态',
     `update_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`record_id`)
-)
+);
+
+
 
 -- 自动下载规则
 create table if not exists mikufun.mikufun_auto_download_rule

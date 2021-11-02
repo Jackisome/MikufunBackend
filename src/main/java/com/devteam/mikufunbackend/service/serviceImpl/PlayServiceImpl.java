@@ -92,7 +92,7 @@ public class PlayServiceImpl implements PlayService {
     @Override
     public Boolean postDanmaku(DanmakuPostV0 comment) throws Exception {
         try {
-            //todo
+            logger.info("put danmaku, danmaku: {}", comment);
         } catch (Exception e) {
             logger.error(e.toString());
         }

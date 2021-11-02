@@ -10,7 +10,12 @@ import lombok.*;
 /**
  * 增加弹幕
  */
+@Data
 public class DanmakuPostV0 {
-    private String fileId,content,color;
-    private Integer videoTime;
+    String id;
+    String author;
+    double time;
+    String text;
+    int color;
+    int type;
 }

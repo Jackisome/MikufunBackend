@@ -75,7 +75,7 @@ public class Aria2ServiceImpl implements Aria2Service {
     }
 
     @Override
-    public boolean pauseAllDownloadingFile() throws IOException {
+    public boolean pauseAllDownloadingFile() throws IOException, Aria2Exception {
         Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
         aria2RequestV0.setMethod(Aria2Constant.METHOD_PAUSE_ALL);
         logger.info("begin pause all downloading file");
@@ -84,14 +84,13 @@ public class Aria2ServiceImpl implements Aria2Service {
         System.out.println(entityString);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2未正常暂停所有下载");
-            throw new Aria2Exception("暂停所有下载未正常进行");
         }
         logger.info("send to aria2 for pause all finished");
         return true;
     }
 
     @Override
-    public boolean unpauseAllDownloadingFile() throws IOException {
+    public boolean unpauseAllDownloadingFile() throws IOException, Aria2Exception {
         Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
         aria2RequestV0.setMethod(Aria2Constant.METHOD_UNPAUSE_ALL);
         logger.info("begin unpause all downloading file");
@@ -100,14 +99,13 @@ public class Aria2ServiceImpl implements Aria2Service {
         System.out.println(entityString);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2未正常恢复所有下载");
-            throw new Aria2Exception("恢复所有下载未正常进行");
         }
         logger.info("send to aria2 for unpause all finished");
         return true;
     }
 
     @Override
-    public boolean transferDownloadStatus(String gid, String method) throws IOException {
+    public boolean transferDownloadStatus(String gid, String method) throws IOException, Aria2Exception {
         Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
         aria2RequestV0.setMethod(method)
                 .addParam(gid);
@@ -117,7 +115,6 @@ public class Aria2ServiceImpl implements Aria2Service {
         System.out.println(entityString);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2状态切换未正常进行, gid: {}, method: {}", gid, method);
-            throw new Aria2Exception("下载状态未正常切换");
         }
         logger.info("send to aria2 for transfer file status finished, gid: {}, method: {}", gid, method);
         return true;

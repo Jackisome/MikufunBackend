@@ -218,7 +218,7 @@ public class DownloadServiceImpl implements DownloadService {
                 logger.info("not find file wanted to delete, fileId: {}", fileId);
                 simpleFinishFileV0 = SimpleFinishFileV0.builder()
                         .fileId(String.valueOf(fileId))
-                        .fileId(String.valueOf(fileId))
+                        .fileName("")
                         .delete(false)
                         .build();
             } else {
@@ -229,6 +229,8 @@ public class DownloadServiceImpl implements DownloadService {
                     changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE);
                 } catch (IOException e) {
                     logger.error(e.toString());
+                } catch (Aria2Exception e) {
+                    logger.warn(e.toString());
                 }
                 // 如果源文件存在，先删除源文件
                 if (downloadStatusEntity.getIsSourceDelete() == 0) {

@@ -62,9 +62,14 @@ public class PlayerController {
 //            return ResultUtil.fail(ResponseEnum.FILEID_ERROR);
     }
 
-    @PostMapping("/danmaku")
-    public Response postDanmaku(@RequestBody DanmakuPostV0 body) throws Exception {
-        if (playService.postDanmaku(body)) {
+    @PostMapping("/danmaku/v3")
+    public Response postDanmaku(@RequestParam String id,
+                                @RequestParam String author,
+                                @RequestParam double time,
+                                @RequestParam String text,
+                                @RequestParam int color,
+                                @RequestParam int type) throws Exception {
+        if (playService.postDanmaku(null)) {
             logger.info("post Danmaku success");
             return ResultUtil.success();
         } else {
@@ -89,7 +94,7 @@ public class PlayerController {
     }
 
     @PutMapping("/match")
-    public Response putMatchEpisode(@RequestBody MatchEpisodePutReqVO matchEpisodePutReqVO){
+    public Response putMatchEpisode(@RequestBody MatchEpisodePutReqVO matchEpisodePutReqVO) {
         playService.putMatchEpisode(matchEpisodePutReqVO);
         return ResultUtil.success();
     }

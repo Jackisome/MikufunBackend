@@ -10,8 +10,8 @@ import java.util.List;
  */
 @Data
 public class Aria2StatusV0 {
-    int completedLength;
-    int totalLength;
+    long completedLength;
+    long totalLength;
     int downloadSpeed;
     int uploadSpeed;
     List<Aria2FileV0> files;

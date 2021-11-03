@@ -154,7 +154,7 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public List<ResourceMatchV0> matchResourceInformation(String fileName, String fileHash, int fileSize, int videoDuration) throws IOException {
+    public List<ResourceMatchV0> matchResourceInformation(String fileName, String fileHash, long fileSize, int videoDuration) throws IOException {
         List<ResourceMatchV0> data = new ArrayList<>();
         DandanPlayMatchRequestV0 dandanPlayMatchRequestV0 = DandanPlayMatchRequestV0.builder()
                 .fileName(ResultUtil.getFileNameWithoutExtensionName(fileName))

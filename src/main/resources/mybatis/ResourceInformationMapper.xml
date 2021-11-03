@@ -9,7 +9,7 @@
         <result property="fileName" column="file_name" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="fileUuid" column="file_uuid" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="fileHash" column="file_hash" javaType="java.lang.String" jdbcType="VARCHAR"/>
-        <result property="fileSize" column="file_size" javaType="int" jdbcType="NUMERIC"/>
+        <result property="fileSize" column="file_size" javaType="long" jdbcType="BIGINT"/>
         <result property="transferFormat" column="transfer_format" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="videoDuration" column="video_duration" javaType="int" jdbcType="NUMERIC"/>
         <result property="imageUrl" column="image_url" javaType="java.lang.String" jdbcType="VARCHAR"/>

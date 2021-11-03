@@ -7,7 +7,7 @@ create table if not exists mikufun.mikufun_resource_information
     file_name            varchar(1024) NOT NULL comment '文件名',
     file_uuid            varchar(1024) NOT NULL comment '文件标识uuid',
     file_hash            varchar(100) comment '文件前16MB的MD5值',
-    file_size            int comment '文件大小，单位为byte',
+    file_size            bigint comment '文件大小，单位为byte',
     transfer_format      varchar(100)  NOT NULL comment '文件播放格式',
     video_duration       int           default 0 comment '视频时长，单位为秒',
     image_url            text comment '番剧图片地址',

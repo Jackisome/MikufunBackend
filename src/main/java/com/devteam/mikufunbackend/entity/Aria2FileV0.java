@@ -10,7 +10,7 @@ import lombok.Data;
 public class Aria2FileV0 {
     int index;
     String path;
-    int completedLength;
-    int length;
+    long completedLength;
+    long length;
     boolean selected;
 }

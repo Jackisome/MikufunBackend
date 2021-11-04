@@ -20,7 +20,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -34,9 +36,6 @@ public class DownloadServiceImpl implements DownloadService {
 
     @Autowired
     private Aria2Service aria2Service;
-
-    @Autowired
-    private TransferService transferService;
 
     @Autowired
     private LocalServerService localServerService;
@@ -118,6 +117,8 @@ public class DownloadServiceImpl implements DownloadService {
                 return aria2Service.transferDownloadStatus(gid, Aria2Constant.METHOD_UNPAUSE);
             case REMOVE:
                 return aria2Service.transferDownloadStatus(gid, Aria2Constant.METHOD_REMOVE);
+            case REMOVE_DOWNLOAD_RESULT:
+                return aria2Service.transferDownloadStatus(gid, Aria2Constant.METHOD_REMOVE_DOWNLOAD_RESULT);
             default:
                 return false;
         }
@@ -147,7 +148,6 @@ public class DownloadServiceImpl implements DownloadService {
     public List<DownloadStatusV0> getDownloadingFiles() throws Aria2Exception, IOException {
         List<Aria2StatusV0> aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE);
         aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_WAITING));
-        aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_STOPPED));
         List<DownloadStatusV0> data = new ArrayList<>();
         for (Aria2StatusV0 aria2StatusV0 : aria2StatusV0s) {
             String gid = aria2StatusV0.getGid();
@@ -157,20 +157,18 @@ public class DownloadServiceImpl implements DownloadService {
             if ("active".equals(status) && aria2StatusV0.getCompletedLength() == aria2StatusV0.getTotalLength()) {
                 status = "seeding";
             }
-            if (!"complete".equals(status) && !"removed".equals(status)) {
-                for (Aria2FileV0 file : aria2StatusV0.getFiles()) {
-                    if (file.isSelected() && !ResultUtil.getFileName(file.getPath()).equals(file.getPath())) {
-                        DownloadStatusV0 downloadStatusV0 = DownloadStatusV0.builder()
-                                .gid(gid)
-                                .fileName(ResultUtil.getFileName(file.getPath()))
-                                .completedLength(file.getCompletedLength() / (1024.0 * 1024))
-                                .fileSize(file.getLength() / (1024.0 * 1024))
-                                .downloadSpeed(downloadSpeed / (1024.0 * 1024))
-                                .uploadSpeed(uploadSpeed / (1024.0 * 1024))
-                                .status(status)
-                                .build();
-                        data.add(downloadStatusV0);
-                    }
+            for (Aria2FileV0 file : aria2StatusV0.getFiles()) {
+                if (file.isSelected() && !ResultUtil.getFileName(file.getPath()).equals(file.getPath())) {
+                    DownloadStatusV0 downloadStatusV0 = DownloadStatusV0.builder()
+                            .gid(gid)
+                            .fileName(ResultUtil.getFileName(file.getPath()))
+                            .completedLength(file.getCompletedLength() / (1024.0 * 1024))
+                            .fileSize(file.getLength() / (1024.0 * 1024))
+                            .downloadSpeed(downloadSpeed / (1024.0 * 1024))
+                            .uploadSpeed(uploadSpeed / (1024.0 * 1024))
+                            .status(status)
+                            .build();
+                    data.add(downloadStatusV0);
                 }
             }
         }
@@ -223,11 +221,23 @@ public class DownloadServiceImpl implements DownloadService {
                         .build();
             } else {
                 logger.info("begin delete local file, fileId: {}", fileId);
+                Set<String> completedGids = new HashSet<>();
+                // 获取处于complete状态的所有的gid
+                try {
+                    aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_STOPPED)
+                            .forEach(aria2StatusV0 -> completedGids.add(aria2StatusV0.getGid()));
+                } catch (IOException e) {
+                    logger.error(e.toString());
+                }
                 simpleFinishFileV0 = resourceEntity.getSimpleFinishFileV0();
                 DownloadStatusEntity downloadStatusEntity = downloadStatusDao.findDownloadStatusRecordByFileName(resourceEntity.getFileName());
                 String gid = downloadStatusEntity.getGid();
                 try {
-                    changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE);
+                    // 处于active状态，需要先切换complete状态
+                    if (!completedGids.contains(gid)) {
+                        changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE);
+                    }
+                    changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE_DOWNLOAD_RESULT);
                 } catch (IOException e) {
                     logger.error(e.toString());
                 } catch (Aria2Exception e) {
@@ -253,6 +263,23 @@ public class DownloadServiceImpl implements DownloadService {
             }
             data.add(simpleFinishFileV0);
         });
+        return data;
+    }
+
+    @Override
+    public List<DownloadStatusTransferV0> removeDownloadingFile(List<String> gids) {
+        List<DownloadStatusTransferV0> data = new ArrayList<>();
+        if (ParamUtil.isNotEmpty(gids)) {
+            changeDownloadStatus(gids, Aria2Constant.downloadAction.REMOVE);
+            for (String gid : gids) {
+                List<DownloadStatusEntity> downloadStatusEntities = downloadStatusDao.findDownloadStatusRecordByGid(gid);
+                for (DownloadStatusEntity downloadStatusEntity : downloadStatusEntities) {
+                    localServerService.deleteFile(downloadStatusEntity.getFilePath());
+                }
+                downloadStatusDao.deleteDownloadStatusRecordByGid(gid);
+            }
+            data =  changeDownloadStatus(gids, Aria2Constant.downloadAction.REMOVE_DOWNLOAD_RESULT);
+        }
         return data;
     }
 }

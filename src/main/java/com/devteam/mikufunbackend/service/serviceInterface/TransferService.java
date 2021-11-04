@@ -38,7 +38,7 @@ public interface TransferService {
      * @param videoDuration
      * @return
      */
-    List<ResourceMatchV0> matchResourceInformation(String fileName, String fileHash, int fileSize, int videoDuration) throws IOException;
+    List<ResourceMatchV0> matchResourceInformation(String fileName, String fileHash, long fileSize, int videoDuration) throws IOException;
 
     /**
      * 根据fileUuid寻找资源是否存在字幕文件

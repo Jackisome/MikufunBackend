@@ -117,7 +117,7 @@ public class DownloadServiceImpl implements DownloadService {
             case UNPAUSE:
                 return aria2Service.transferDownloadStatus(gid, Aria2Constant.METHOD_UNPAUSE);
             case REMOVE:
-                return aria2Service.transferDownloadStatus(gid, Aria2Constant.METHOD_REMOVE_DOWNLOAD_RESULT);
+                return aria2Service.transferDownloadStatus(gid, Aria2Constant.METHOD_REMOVE);
             default:
                 return false;
         }
@@ -222,6 +222,7 @@ public class DownloadServiceImpl implements DownloadService {
                         .delete(false)
                         .build();
             } else {
+                logger.info("begin delete local file, fileId: {}", fileId);
                 simpleFinishFileV0 = resourceEntity.getSimpleFinishFileV0();
                 DownloadStatusEntity downloadStatusEntity = downloadStatusDao.findDownloadStatusRecordByFileName(resourceEntity.getFileName());
                 String gid = downloadStatusEntity.getGid();
@@ -231,18 +232,23 @@ public class DownloadServiceImpl implements DownloadService {
                     logger.error(e.toString());
                 } catch (Aria2Exception e) {
                     logger.warn(e.toString());
-                }
-                // 如果源文件存在，先删除源文件
-                if (downloadStatusEntity.getIsSourceDelete() == 0) {
-                    localServerService.deleteFile(downloadStatusEntity.getFilePath());
-                }
-                // 删除转码文件，清除数据表记录
-                if (localServerService.deleteFile(resourceEntity.getImageUrl()) > 0 && localServerService.deleteFile(ParamUtil.getFileDirectory(resourceEntity.getFileUuid())) > 0) {
-                    resourceInformationDao.deleteResourceInformationByFileId(fileId);
-                    logger.info("delete record in resourceInformation table by fileId, fileId: {}", fileId);
-                    downloadStatusDao.deleteDownloadStatusRecordByGidAndFileName(resourceEntity.getGid(), resourceEntity.getFileName());
-                    logger.info("delete record in downloadStatus table by gid and fileName, gid: {}, fileName: {}", resourceEntity.getGid(), resourceEntity.getFileName());
-                    simpleFinishFileV0.setDelete(true);
+                } finally {
+                    // 如果源文件存在，先删除源文件
+                    if (downloadStatusEntity.getIsSourceDelete() == 0) {
+                        logger.info("begin delete source file, fileName: {}, filePath: {}", downloadStatusEntity.getFileName(), downloadStatusEntity.getFilePath());
+                        localServerService.deleteFile(downloadStatusEntity.getFilePath());
+                    }
+                    // 删除转码文件，清除数据表记录
+                    if (localServerService.deleteFile(resourceEntity.getImageUrl()) > 0 && localServerService.deleteFile(ParamUtil.getFileDirectory(resourceEntity.getFileUuid())) > 0) {
+                        if (!"".equals(resourceEntity.getSubtitlePath())) {
+                            localServerService.deleteFile(resourceEntity.getSubtitlePath());
+                        }
+                        resourceInformationDao.deleteResourceInformationByFileId(fileId);
+                        logger.info("delete record in resourceInformation table by fileId, fileId: {}", fileId);
+                        downloadStatusDao.deleteDownloadStatusRecordByGidAndFileName(resourceEntity.getGid(), resourceEntity.getFileName());
+                        logger.info("delete record in downloadStatus table by gid and fileName, gid: {}, fileName: {}", resourceEntity.getGid(), resourceEntity.getFileName());
+                        simpleFinishFileV0.setDelete(true);
+                    }
                 }
             }
             data.add(simpleFinishFileV0);

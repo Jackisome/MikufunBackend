@@ -12,7 +12,7 @@ import lombok.Data;
 public class DandanPlayMatchRequestV0 {
     String fileName;
     String fileHash;
-    int fileSize;
+    long fileSize;
     int videoDuration;
     // 'hashAndFileName', 'fileNameOnly', 'hashOnly'
     String matchMode;

@@ -90,6 +90,7 @@ public class LocalServerServiceImpl implements LocalServerService {
         if (!path.endsWith(File.separator)) {
             path = path + File.separator;
         }
+        logger.info("begin delete directory, path: {}", path);
         File directoryFile = new File(path);
         int deleteFilesCount = 0;
         if (!directoryFile.exists() || !directoryFile.isDirectory()) {
@@ -98,8 +99,11 @@ public class LocalServerServiceImpl implements LocalServerService {
         File[] files = directoryFile.listFiles();
         if (files != null) {
             for (File file : files) {
+                String filePath = file.getAbsolutePath();
                 if (file.isFile()) {
+                    logger.info("begin delete file, path: {}", filePath);
                     if (file.delete()) {
+                        logger.info("finish delete file, path: {}", filePath);
                         deleteFilesCount += 1;
                     }
                 } else {
@@ -108,6 +112,7 @@ public class LocalServerServiceImpl implements LocalServerService {
             }
         }
         directoryFile.delete();
+        logger.info("finish delete directory: {}", path);
         return deleteFilesCount;
     }
 }

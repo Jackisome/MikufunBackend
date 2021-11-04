@@ -68,8 +68,8 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public void transfer() throws IOException {
         logger.info("begin schedule task: transfer");
-        List<Aria2StatusV0> aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_STOPPED);
-        aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE));
+        List<Aria2StatusV0> aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE);
+        aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_STOPPED));
         Set<String> gidSet = new HashSet<>(resourceInformationDao.findAllGid());
         for (Aria2StatusV0 aria2StatusV0 : aria2StatusV0s) {
             String gid = aria2StatusV0.getGid();
@@ -141,7 +141,7 @@ public class TransferServiceImpl implements TransferService {
             if (gids.contains(gid)) {
                 String filePath = downloadStatusEntity.getFilePath();
                 try {
-                    downloadService.changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE);
+                    downloadService.changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE_DOWNLOAD_RESULT);
                 } catch (IOException e) {
                     logger.error(e.toString());
                 }

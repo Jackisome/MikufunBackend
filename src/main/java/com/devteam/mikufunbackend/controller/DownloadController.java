@@ -38,9 +38,8 @@ public class DownloadController {
 
     @PutMapping("/remove/{gids}")
     public Response remove(@PathVariable List<String> gids) throws IOException {
-        List<DownloadStatusTransferV0> downloadStatusTransferV0s = downloadService.changeDownloadStatus(gids, Aria2Constant.downloadAction.REMOVE);
         Map<String, Object> data = ResultUtil.getData();
-        data.put("downloadEntries", downloadStatusTransferV0s);
+        data.put("downloadEntries", downloadService.removeDownloadingFile(gids));
         return ResultUtil.success(data);
     }
 

@@ -73,4 +73,11 @@ public interface DownloadService {
      * @throws InterruptedException
      */
     List<SimpleFinishFileV0> deleteLocalFiles(List<Integer> fileIds) throws IOException, InterruptedException;
+
+    /**
+     * 根据gid删除下载中的文件
+     * @param gids
+     * @return
+     */
+    List<DownloadStatusTransferV0> removeDownloadingFile(List<String> gids);
 }

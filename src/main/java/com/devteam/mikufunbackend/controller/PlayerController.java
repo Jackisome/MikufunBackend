@@ -41,12 +41,15 @@ public class PlayerController {
         return ResultUtil.success(data);
     }
 
-    @PutMapping("/file/{fileId}/record/{videoTime}")
-    public void updatePos(@PathVariable int fileId, @PathVariable double videoTime) throws Exception {
-        if (playService.updatePos(fileId, videoTime) == true) {
+    @PostMapping("/file/record")
+    public Response updatePos(@RequestParam String fileId, @RequestParam double videoTime) throws Exception {
+        int fileIdInInteger = Integer.parseInt(fileId);
+        if (playService.updatePos(fileIdInInteger, videoTime) == true) {
             logger.info("update recentPlayPosition success");
+            return ResultUtil.success();
         } else {
             logger.info("update recentPlayPosition failed");
+            return ResultUtil.fail(11, "record");
         }
     }
 
@@ -76,13 +79,6 @@ public class PlayerController {
             logger.info("post Danmaku failed");
             return ResultUtil.fail(ResponseEnum.UNKNOWN_ERROR);
         }
-    }
-
-    @GetMapping("/danmaku/rule")
-    public Response getRegex() throws Exception {
-        Map<String, Object> data = ResultUtil.getData();
-        data.put("regexs", playService.getRegex());
-        return ResultUtil.success(data);
     }
 
     @GetMapping("/match/{fileId}")

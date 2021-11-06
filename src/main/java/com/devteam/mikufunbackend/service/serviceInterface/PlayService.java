@@ -26,12 +26,6 @@ public interface PlayService {
     Boolean postDanmaku(DanmakuPostV0 body) throws Exception;
 
     /**
-     * 获取正则表达式
-     * @return
-     */
-    List<RegExpV0> getRegex() throws Exception;
-
-    /**
      * 更新播放进度
      * @param fileId
      * @param videoTime

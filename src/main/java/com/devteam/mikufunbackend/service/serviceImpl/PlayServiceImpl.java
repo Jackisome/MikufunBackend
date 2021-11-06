@@ -85,7 +85,7 @@ public class PlayServiceImpl implements PlayService {
         } catch (Exception e) {
             logger.info("error info : {}", e.toString());
         }
-        logger.info("get danmaku , info: {}", data);
+        logger.info("get danmaku, the size of danmaku: {}", data.size());
         return data;
     }
 
@@ -97,13 +97,6 @@ public class PlayServiceImpl implements PlayService {
             logger.error(e.toString());
         }
         return true;
-    }
-
-    @Override
-    public List<RegExpV0> getRegex() {
-        List<RegExpV0> data = new ArrayList<>();
-        //todo
-        return data;
     }
 
     @Override

@@ -237,10 +237,13 @@ public class DownloadServiceImpl implements DownloadService {
                     if (!completedGids.contains(gid)) {
                         changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE);
                     }
+                    Thread.sleep(2000);
                     changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE_DOWNLOAD_RESULT);
                 } catch (IOException e) {
                     logger.error(e.toString());
                 } catch (Aria2Exception e) {
+                    logger.warn(e.toString());
+                } catch (InterruptedException e) {
                     logger.warn(e.toString());
                 } finally {
                     // 如果源文件存在，先删除源文件

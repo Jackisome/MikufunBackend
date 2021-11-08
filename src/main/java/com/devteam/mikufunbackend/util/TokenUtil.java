@@ -12,8 +12,11 @@ public class TokenUtil {
             return false;
         }
 
+        // todo: 演示使用，关闭登录人数的限制
+        return true;
+
         // todo: 临时测试使用
-        return RuntimeVariable.token.equals(userToken) || "token".equals(userToken);
+//        return RuntimeVariable.token.equals(userToken) || "token".equals(userToken);
     }
 
     public static boolean validateVisitorToken(String visitorToken) {

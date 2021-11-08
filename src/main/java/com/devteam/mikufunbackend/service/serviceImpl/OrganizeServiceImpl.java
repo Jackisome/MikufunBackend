@@ -42,15 +42,16 @@ public class OrganizeServiceImpl implements OrganizeService {
 
     @Override
     public void setProperty(String userPassword, List<String> visitorPasswords, String transferType, String fontSize, String fontColor, String fontBottom, boolean defaultStatus, String regex) {
-        if (ParamUtil.isNotEmpty(userPassword)) {
-            if (!userPassword.equals(RuntimeVariable.password)) {
-                RuntimeVariable.password = userPassword;
-                RuntimeVariable.token = null;
-                logger.info("set user password, password: {}", RuntimeVariable.password);
-            }
-        } else {
-            throw new OrganizeErrorException("用户密码为空");
-        }
+        // todo: 演示使用，关闭用户修改密码的功能
+//        if (ParamUtil.isNotEmpty(userPassword)) {
+//            if (!userPassword.equals(RuntimeVariable.password)) {
+//                RuntimeVariable.password = userPassword;
+//                RuntimeVariable.token = null;
+//                logger.info("set user password, password: {}", RuntimeVariable.password);
+//            }
+//        } else {
+//            throw new OrganizeErrorException("用户密码为空");
+//        }
 
         if (ParamUtil.isNotEmpty(visitorPasswords)) {
             if (visitorPasswords.size() > 3) {

@@ -99,4 +99,11 @@ public class ExceptionHandle {
         logger.error(e.getMessage());
         return ResultUtil.fail(ResponseEnum.FILE_UPLOAD_ERROR);
     }
+
+    @ExceptionHandler(value = ParameterErrorException.class)
+    @ResponseBody
+    public Response parameterErrorException(ParameterErrorException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(ResponseEnum.PARAMETER_ERROR);
+    }
 }

@@ -116,7 +116,7 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
 
     @Override
     public void findDownloadableResource(List<String> ruleIds) throws DocumentException, ParseException, IOException, InterruptedException {
-        if (ParamUtil.isNotEmpty(ruleIds)) {
+        if (!ParamUtil.isNotEmpty(ruleIds)) {
             throw new ParameterErrorException("没有需要运行的自动下载规则");
         }
         for (String ruleId : ruleIds) {

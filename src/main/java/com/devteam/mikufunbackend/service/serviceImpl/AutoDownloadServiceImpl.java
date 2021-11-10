@@ -10,6 +10,7 @@ import com.devteam.mikufunbackend.service.serviceInterface.AutoDownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.SearchService;
 import com.devteam.mikufunbackend.util.ParamUtil;
+import lombok.SneakyThrows;
 import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,18 +116,24 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
     }
 
     @Override
-    public void findDownloadableResource(List<String> ruleIds) throws DocumentException, ParseException, IOException, InterruptedException {
+    public void findDownloadableResource(List<String> ruleIds) {
         if (!ParamUtil.isNotEmpty(ruleIds)) {
             throw new ParameterErrorException("没有需要运行的自动下载规则");
         }
-        for (String ruleId : ruleIds) {
-            int ruleIdInInteger = Integer.parseInt(ruleId);
-            AutoDownloadRuleEntity autoDownloadRuleEntity = autoDownloadRuleDao.getAutoDownloadRuleByRuleId(ruleIdInInteger);
-            if (autoDownloadRuleEntity == null) {
-                throw new ParameterErrorException("ruleId对应规则不存在");
+        new Thread(() -> {
+            for (String ruleId : ruleIds) {
+                int ruleIdInInteger = Integer.parseInt(ruleId);
+                AutoDownloadRuleEntity autoDownloadRuleEntity = autoDownloadRuleDao.getAutoDownloadRuleByRuleId(ruleIdInInteger);
+                if (autoDownloadRuleEntity == null) {
+                    throw new ParameterErrorException("ruleId对应规则不存在");
+                }
+                try {
+                    findAndUpdateResource(autoDownloadRuleEntity);
+                } catch (Exception e) {
+                    logger.error(e.getMessage());
+                }
             }
-            findAndUpdateResource(autoDownloadRuleEntity);
-        }
+        }).start();
     }
 
     private void findAndUpdateResource(AutoDownloadRuleEntity autoDownloadRuleEntity) throws ParseException, DocumentException, IOException, InterruptedException {

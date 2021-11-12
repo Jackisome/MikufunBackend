@@ -91,7 +91,7 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
 
     @Override
     public boolean deleteAutoDownloadRule(List<String> ruleIds) {
-        if (ParamUtil.isNotEmpty(ruleIds)) {
+        if (!ParamUtil.isNotEmpty(ruleIds)) {
             throw new ParameterErrorException("没有需要删除的自动下载规则");
         }
         int deleteCount = 0;

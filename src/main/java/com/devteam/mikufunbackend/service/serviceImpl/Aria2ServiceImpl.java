@@ -4,10 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.devteam.mikufunbackend.constant.Aria2Constant;
-import com.devteam.mikufunbackend.entity.Aria2OptionV0;
-import com.devteam.mikufunbackend.entity.Aria2RequestV0;
-import com.devteam.mikufunbackend.entity.Aria2ResponseV0;
-import com.devteam.mikufunbackend.entity.Aria2StatusV0;
+import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
@@ -47,9 +44,6 @@ public class Aria2ServiceImpl implements Aria2Service {
             throw new Aria2Exception("下载未正常进行");
         }
         logger.info("send to aria2 for downloading finished, link: {}", link);
-        String entityString = EntityUtils.toString(response.getEntity());
-        Map<String, String> entityMap = JSON.parseObject(entityString, new TypeReference<Map<String, String>>() {
-        });
         return true;
     }
 
@@ -121,8 +115,20 @@ public class Aria2ServiceImpl implements Aria2Service {
     }
 
     @Override
-    public Aria2StatusV0 tellDownloadingFileStatus(String gid) {
-        return null;
+    public Aria2StatusV0 tellDownloadingFileStatus(String gid) throws IOException {
+        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
+        aria2RequestV0.setMethod(Aria2Constant.METHOD_TELL_STATUS)
+                .addParam(gid)
+                .addParam(Aria2Constant.PARAM_ARRAY_OF_FILED);
+        logger.info("begin get file status, gid: {}", gid);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        if (!HttpClientUtil.validateResponse(response)) {
+            logger.error("Aria2查看文件信息未完成");
+            throw new Aria2Exception("查看文件信息未完成");
+        }
+        Aria2SingleResponseV0 aria2SingleResponseV0 = (Aria2SingleResponseV0) HttpClientUtil.convertJsonToObject(response, Aria2SingleResponseV0.class);
+        logger.info("get file status finish, gid: {}, content: {}", gid, aria2SingleResponseV0.toString());
+        return aria2SingleResponseV0.getResult();
     }
 
     @Override
@@ -141,7 +147,7 @@ public class Aria2ServiceImpl implements Aria2Service {
             throw new Aria2Exception("查看文件信息未完成");
         }
         Aria2ResponseV0 aria2ResponseV0 = (Aria2ResponseV0) HttpClientUtil.convertJsonToObject(response, Aria2ResponseV0.class);
-        logger.info("get file status finish, type: {}, content: {}", type, aria2ResponseV0.toString());
+        logger.info("get file status finish, type: {}, size: {}", type, aria2ResponseV0.getResult().size());
         return aria2ResponseV0.getResult();
     }
 

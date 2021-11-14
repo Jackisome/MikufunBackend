@@ -19,6 +19,7 @@ public class ResourceEntity {
     String fileUuid;
     String fileHash;
     long fileSize;
+    String srcFilePath;
     String transferFormat;
     int videoDuration;
     String imageUrl;

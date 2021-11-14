@@ -29,11 +29,6 @@ public class ScheduledTask {
         transferService.transfer();
     }
 
-    @Scheduled(fixedDelay = 60000)
-    public void cleanSourceFiles() throws IOException, InterruptedException {
-        transferService.cleanSourceFiles();
-    }
-
     @Scheduled(fixedDelay = 60 * 60 * 1000)
     public void findDownloadableResource() throws DocumentException, ParseException, IOException, InterruptedException {
         autoDownloadService.findDownloadableResource();

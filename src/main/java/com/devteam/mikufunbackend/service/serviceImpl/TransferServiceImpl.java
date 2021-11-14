@@ -2,13 +2,10 @@ package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.constant.RuntimeVariable;
-import com.devteam.mikufunbackend.dao.DownloadStatusDao;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.ShellException;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
-import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
-import com.devteam.mikufunbackend.service.serviceInterface.LocalServerService;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.HttpClientUtil;
 import com.devteam.mikufunbackend.util.ParamUtil;
@@ -42,19 +39,10 @@ public class TransferServiceImpl implements TransferService {
     Logger logger = LoggerFactory.getLogger(TransferServiceImpl.class);
 
     @Autowired
-    private DownloadStatusDao downloadStatusDao;
-
-    @Autowired
     private ResourceInformationDao resourceInformationDao;
 
     @Autowired
     private Aria2Service aria2Service;
-
-    @Autowired
-    private DownloadService downloadService;
-
-    @Autowired
-    private LocalServerService localServerService;
 
     @Value("${shell.path}")
     private String shellPath;
@@ -71,6 +59,9 @@ public class TransferServiceImpl implements TransferService {
         List<Aria2StatusV0> aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE);
         aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_STOPPED));
         Set<String> gidSet = new HashSet<>(resourceInformationDao.findAllGid());
+        if (!ParamUtil.isNotEmpty(aria2StatusV0s)) {
+            logger.info("not files can be transferred");
+        }
         for (Aria2StatusV0 aria2StatusV0 : aria2StatusV0s) {
             String gid = aria2StatusV0.getGid();
             if (!gidSet.contains(gid)) {
@@ -117,40 +108,29 @@ public class TransferServiceImpl implements TransferService {
             if (exitValue == 0) {
                 logger.info("transfer file to {} and ts file complete, fileName: {}", transferFormat, fileName);
                 resourceInformationDao.addResourceInformation(generateResourceEntity(aria2FileV0, gid, uuid, transferFormat));
-                downloadStatusDao.updateFinishTag(filePath);
                 return true;
             } else {
                 logger.error("transfer file to {} and ts file fail, fileName: {}", transferFormat, fileName);
                 return false;
             }
         } else {
-            logger.error("unresolved file type, fileName: {}", fileName);
-            return false;
-        }
-    }
-
-    @Override
-    public void cleanSourceFiles() throws IOException {
-        List<DownloadStatusEntity> downloadStatusEntities = downloadStatusDao.findAbleDeleteResource();
-        List<Aria2StatusV0> aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_STOPPED);
-        Set<String> gids = new HashSet<>();
-        aria2StatusV0s.forEach(aria2StatusV0 -> gids.add(aria2StatusV0.getGid()));
-        logger.info("begin to clean source file");
-        downloadStatusEntities.forEach(downloadStatusEntity -> {
-            String gid = downloadStatusEntity.getGid();
-            if (gids.contains(gid)) {
-                String filePath = downloadStatusEntity.getFilePath();
-                try {
-                    downloadService.changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE_DOWNLOAD_RESULT);
-                } catch (IOException e) {
-                    logger.error(e.toString());
-                }
-                if (localServerService.deleteFile(filePath) > 0) {
-                    downloadStatusDao.updateSourceDeleteTag(filePath);
-                    logger.info("clean source file and update record in downloadStatus table, filePath: {}", filePath);
-                }
+            // 不能作为视频解析的文件转存到自由下载中
+            logger.info("unresolved file type, source file will move to freedownload directory, fileName: {}", fileName);
+            cmd = new String[]{"bash", shellPath, "mv", filePath};
+            int exitValue = -1;
+            try {
+                exitValue = ShellUtil.runShellCommandSync("/docker", cmd, "/docker/moveLog");
+            } catch (ShellException e) {
+                logger.error(e.getMessage());
             }
-        });
+            if (exitValue == 0) {
+                logger.info("move unresolved file to freedownload directory finish, fileName: {}", fileName);
+                return true;
+            } else {
+                logger.error("move unresolved file to freedownload directory fail, fileName: {}", fileName);
+                return false;
+            }
+        }
     }
 
     @Override
@@ -280,6 +260,7 @@ public class TransferServiceImpl implements TransferService {
                 .fileUuid(uuid)
                 .fileHash(md5)
                 .fileSize(aria2FileV0.getLength())
+                .srcFilePath(aria2FileV0.getPath())
                 .transferFormat(transferFormat)
                 .videoDuration(videoDuration)
                 .imageUrl(imageUrl)

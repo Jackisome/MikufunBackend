@@ -1,17 +1,15 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.devteam.mikufunbackend.constant.Aria2Constant;
-import com.devteam.mikufunbackend.dao.DownloadStatusDao;
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
-import com.devteam.mikufunbackend.handle.DownloadedException;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
 import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.LocalServerService;
-import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.ParamUtil;
 import com.devteam.mikufunbackend.util.ResultUtil;
+import lombok.SneakyThrows;
 import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,11 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * @author Jackisome
@@ -43,69 +38,9 @@ public class DownloadServiceImpl implements DownloadService {
     @Autowired
     private ResourceInformationDao resourceInformationDao;
 
-    @Autowired
-    private DownloadStatusDao downloadStatusDao;
-
     @Override
     public boolean download(String link) throws DocumentException, IOException, Aria2Exception {
-        if (downloadStatusDao.findDownloadStatusRecordByLink(link).size() > 0) {
-            throw new DownloadedException("文件已下载");
-        }
-        aria2Service.addUrl(link);
-        new Thread(() -> {
-            AtomicInteger runTimeCount = new AtomicInteger(0);
-            AtomicInteger count = new AtomicInteger(0);
-            while (runTimeCount.get() < 10 && count.get() == 0) {
-                try {
-                    Thread.sleep(6000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                // 在下载状态表中增加相应记录
-                List<Aria2StatusV0> aria2StatusV0s = new ArrayList<>();
-                try {
-                    aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_WAITING);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                for (Aria2StatusV0 aria2StatusV0 : aria2StatusV0s) {
-                    logger.info("add record to downloadStatus table begin, aria2StatusV0: {}", aria2StatusV0.toString());
-                    String gid = aria2StatusV0.getGid();
-                    // todo: 线程安全
-                    if (downloadStatusDao.findDownloadStatusRecordByGid(gid).size() == 0) {
-                        List<Aria2FileV0> aria2FileV0s = aria2StatusV0.getFiles();
-                        if (ParamUtil.isNotEmpty(aria2FileV0s)) {
-                            aria2FileV0s.forEach(aria2FileV0 -> {
-                                if (!ResultUtil.getFileName(aria2FileV0.getPath()).equals(aria2FileV0.getPath())) {
-                                    DownloadStatusEntity downloadStatusEntity = DownloadStatusEntity.builder()
-                                            .gid(gid)
-                                            .link(link)
-                                            .fileName(ResultUtil.getFileName(aria2FileV0.getPath()))
-                                            .filePath(aria2FileV0.getPath())
-                                            .isFinish(0)
-                                            .isSourceDelete(0)
-                                            .status(aria2StatusV0.getStatus())
-                                            .build();
-                                    downloadStatusDao.addDownloadStatusRecord(downloadStatusEntity);
-                                    count.addAndGet(1);
-                                    logger.info("add record to downloadStatus table, downloadStatusEntity: {}", downloadStatusEntity.toString());
-                                }
-                            });
-                        }
-                    }
-                    if (count.get() > 0) {
-                        break;
-                    }
-                }
-                runTimeCount.addAndGet(1);
-            }
-        }).start();
-        return true;
+        return aria2Service.addUrl(link);
     }
 
     @Override
@@ -125,7 +60,15 @@ public class DownloadServiceImpl implements DownloadService {
     }
 
     @Override
-    public List<DownloadStatusTransferV0> changeDownloadStatus(List<String> gids, Aria2Constant.downloadAction downloadAction) {
+    public DownloadStatusTransferV0 changeDownloadStatusAndGetResults(String gid, Aria2Constant.downloadAction downloadAction) throws IOException {
+        return DownloadStatusTransferV0.builder()
+                .gid(gid)
+                .status(changeDownloadStatus(gid, downloadAction))
+                .build();
+    }
+
+    @Override
+    public List<DownloadStatusTransferV0> changeDownloadStatusAndGetResults(List<String> gids, Aria2Constant.downloadAction downloadAction) {
         List<DownloadStatusTransferV0> data = new ArrayList<>();
         if (ParamUtil.isNotEmpty(gids)) {
             gids.forEach(gid -> {
@@ -208,8 +151,9 @@ public class DownloadServiceImpl implements DownloadService {
 
     @Override
     public List<SimpleFinishFileV0> deleteLocalFiles(List<Integer> fileIds) {
+        logger.info("begin delete local files, fileIds: {}", Arrays.toString(fileIds.toArray()));
         List<SimpleFinishFileV0> data = new ArrayList<>();
-        fileIds.forEach(fileId -> {
+        for (Integer fileId : fileIds) {
             SimpleFinishFileV0 simpleFinishFileV0;
             ResourceEntity resourceEntity = resourceInformationDao.findResourceInformationByFileId(fileId);
             if (resourceEntity == null) {
@@ -221,67 +165,93 @@ public class DownloadServiceImpl implements DownloadService {
                         .build();
             } else {
                 logger.info("begin delete local file, fileId: {}", fileId);
-                Set<String> completedGids = new HashSet<>();
-                // 获取处于complete状态的所有的gid
-                try {
-                    aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_STOPPED)
-                            .forEach(aria2StatusV0 -> completedGids.add(aria2StatusV0.getGid()));
-                } catch (IOException e) {
-                    logger.error(e.toString());
-                }
                 simpleFinishFileV0 = resourceEntity.getSimpleFinishFileV0();
-                DownloadStatusEntity downloadStatusEntity = downloadStatusDao.findDownloadStatusRecordByFileName(resourceEntity.getFileName());
-                String gid = downloadStatusEntity.getGid();
-                try {
-                    // 处于active状态，需要先切换complete状态
-                    if (!completedGids.contains(gid)) {
-                        changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE);
-                    }
-                    Thread.sleep(2000);
-                    changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE_DOWNLOAD_RESULT);
-                } catch (IOException e) {
-                    logger.error(e.toString());
-                } catch (Aria2Exception e) {
-                    logger.warn(e.toString());
-                } catch (InterruptedException e) {
-                    logger.warn(e.toString());
-                } finally {
-                    // 如果源文件存在，先删除源文件
-                    if (downloadStatusEntity.getIsSourceDelete() == 0) {
-                        logger.info("begin delete source file, fileName: {}, filePath: {}", downloadStatusEntity.getFileName(), downloadStatusEntity.getFilePath());
-                        localServerService.deleteFile(downloadStatusEntity.getFilePath());
-                    }
-                    // 删除转码文件，清除数据表记录
-                    if (localServerService.deleteFile(resourceEntity.getImageUrl()) > 0 && localServerService.deleteFile(ParamUtil.getFileDirectory(resourceEntity.getFileUuid())) > 0) {
-                        if (!"".equals(resourceEntity.getSubtitlePath())) {
-                            localServerService.deleteFile(resourceEntity.getSubtitlePath());
-                        }
-                        resourceInformationDao.deleteResourceInformationByFileId(fileId);
-                        logger.info("delete record in resourceInformation table by fileId, fileId: {}", fileId);
-                        downloadStatusDao.deleteDownloadStatusRecordByGidAndFileName(resourceEntity.getGid(), resourceEntity.getFileName());
-                        logger.info("delete record in downloadStatus table by gid and fileName, gid: {}, fileName: {}", resourceEntity.getGid(), resourceEntity.getFileName());
-                        simpleFinishFileV0.setDelete(true);
-                    }
+                // 删除视频截图
+                if (localServerService.deleteFile(resourceEntity.getImageUrl()) == 0) {
+                    logger.warn("image not delete, image url: {}", resourceEntity.getImageUrl());
                 }
+
+                // 删除资源文件
+                if (localServerService.deleteFile(ParamUtil.getFileDirectory(resourceEntity.getFileUuid())) == 0) {
+                    logger.warn("local resource file not delete, file uuid: {}", resourceEntity.getFileUuid());
+                }
+
+                // 删除字幕文件
+                if (!"".equals(resourceEntity.getSubtitlePath()) && localServerService.deleteFile(resourceEntity.getSubtitlePath()) == 0) {
+                    logger.warn("subtitle not delete, subtitle path: {}", resourceEntity.getSubtitlePath());
+                }
+
+                if (resourceInformationDao.deleteResourceInformationByFileId(fileId) == 0) {
+                    logger.warn("not delete record in resourceInformation table by fileId, fileId: {}", fileId);
+                }
+
+                logger.info("delete local file finish, fileId: {}", fileId);
+                simpleFinishFileV0.setDelete(true);
             }
             data.add(simpleFinishFileV0);
-        });
+        }
+        logger.info("delete local files finish, fileIds: {}", Arrays.toString(fileIds.toArray()));
         return data;
     }
 
     @Override
-    public List<DownloadStatusTransferV0> removeDownloadingFile(List<String> gids) {
-        List<DownloadStatusTransferV0> data = new ArrayList<>();
+    public List<DownloadStatusTransferV0> removeDownloadingFile(List<String> gids) throws IOException, InterruptedException {
+        List<DownloadStatusTransferV0> data = Collections.synchronizedList(new ArrayList<>());
         if (ParamUtil.isNotEmpty(gids)) {
-            changeDownloadStatus(gids, Aria2Constant.downloadAction.REMOVE);
+//            CountDownLatch countDownLatch = new CountDownLatch(gids.size());
+//            for (String gid : gids) {
+//                new Thread(new Runnable() {
+//                    @SneakyThrows
+//                    @Override
+//                    public void run() {
+//                        Aria2StatusV0 aria2StatusV0 = aria2Service.tellDownloadingFileStatus(gid);
+//                        if (aria2StatusV0 == null) {
+//                            logger.warn("not found download status related to gid, gid: {}", gid);
+//                        }
+//                        logger.info("begin remove download status and source file, gid: {}, files: {}", gid, aria2StatusV0.getFiles());
+//                        changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE);
+//                        if (ParamUtil.isNotEmpty(aria2StatusV0.getFiles())) {
+//                            for (Aria2FileV0 file : aria2StatusV0.getFiles()) {
+//                                if (localServerService.deleteFile(file.getPath()) == 0) {
+//                                    logger.warn("not delete source file, aria2FileV0: {}", file);
+//                                }
+//                            }
+//                        }
+//                        Thread.sleep(5000);
+//                        DownloadStatusTransferV0 downloadStatusTransferV0 = changeDownloadStatusAndGetResults(gid, Aria2Constant.downloadAction.REMOVE_DOWNLOAD_RESULT);
+//                        if (!downloadStatusTransferV0.isStatus()) {
+//                            logger.warn("stop download status fail, gid: {}", gid);
+//                        }
+//                        data.add(downloadStatusTransferV0);
+//                        logger.info("remove download status and source file finish, gid: {}, files: {}", gid, aria2StatusV0.getFiles());
+//                        countDownLatch.countDown();
+//                    }
+//                });
+//            }
+//            countDownLatch.await();
             for (String gid : gids) {
-                List<DownloadStatusEntity> downloadStatusEntities = downloadStatusDao.findDownloadStatusRecordByGid(gid);
-                for (DownloadStatusEntity downloadStatusEntity : downloadStatusEntities) {
-                    localServerService.deleteFile(downloadStatusEntity.getFilePath());
+                Aria2StatusV0 aria2StatusV0 = aria2Service.tellDownloadingFileStatus(gid);
+                if (aria2StatusV0 == null) {
+                    logger.warn("not found download status related to gid, gid: {}", gid);
                 }
-                downloadStatusDao.deleteDownloadStatusRecordByGid(gid);
+                logger.info("begin remove download status and source file, gid: {}, files: {}", gid, aria2StatusV0.getFiles());
+                changeDownloadStatus(gid, Aria2Constant.downloadAction.REMOVE);
+                Thread.sleep(5000);
+                DownloadStatusTransferV0 downloadStatusTransferV0 = changeDownloadStatusAndGetResults(gid, Aria2Constant.downloadAction.REMOVE_DOWNLOAD_RESULT);
+                if (!downloadStatusTransferV0.isStatus()) {
+                    logger.warn("stop download status fail, gid: {}", gid);
+                }
+                // 无论是否停止下载状态，都需要进行删除源文件
+                if (ParamUtil.isNotEmpty(aria2StatusV0.getFiles())) {
+                    for (Aria2FileV0 file : aria2StatusV0.getFiles()) {
+                        if (localServerService.deleteFile(file.getPath()) == 0) {
+                            logger.warn("not delete source file, aria2FileV0: {}", file);
+                        }
+                    }
+                }
+                data.add(downloadStatusTransferV0);
+                logger.info("remove download status and source file finish, gid: {}, files: {}", gid, aria2StatusV0.getFiles());
             }
-            data =  changeDownloadStatus(gids, Aria2Constant.downloadAction.REMOVE_DOWNLOAD_RESULT);
         }
         return data;
     }

@@ -39,7 +39,7 @@ public class AutoDownloadController {
 
     @PutMapping("/rule/status/{ruleId}")
     public Response changeAutoDownloadRuleStatus(@PathVariable String ruleId) {
-        if (autoDownloadService.updateAutoDonwloadRuleStatus(ruleId)) {
+        if (autoDownloadService.updateAutoDownloadRuleStatus(ruleId)) {
             return ResultUtil.success();
         } else {
             return ResultUtil.fail(ResponseEnum.AUTO_DOWNLOAD_ERROR);

@@ -17,4 +17,5 @@ public class Aria2StatusV0 {
     List<Aria2FileV0> files;
     String gid;
     String status;
+    String dir;
 }

@@ -16,7 +16,7 @@ import java.util.List;
 public interface AutoDownloadService {
     boolean addAutoDownloadRule(AutoDownloadRuleRequestV0 autoDownloadRuleRequestV0) throws ParseException;
 
-    boolean updateAutoDonwloadRuleStatus(String ruleId);
+    boolean updateAutoDownloadRuleStatus(String ruleId);
 
     List<AutoDownloadRuleResponseV0> getAllAutoDownloadRules();
 

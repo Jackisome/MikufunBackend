@@ -56,7 +56,7 @@ public interface Aria2Service {
      * @param gid
      * @return
      */
-    Aria2StatusV0 tellDownloadingFileStatus(String gid);
+    Aria2StatusV0 tellDownloadingFileStatus(String gid) throws IOException;
 
     /**
      * 根据指定状态获取对应所有文件的下载状态

@@ -43,7 +43,8 @@ public class LocalServerServiceImpl implements LocalServerService {
         logger.info("begin delete file, file: {}", path);
         File file = new File(path);
         if (!file.exists()) {
-            throw new FileErrorException("文件未找到");
+            logger.warn("not found file, file path: {}", path);
+            return 0;
         } else if (file.isFile()) {
             return file.delete() ? 1 : 0;
         } else {

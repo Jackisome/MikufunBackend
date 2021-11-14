@@ -37,7 +37,7 @@ public class DownloadController {
     }
 
     @PutMapping("/remove/{gids}")
-    public Response remove(@PathVariable List<String> gids) throws IOException {
+    public Response remove(@PathVariable List<String> gids) throws IOException, InterruptedException {
         Map<String, Object> data = ResultUtil.getData();
         data.put("downloadEntries", downloadService.removeDownloadingFile(gids));
         return ResultUtil.success(data);
@@ -45,7 +45,7 @@ public class DownloadController {
 
     @PutMapping("/pause/{gids}")
     public Response pause(@PathVariable List<String> gids) throws IOException {
-        List<DownloadStatusTransferV0> downloadStatusTransferV0s = downloadService.changeDownloadStatus(gids, Aria2Constant.downloadAction.PAUSE);
+        List<DownloadStatusTransferV0> downloadStatusTransferV0s = downloadService.changeDownloadStatusAndGetResults(gids, Aria2Constant.downloadAction.PAUSE);
         Map<String, Object> data = ResultUtil.getData();
         data.put("downloadEntries", downloadStatusTransferV0s);
         return ResultUtil.success(data);
@@ -53,7 +53,7 @@ public class DownloadController {
 
     @PutMapping("/unpause/{gids}")
     public Response unpause(@PathVariable List<String> gids) throws IOException {
-        List<DownloadStatusTransferV0> downloadStatusTransferV0s = downloadService.changeDownloadStatus(gids, Aria2Constant.downloadAction.UNPAUSE);
+        List<DownloadStatusTransferV0> downloadStatusTransferV0s = downloadService.changeDownloadStatusAndGetResults(gids, Aria2Constant.downloadAction.UNPAUSE);
         Map<String, Object> data = ResultUtil.getData();
         data.put("downloadEntries", downloadStatusTransferV0s);
         return ResultUtil.success(data);

@@ -10,7 +10,6 @@ import com.devteam.mikufunbackend.service.serviceInterface.AutoDownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.SearchService;
 import com.devteam.mikufunbackend.util.ParamUtil;
-import lombok.SneakyThrows;
 import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,7 +61,7 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
     }
 
     @Override
-    public boolean updateAutoDonwloadRuleStatus(String ruleId) {
+    public boolean updateAutoDownloadRuleStatus(String ruleId) {
         int ruleIdInInteger = Integer.parseInt(ruleId);
         int active = autoDownloadRuleDao.getAutoDownloadRuleStatus(ruleIdInInteger);
         logger.info("change auto download rule status, ruleId: {}, status from {} to {}", ruleId, active, (active + 1) % 2);
@@ -137,6 +136,7 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
     }
 
     private void findAndUpdateResource(AutoDownloadRuleEntity autoDownloadRuleEntity) throws ParseException, DocumentException, IOException, InterruptedException {
+        logger.info("begin find downloadable source, auto download rule name: {}, keyword: {}", autoDownloadRuleEntity.getRuleName(), autoDownloadRuleEntity.getKeyword());
         Timestamp updateTime = autoDownloadRuleEntity.getUpdateTime();
         Timestamp biggestUpdateTime = updateTime;
         int ruleId = autoDownloadRuleEntity.getRuleId();
@@ -148,12 +148,12 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
                 downloadService.download(searchResourceRespV0.getLink());
                 if (biggestUpdateTime.before(resourceTime)) {
                     biggestUpdateTime = resourceTime;
-                    Thread.sleep(60000);
                 }
             }
         }
         if (biggestUpdateTime.after(updateTime)) {
             autoDownloadRuleDao.updateAutoDownloadRuleUpdateTime(ruleId, biggestUpdateTime);
         }
+        logger.info("find downloadable source finish, auto download rule name: {}, keyword: {}", autoDownloadRuleEntity.getRuleName(), autoDownloadRuleEntity.getKeyword());
     }
 }

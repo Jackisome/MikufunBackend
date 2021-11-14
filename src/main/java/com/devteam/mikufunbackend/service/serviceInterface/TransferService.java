@@ -26,11 +26,6 @@ public interface TransferService {
     boolean transferFile(Aria2FileV0 aria2FileV0, String gid) throws IOException, InterruptedException;
 
     /**
-     * 清理下载已完成且转码已完成的文件，以gid对应的文件为单位
-     */
-    void cleanSourceFiles() throws IOException, InterruptedException;
-
-    /**
      * 根据资源信息匹配匹配可能的番剧和聚集，并获取对应的弹幕库
      * @param fileName
      * @param fileHash

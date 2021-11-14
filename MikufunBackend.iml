@@ -119,7 +119,7 @@
     <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:ffmpeg:macosx-x86_64:4.1-1.4.4" level="project" />
     <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:ffmpeg:windows-x86:4.1-1.4.4" level="project" />
     <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:ffmpeg:windows-x86_64:4.1-1.4.4" level="project" />
-    <orderEntry type="library" name="Maven: org.jetbrains:annotations:22.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.jetbrains:annotations:23.0.0" level="project" />
     <orderEntry type="library" name="Maven: io.github.openfeign:feign-core:11.0" level="project" />
     <orderEntry type="library" name="Maven: io.github.openfeign:feign-spring4:11.0" level="project" />
     <orderEntry type="library" name="Maven: io.github.openfeign:feign-jackson:11.0" level="project" />

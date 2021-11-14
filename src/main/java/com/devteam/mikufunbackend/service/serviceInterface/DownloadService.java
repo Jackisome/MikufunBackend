@@ -31,13 +31,22 @@ public interface DownloadService {
     boolean changeDownloadStatus(String gid, Aria2Constant.downloadAction downloadAction) throws IOException;
 
     /**
-     * 多个文件下载状态变更
+     * 单个文件下载状态变更，并获取变更结果
+     * @param gid
+     * @param downloadAction
+     * @return
+     * @throws IOException
+     */
+    DownloadStatusTransferV0 changeDownloadStatusAndGetResults(String gid, Aria2Constant.downloadAction downloadAction) throws IOException;
+
+    /**
+     * 多个文件下载状态变更，并获取变更结果
      * @param gids
      * @param downloadAction
      * @return
      * @throws IOException
      */
-    List<DownloadStatusTransferV0> changeDownloadStatus(List<String> gids, Aria2Constant.downloadAction downloadAction) throws IOException;
+    List<DownloadStatusTransferV0> changeDownloadStatusAndGetResults(List<String> gids, Aria2Constant.downloadAction downloadAction) throws IOException;
 
     /**
      * 获取下载中的所有文件（状态为waiting、active、stopped）
@@ -79,5 +88,5 @@ public interface DownloadService {
      * @param gids
      * @return
      */
-    List<DownloadStatusTransferV0> removeDownloadingFile(List<String> gids);
+    List<DownloadStatusTransferV0> removeDownloadingFile(List<String> gids) throws IOException, InterruptedException;
 }

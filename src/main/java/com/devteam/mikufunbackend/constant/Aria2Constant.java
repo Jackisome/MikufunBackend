@@ -12,12 +12,13 @@ public class Aria2Constant {
     public final static String METHOD_TELL_WAITING = "aria2.tellWaiting";
     public final static String METHOD_REMOVE_DOWNLOAD_RESULT = "aria2.removeDownloadResult";
     public final static String[] PARAM_ARRAY_OF_FILED =
-            new String[]{"totalLength", "completedLength", "files", "downloadSpeed", "uploadSpeed", "status", "gid"};
+            new String[]{"totalLength", "completedLength", "files", "downloadSpeed", "uploadSpeed", "status", "gid", "dir"};
     public final static String METHOD_PAUSE = "aria2.pause";
     public final static String METHOD_PAUSE_ALL = "aria2.pauseAll";
     public final static String METHOD_UNPAUSE = "aria2.unpause";
     public final static String METHOD_UNPAUSE_ALL = "aria2.unpauseAll";
     public final static String METHOD_REMOVE = "aria2.remove";
+    public final static String METHOD_TELL_STATUS = "aria2.tellStatus";
 
     public enum downloadStatus {
         ACTIVE("active"),

@@ -10,6 +10,7 @@
         <result property="fileUuid" column="file_uuid" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="fileHash" column="file_hash" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="fileSize" column="file_size" javaType="long" jdbcType="BIGINT"/>
+        <result property="srcFilePath"  column="src_file_path"  javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="transferFormat" column="transfer_format" javaType="java.lang.String" jdbcType="VARCHAR"/>
         <result property="videoDuration" column="video_duration" javaType="int" jdbcType="NUMERIC"/>
         <result property="imageUrl" column="image_url" javaType="java.lang.String" jdbcType="VARCHAR"/>
@@ -33,6 +34,7 @@
         file_uuid,
         file_hash,
         file_size,
+        src_file_path,
         transfer_format,
         video_duration,
         image_url,
@@ -47,7 +49,7 @@
         gid
         )
         values (
-        #{fileName}, #{fileUuid}, #{fileHash}, #{fileSize}, #{transferFormat}, #{videoDuration}, #{imageUrl}, #{subtitlePath},
+        #{fileName}, #{fileUuid}, #{fileHash}, #{fileSize}, #{srcFilePath}, #{transferFormat}, #{videoDuration}, #{imageUrl}, #{subtitlePath},
         #{exactMatch}, #{resourceId}, #{resourceName}, #{episodeTitle}, #{type}, #{episodeId}, #{danmakuShift}, #{gid}
         )
     </insert>
@@ -87,7 +89,7 @@
     </update>
 
     <select id="findResourceInformationByFileId" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
-        select file_id, file_name, file_uuid, file_hash, file_size, transfer_format, video_duration, image_url, subtitle_path,
+        select file_id, file_name, file_uuid, file_hash, file_size, src_file_path, transfer_format, video_duration, image_url, subtitle_path,
                recent_play_time, recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title,
                type, episode_id, danmaku_shift, gid
         from mikufun_resource_information
@@ -95,7 +97,7 @@
     </select>
 
     <select id="findRecentPlayResource" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
-        select file_id, file_name, file_uuid, file_hash, file_size, transfer_format, video_duration, image_url, subtitle_path,
+        select file_id, file_name, file_uuid, file_hash, file_size, src_file_path, transfer_format, video_duration, image_url, subtitle_path,
                recent_play_time, recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title,
                type, episode_id, danmaku_shift, gid
         from mikufun_resource_information
@@ -104,7 +106,7 @@
     </select>
 
     <select id="findRecentDownloadResource" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
-        select file_id, file_name, file_uuid, file_hash, file_size, transfer_format, video_duration, image_url, subtitle_path,
+        select file_id, file_name, file_uuid, file_hash, file_size, src_file_path, transfer_format, video_duration, image_url, subtitle_path,
                recent_play_time, recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title,
                type, episode_id, danmaku_shift, gid
         from mikufun_resource_information
@@ -114,7 +116,7 @@
 
     <select id="findResourceInformationByResourceId"
             resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
-        select file_id, file_name, file_uuid, file_hash, file_size, transfer_format, video_duration, image_url, subtitle_path,
+        select file_id, file_name, file_uuid, file_hash, file_size, src_file_path, transfer_format, video_duration, image_url, subtitle_path,
                recent_play_time, recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title,
                type, episode_id, danmaku_shift, gid
         from mikufun_resource_information
@@ -128,7 +130,7 @@
     </select>
 
     <select id="findAllResourceInformation" resultType="com.devteam.mikufunbackend.entity.ResourceEntity">
-        select file_id, file_name, file_uuid, file_hash, file_size, transfer_format, video_duration, image_url, subtitle_path,
+        select file_id, file_name, file_uuid, file_hash, file_size, src_file_path, transfer_format, video_duration, image_url, subtitle_path,
                recent_play_time, recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title,
                type, episode_id, danmaku_shift, gid
         from mikufun_resource_information

@@ -13,7 +13,7 @@ public class TokenUtil {
         }
 
         // todo: 演示使用，关闭登录人数的限制
-        return true;
+        return !RuntimeVariable.visitorToken.containsValue(userToken);
 
         // todo: 临时测试使用
 //        return RuntimeVariable.token.equals(userToken) || "token".equals(userToken);

@@ -1,7 +1,9 @@
 package com.devteam.mikufunbackend.controller;
 
+import com.devteam.mikufunbackend.constant.ResponseEnum;
 import com.devteam.mikufunbackend.entity.LoginV0;
 import com.devteam.mikufunbackend.service.serviceInterface.UserService;
+import com.devteam.mikufunbackend.util.ParamUtil;
 import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +38,17 @@ public class UserController {
     public Response logout() {
         userService.removeToken(request);
         return ResultUtil.success();
+    }
+
+    @GetMapping("/userimage")
+    public Response getUserImage() {
+        Map<String, Object> data = ResultUtil.getData();
+        String userImageUrl = userService.getUserImageUrl();
+        data.put("userImageUrl", userImageUrl);
+        if (ParamUtil.isNotEmpty(userImageUrl)) {
+            return ResultUtil.success(data);
+        } else {
+            return ResultUtil.fail(ResponseEnum.FILE_ERROR);
+        }
     }
 }

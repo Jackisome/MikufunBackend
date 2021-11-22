@@ -17,4 +17,6 @@ public interface UserService {
     boolean removeToken(HttpServletRequest request);
 
     String getToken(HttpServletRequest request);
+
+    String getUserImageUrl();
 }

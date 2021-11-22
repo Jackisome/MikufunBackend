@@ -27,7 +27,7 @@ create table if not exists mikufun.mikufun_resource_information
     primary key (file_id)
 ) comment '下载资源信息表';
 
-CREATE TABLE IF NOT EXISTS `mikufun_favorite_status_record`
+CREATE TABLE IF NOT EXISTS mikufun.mikufun_favorite_status_record
 (
     `record_id`   int(11)     NOT NULL AUTO_INCREMENT COMMENT 'id',
     `resource_id` int(11)     NOT NULL COMMENT '番剧标识',

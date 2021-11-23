@@ -47,7 +47,8 @@ public class MvnInterceptorConfig extends WebMvcConfigurationSupport {
                 .excludePathPatterns("/api/v1/play/danmaku/v3/**")
                 .excludePathPatterns("/api/v1/calendar/**")
                 .excludePathPatterns("/api/v1/logout")
-                .excludePathPatterns("/api/v1/freedownload/update");
+                .excludePathPatterns("/api/v1/freedownload/update")
+                .excludePathPatterns("/api/v1/userimage");
         super.addInterceptors(registry);
     }
 }

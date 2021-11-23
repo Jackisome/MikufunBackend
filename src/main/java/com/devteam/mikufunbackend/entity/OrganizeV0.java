@@ -12,6 +12,7 @@ import java.util.*;
 @Data
 @Builder
 public class OrganizeV0 {
+    String userImageUrl;
     String userPassword;
     List<String> visitorPasswords;
     String transferType;
@@ -20,4 +21,8 @@ public class OrganizeV0 {
     String fontBottom;
     boolean defaultStatus;
     String regex;
+    String subscribeEmail;
+    boolean danmakuTranslate;
+    String danmakuBottom;
+    String animeSearchApi;
 }

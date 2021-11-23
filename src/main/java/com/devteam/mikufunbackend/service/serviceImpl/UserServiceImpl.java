@@ -29,8 +29,8 @@ public class UserServiceImpl implements UserService {
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    @Value("${userImage.url}")
-    private String userImageUrl;
+    @Value("${userImage.path}")
+    private String userImagePath;
 
     @Override
     public UserTypeEnum validatePassword(String inputPassword) {
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getUserImageUrl(){
-        return userImageUrl;
+        return userImagePath;
     }
 
 }

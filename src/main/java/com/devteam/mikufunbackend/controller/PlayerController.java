@@ -57,12 +57,6 @@ public class PlayerController {
     public DanmakuResponse getDanmaku(@RequestParam int id) throws Exception {
         List<List<Object>> data = playService.getDanmaku(id);
         return ResultUtil.getDanmaku(data);
-//        Map<String, Object> data = ResultUtil.getData();
-//        data.put("danmu", playService.getDanmaku(fileId));
-//        if (data.get("danmu") != null)
-//            return ResultUtil.success(data);
-//        else
-//            return ResultUtil.fail(ResponseEnum.FILEID_ERROR);
     }
 
     @PostMapping("/danmaku/v3")

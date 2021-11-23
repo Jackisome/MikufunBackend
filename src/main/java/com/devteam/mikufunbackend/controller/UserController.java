@@ -1,6 +1,7 @@
 package com.devteam.mikufunbackend.controller;
 
 import com.devteam.mikufunbackend.constant.ResponseEnum;
+import com.devteam.mikufunbackend.constant.RuntimeVariable;
 import com.devteam.mikufunbackend.entity.LoginV0;
 import com.devteam.mikufunbackend.service.serviceInterface.UserService;
 import com.devteam.mikufunbackend.util.ParamUtil;
@@ -43,7 +44,7 @@ public class UserController {
     @GetMapping("/userimage")
     public Response getUserImage() {
         Map<String, Object> data = ResultUtil.getData();
-        String userImageUrl = userService.getUserImageUrl();
+        String userImageUrl = userService.getUserImageUrl()+ RuntimeVariable.userImageName;
         data.put("userImageUrl", userImageUrl);
         if (ParamUtil.isNotEmpty(userImageUrl)) {
             return ResultUtil.success(data);

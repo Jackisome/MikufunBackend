@@ -97,4 +97,9 @@ public class ParamUtil {
 
         return text;
     }
+
+    public static boolean isLegalEmail(String email) {
+        String EMAIL_REGEX = "^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
+        return Pattern.matches(EMAIL_REGEX, email);
+    }
 }

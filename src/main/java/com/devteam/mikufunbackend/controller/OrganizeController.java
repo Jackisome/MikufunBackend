@@ -6,6 +6,7 @@ import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -32,8 +33,17 @@ public class OrganizeController {
     @PostMapping("/setting")
     public Response setSetting(@RequestParam String userPassword, @RequestParam List<String> visitorPasswords, @RequestParam String transferType,
                                @RequestParam String fontSize, @RequestParam String fontColor, @RequestParam String fontBottom,
-                               @RequestParam boolean defaultStatus, @RequestParam String regex) {
-        organizeService.setProperty(userPassword, visitorPasswords, transferType, fontSize, fontColor, fontBottom, defaultStatus, regex);
+                               @RequestParam boolean defaultStatus, @RequestParam String regex, @RequestParam String subscribeEmail,
+                               @RequestParam boolean danmakuTranslate, @RequestParam String danmakuBottom, @RequestParam String animeSearchApi) {
+        organizeService.setProperty(userPassword, visitorPasswords, transferType,
+                fontSize, fontColor, fontBottom, defaultStatus, regex,
+                subscribeEmail, danmakuTranslate, danmakuBottom, animeSearchApi);
+        return ResultUtil.success();
+    }
+
+    @PostMapping("/image")
+    public Response updateUserImage(@RequestParam MultipartFile image) {
+        organizeService.setUserImage(image);
         return ResultUtil.success();
     }
 }

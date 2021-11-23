@@ -48,7 +48,7 @@ freedownload:
   path: /docker/freedownload/
 
 userImage:
-  url: /docker/userImage/
+  path: /docker/userImage/
 
 config:
   path: /docker/config.obj

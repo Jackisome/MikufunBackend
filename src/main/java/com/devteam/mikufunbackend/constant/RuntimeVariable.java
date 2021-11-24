@@ -1,5 +1,6 @@
 package com.devteam.mikufunbackend.constant;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -55,4 +56,7 @@ public class RuntimeVariable {
 
     // 用户头像名称
     public static String userImageName = "default.jpg";
+
+    //配置文件是否读取
+    public static boolean loaded = false;
 }

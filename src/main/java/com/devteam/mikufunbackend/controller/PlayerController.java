@@ -1,9 +1,7 @@
 package com.devteam.mikufunbackend.controller;
 
 import com.devteam.mikufunbackend.constant.ResponseEnum;
-import com.devteam.mikufunbackend.entity.DanmakuPostV0;
-import com.devteam.mikufunbackend.entity.MatchEpisodePutReqVO;
-import com.devteam.mikufunbackend.entity.MatchEpisodeRespVO;
+import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.PlayService;
 import com.devteam.mikufunbackend.util.DanmakuResponse;
@@ -12,8 +10,11 @@ import com.devteam.mikufunbackend.util.ResultUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/v1/play")
+@Validated
 public class PlayerController {
 
     @Autowired
@@ -42,7 +44,8 @@ public class PlayerController {
     }
 
     @PostMapping("/file/record")
-    public Response updatePos(@RequestParam String fileId, @RequestParam double videoTime) throws Exception {
+    public Response updatePos(@RequestParam @NotEmpty(message = "文件id不能为空") String fileId,
+                              @RequestParam double videoTime) throws Exception {
         int fileIdInInteger = Integer.parseInt(fileId);
         if (playService.updatePos(fileIdInInteger, videoTime) == true) {
             logger.info("update recentPlayPosition success");
@@ -90,8 +93,22 @@ public class PlayerController {
     }
 
     @PutMapping("/match")
-    public Response putMatchEpisode(@RequestBody MatchEpisodePutReqVO matchEpisodePutReqVO) {
+    public Response putMatchEpisode(@RequestBody @Valid MatchEpisodePutReqVO matchEpisodePutReqVO) {
         playService.putMatchEpisode(matchEpisodePutReqVO);
+        return ResultUtil.success();
+    }
+
+    @GetMapping("/subtitles/{fileId}")
+    public Response getSubtitles(@PathVariable Integer fileId) {
+        List<MatchSubtitleVO> matchSubtitleVOs = playService.getMatchSubtitles(fileId);
+        Map<String, Object> data = ResultUtil.getData();
+        data.put("matchSubtitles", matchSubtitleVOs);
+        return ResultUtil.success(data);
+    }
+
+    @PutMapping("/subtitles")
+    public Response putMatchSubtitle(@RequestBody @Valid MatchSubtitleReqVO matchSubtitleReqVO) {
+        // 暂时未实现
         return ResultUtil.success();
     }
 

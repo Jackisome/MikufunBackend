@@ -61,4 +61,11 @@ public interface PlayService {
      */
     void putMatchEpisode(MatchEpisodePutReqVO matchEpisodePutReqVO);
 
+    /**
+     * 搜索在线字幕
+     * @param fileId 文件 id
+     * @return 关联字幕列表
+     */
+    List<MatchSubtitleVO> getMatchSubtitles(Integer fileId);
+
 }

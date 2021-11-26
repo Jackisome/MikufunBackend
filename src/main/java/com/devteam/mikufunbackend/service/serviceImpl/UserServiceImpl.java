@@ -9,6 +9,7 @@ import com.devteam.mikufunbackend.service.serviceInterface.UserService;
 import com.devteam.mikufunbackend.util.ParamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
@@ -27,6 +28,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class UserServiceImpl implements UserService {
 
     Logger logger = LoggerFactory.getLogger(UserService.class);
+
+    @Value("${userImage.path}")
+    private String userImagePath;
 
     @Override
     public UserTypeEnum validatePassword(String inputPassword) {
@@ -119,5 +123,9 @@ public class UserServiceImpl implements UserService {
         return token;
     }
 
+    @Override
+    public String getUserImageUrl(){
+        return userImagePath;
+    }
 
 }

@@ -42,7 +42,7 @@ public class RuntimeVariable {
     public static String regex = null;
 
     // 订阅自动下载更新信息的邮箱
-    public static String subscribeEmail = null;
+    public static String subscribeEmail = "";
 
     // 是否启用弹幕简繁体的转换
     public static boolean danmakuTranslate = false;

@@ -139,7 +139,8 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         if (!ParamUtil.isNotEmpty(subscribeEmail) || ParamUtil.isLegalEmail(subscribeEmail)) {
-            if (!subscribeEmail.equals(RuntimeVariable.subscribeEmail)) {
+            if ((ParamUtil.isNotEmpty(subscribeEmail) && !subscribeEmail.equals(RuntimeVariable.subscribeEmail)) ||
+                    (!ParamUtil.isNotEmpty(subscribeEmail) && ParamUtil.isNotEmpty(RuntimeVariable.subscribeEmail))) {
                 RuntimeVariable.subscribeEmail = subscribeEmail;
                 logger.info("set subscribeEmail, subscribeEmail: {}", RuntimeVariable.subscribeEmail);
             }

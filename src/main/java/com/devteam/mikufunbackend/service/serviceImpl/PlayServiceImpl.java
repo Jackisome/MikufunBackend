@@ -40,13 +40,15 @@ public class PlayServiceImpl implements PlayService {
 
     @Override
     public List<List<Object>> getDanmaku(int fileId) throws Exception {
-//        List<DanmakuV0> data = new ArrayList<>();
         List<List<Object>> data = new ArrayList<>();
         String url1 = "";
         ResourceEntity resourceEntity = null;
         try {
             resourceEntity = resourceInformationDao.findResourceInformationByFileId(fileId);
-            url1 = "https://api.acplay.net/api/v2/comment/" + resourceEntity.getEpisodeId() + "?withRelated=true";
+            url1 = "https://api.acplay.net/api/v2/comment/"
+                    + resourceEntity.getEpisodeId()
+                    + "?withRelated=true"
+                    + "&chConvert=" + (RuntimeVariable.danmakuTranslate ? 1 : 0);
         } catch (Exception e) {
             logger.error(e.toString());
         }
@@ -75,14 +77,6 @@ public class PlayServiceImpl implements PlayService {
                     danmaku.add(temp[3]);
                     danmaku.add(k.getString("m"));
                     data.add(danmaku);
-//                    DanmakuV0 danmakuV0 = DanmakuV0.builder()
-//                                .time(Double.parseDouble(temp[0]))
-//                                .mode(Integer.parseInt(temp[1]))
-//                                .color(Integer.parseInt(temp[2]))
-//                                .message(k.getString("m"))
-//                                .build();
-//                    data.add(danmakuV0);
-//                    logger.info("add info to Danmaku, info: {}", danmakuV0.toString());
                 });
             }
         } catch (Exception e) {

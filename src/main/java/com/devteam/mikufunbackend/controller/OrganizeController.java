@@ -42,7 +42,7 @@ public class OrganizeController {
     }
 
     @PostMapping("/image")
-    public Response updateUserImage(@RequestParam MultipartFile image) {
+    public Response updateUserImage(@RequestParam("file") MultipartFile image) {
         organizeService.setUserImage(image);
         return ResultUtil.success();
     }

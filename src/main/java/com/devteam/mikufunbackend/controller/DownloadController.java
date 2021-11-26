@@ -69,7 +69,7 @@ public class DownloadController {
     @GetMapping("/finish")
     public Response findLocalFile() {
         Map<String, Object> data = ResultUtil.getData();
-        data.put("finishFiles", downloadService.getFinishFiles());
+        data.put("files", downloadService.getFinishFiles());
         return ResultUtil.success(data);
     }
 

@@ -5,9 +5,18 @@ import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 /**
  * @author Jackisome
@@ -106,4 +115,46 @@ public class ExceptionHandle {
         logger.error(e.getMessage());
         return ResultUtil.fail(ResponseEnum.PARAMETER_ERROR);
     }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    @ResponseBody
+    public Response methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(HttpStatus.BAD_REQUEST.value(), String.format("请求参数类型错误: %s", e.getMessage()));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseBody
+    public Response methodArgumentNotValidExceptionExceptionHandler(MethodArgumentNotValidException e) {
+        logger.error(e.getMessage());
+        FieldError fieldError = e.getBindingResult().getFieldError();
+        assert fieldError != null;
+        return ResultUtil.fail(HttpStatus.BAD_REQUEST.value(), String.format("请求参数不合法: %s",
+                fieldError.getDefaultMessage()));
+    }
+
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    @ResponseBody
+    public Response constraintViolationExceptionHandler(ConstraintViolationException e) {
+        logger.error(e.getMessage());
+        ConstraintViolation<?> constraintViolation = e.getConstraintViolations().iterator().next();
+        return ResultUtil.fail(HttpStatus.BAD_REQUEST.value(), String.format("请求参数不正确:%s", constraintViolation.getMessage()));
+    }
+
+    @ExceptionHandler(value = MissingServletRequestParameterException.class)
+    @ResponseBody
+    public Response missingServletRequestParameterExceptionHandler(MissingServletRequestParameterException e) {
+        logger.error(e.getMessage());
+        return ResultUtil.fail(HttpStatus.BAD_REQUEST.value(), String.format("请求参数缺失:%s", e.getParameterName()));
+    }
+
+    @ExceptionHandler(BindException.class)
+    @ResponseBody
+    public Response bindExceptionHandler(BindException e) {
+        logger.error(e.getMessage());
+        FieldError fieldError = e.getFieldError();
+        assert fieldError != null;
+        return ResultUtil.fail(HttpStatus.BAD_REQUEST.value(), String.format("请求参数不正确:%s", fieldError.getDefaultMessage()));
+    }
+
 }

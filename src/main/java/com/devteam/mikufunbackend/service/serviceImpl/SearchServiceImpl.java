@@ -1,6 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.devteam.mikufunbackend.constant.FavoriteStatusEnum;
+import com.devteam.mikufunbackend.constant.RuntimeVariable;
 import com.devteam.mikufunbackend.dto.*;
 import com.devteam.mikufunbackend.entity.*;
 import com.devteam.mikufunbackend.feign.ResourceInfoClient;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<SearchSubGroupRespVO> getSubgroups() {
-        List<SubGroupDTO> subGroupDTOS = resourceClient.getSubgroup().getSubGroups();
+        List<SubGroupDTO> subGroupDTOS = resourceClient.getSubgroup(URI.create(RuntimeVariable.animeSearchApi)).getSubGroups();
         return subGroupDTOS.stream().map(subGroupDTO -> SearchSubGroupRespVO.builder()
                 .id(subGroupDTO.getId().toString())
                 .name(subGroupDTO.getName())
@@ -44,7 +46,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<SearchResourceTypeRespVO> getResourceTypes() {
-        List<ResourceTypeDTO> resourceTypeDTOS = resourceClient.getType().getTypes();
+        List<ResourceTypeDTO> resourceTypeDTOS = resourceClient.getType(URI.create(RuntimeVariable.animeSearchApi)).getTypes();
         return resourceTypeDTOS.stream().map(resourceTypeDTO -> SearchResourceTypeRespVO.builder()
                 .id(resourceTypeDTO.getId().toString())
                 .name(resourceTypeDTO.getName())
@@ -53,7 +55,7 @@ public class SearchServiceImpl implements SearchService {
 
     @Override
     public List<SearchResourceRespVO> getResource(String keyword, Integer typeId, Integer subgroupId) {
-        ResourceRespDTO resourceRespDTO = resourceClient.getResource(keyword, typeId, subgroupId);
+        ResourceRespDTO resourceRespDTO = resourceClient.getResource(URI.create(RuntimeVariable.animeSearchApi), keyword, typeId, subgroupId);
         return resourceRespDTO.getResources().stream().map(resourceDTO -> {
             SearchResourceRespVO searchResourceRespVO = new SearchResourceRespVO();
             BeanUtils.copyProperties(resourceDTO, searchResourceRespVO);

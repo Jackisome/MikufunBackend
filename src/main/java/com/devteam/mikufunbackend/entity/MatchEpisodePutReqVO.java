@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -13,10 +15,12 @@ public class MatchEpisodePutReqVO {
     /**
      * 资源文件 id
      */
+    @NotEmpty(message = "文件编号不能空")
     private String fileId;
     /**
      * 弹幕库 id
      */
+    @NotEmpty(message = "弹幕库 id不能为空")
     private String episodeId;
     /**
      * 作品类别

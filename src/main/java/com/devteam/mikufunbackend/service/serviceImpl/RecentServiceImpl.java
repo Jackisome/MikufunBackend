@@ -1,10 +1,12 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
+import com.devteam.mikufunbackend.entity.OrganizeV0;
 import com.devteam.mikufunbackend.entity.RecentDownloadV0;
 import com.devteam.mikufunbackend.entity.RecentPlayV0;
 import com.devteam.mikufunbackend.entity.ResourceEntity;
 import com.devteam.mikufunbackend.service.serviceInterface.RecentService;
+import com.devteam.mikufunbackend.util.IOUtil;
 import com.devteam.mikufunbackend.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +47,7 @@ public class RecentServiceImpl implements RecentService {
                             .videoTime(TimeUtil.getFormattedTimeFromSec((int) k.getRecentPlayPosition()))
                             .build();
                     data.add(recentPlayV0);
-                    logger.info("timestamp:{}",k.getRecentPlayTime());
+                    logger.info("timestamp:{}", k.getRecentPlayTime());
                 }
             });
         } catch (Exception e) {
@@ -56,6 +58,7 @@ public class RecentServiceImpl implements RecentService {
 
     @Override
     public List<RecentDownloadV0> recentDownload() throws Exception {
+
         List<RecentDownloadV0> data = new ArrayList<>();
         try {
             List<ResourceEntity> list = resourceInformationDao.findRecentDownloadResource();

@@ -6,6 +6,7 @@ import com.devteam.mikufunbackend.entity.OrganizeV0;
 import com.devteam.mikufunbackend.handle.FileUploadException;
 import com.devteam.mikufunbackend.handle.OrganizeErrorException;
 import com.devteam.mikufunbackend.service.serviceInterface.OrganizeService;
+import com.devteam.mikufunbackend.util.IOUtil;
 import com.devteam.mikufunbackend.util.ParamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,30 @@ public class OrganizeServiceImpl implements OrganizeService {
 
     @Override
     public OrganizeV0 getProperty() {
-        OrganizeV0 organizeV0 = OrganizeV0.builder()
+        OrganizeV0 organizeV0 = null;
+        try {
+            //服务器重启，还没读取过配置文件
+            if (!RuntimeVariable.loaded) {
+                organizeV0 = IOUtil.readConfig();
+                setProperty(organizeV0.getUserPassword(),
+                        organizeV0.getVisitorPasswords(),
+                        organizeV0.getTransferType(),
+                        organizeV0.getFontSize(),
+                        organizeV0.getFontColor(),
+                        organizeV0.getFontBottom(),
+                        organizeV0.getDefaultStatus(),
+                        organizeV0.getRegex(),
+                        organizeV0.getSubscribeEmail(),
+                        organizeV0.getDanmakuTranslate(),
+                        organizeV0.getDanmakuBottom(),
+                        organizeV0.getAnimeSearchApi());
+                RuntimeVariable.loaded = true;
+                return organizeV0;
+            }
+        } catch (Exception e){
+            logger.error(e.toString());
+        }
+        organizeV0 = OrganizeV0.builder()
                 .userImageUrl(this.userImagePath + RuntimeVariable.userImageName)
                 .userPassword(RuntimeVariable.password)
                 .visitorPasswords(new ArrayList<>(RuntimeVariable.visitorPasswords))
@@ -170,6 +194,10 @@ public class OrganizeServiceImpl implements OrganizeService {
         } else {
             throw new OrganizeErrorException("资源搜索API为空");
         }
+
+        //更新配置文件
+        if (RuntimeVariable.loaded)
+            IOUtil.writeConfig();
     }
 
     @Override

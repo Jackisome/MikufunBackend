@@ -2,7 +2,9 @@ package com.devteam.mikufunbackend.entity;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -11,7 +13,7 @@ import java.util.*;
  */
 @Data
 @Builder
-public class OrganizeV0 {
+public class OrganizeV0 implements Serializable {
     String userImageUrl;
     String userPassword;
     List<String> visitorPasswords;
@@ -19,10 +21,10 @@ public class OrganizeV0 {
     String fontSize;
     String fontColor;
     String fontBottom;
-    boolean defaultStatus;
+    Boolean defaultStatus;
     String regex;
     String subscribeEmail;
-    boolean danmakuTranslate;
+    Boolean danmakuTranslate;
     String danmakuBottom;
     String animeSearchApi;
 }

@@ -121,7 +121,7 @@
                type, episode_id, danmaku_shift, gid
         from mikufun_resource_information
         where resource_id = #{resourceId}
-        order by file_name
+        order by episode_id
     </select>
 
     <select id="findResourceList" resultType="com.devteam.mikufunbackend.entity.ResourceV0">

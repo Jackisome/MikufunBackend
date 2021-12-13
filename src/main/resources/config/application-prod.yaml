@@ -1,0 +1,54 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+logging:
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS,CTT}){faint} %clr(%5p) - %clr([%t]){faint} %X{log_id} %clr(%logger{39}){cyan} %clr(:){faint} %m%n%wEx"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS,CTT} %5p - [%t] %X{log_id} %logger{39} : %m%n%wEx"
+  level:
+    root: info
+  file:
+    path: log
+
+## 数据源配置
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mikufun-mysql:3306/mikufun?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false
+    username: root
+    password: 123456
+  servlet:
+    multipart:
+      max-request-size: 5GB
+      max-file-size: 5GB
+## mybatis 配置
+mybatis:
+  mapper-locations: classpath*:**/mybatis/*Mapper.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+root:
+  path: /docker
+
+aria2:
+  url: http://localhost:6800/jsonrpc
+
+shell:
+  path: /docker/transfer.sh
+
+dandanplay:
+  url: https://api.acplay.net/api/v2
+
+transfer:
+  format: m3u8
+
+freedownload:
+  path: /docker/freedownload/
+
+userImage:
+  path: /docker/userImage/
+
+config:
+  path: /docker/config.obj

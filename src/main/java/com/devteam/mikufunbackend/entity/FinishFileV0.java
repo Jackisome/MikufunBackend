@@ -16,4 +16,5 @@ public class FinishFileV0 {
     double fileSize;
     String resourceName;
     String episode;
+    boolean played;
 }

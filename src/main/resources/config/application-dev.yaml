@@ -46,3 +46,9 @@ transfer:
 
 freedownload:
   path: /docker/freedownload/
+
+userImage:
+  path: /docker/userImage/
+
+config:
+  path: /docker/config.obj

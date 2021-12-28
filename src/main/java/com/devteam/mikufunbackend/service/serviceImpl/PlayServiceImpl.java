@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -39,13 +40,15 @@ public class PlayServiceImpl implements PlayService {
 
     @Override
     public List<List<Object>> getDanmaku(int fileId) throws Exception {
-//        List<DanmakuV0> data = new ArrayList<>();
         List<List<Object>> data = new ArrayList<>();
         String url1 = "";
         ResourceEntity resourceEntity = null;
         try {
             resourceEntity = resourceInformationDao.findResourceInformationByFileId(fileId);
-            url1 = "https://api.acplay.net/api/v2/comment/" + resourceEntity.getEpisodeId() + "?withRelated=true";
+            url1 = "https://api.acplay.net/api/v2/comment/"
+                    + resourceEntity.getEpisodeId()
+                    + "?withRelated=true"
+                    + "&chConvert=" + (RuntimeVariable.danmakuTranslate ? 1 : 0);
         } catch (Exception e) {
             logger.error(e.toString());
         }
@@ -56,12 +59,14 @@ public class PlayServiceImpl implements PlayService {
             HttpEntity entity1 = response.getEntity();
 
             if (entity1 != null) {
+                // 弹幕过滤规则
+                List<Pattern> rules = getFilterPatterns();
                 List<JSONObject> dataList = JSON.parseArray(JSONObject
                         .parseObject(EntityUtils.toString(entity1))
                         .getJSONArray("comments").toJSONString(), JSONObject.class);
                 dataList.forEach(k -> {
                     // 过滤弹幕
-                    if (!checkDanmuku(k.getString("m"))) {
+                    if (!checkDanmuku(rules, k.getString("m"))) {
                         return;
                     }
                     List<Object> danmaku = new ArrayList<>();
@@ -72,14 +77,6 @@ public class PlayServiceImpl implements PlayService {
                     danmaku.add(temp[3]);
                     danmaku.add(k.getString("m"));
                     data.add(danmaku);
-//                    DanmakuV0 danmakuV0 = DanmakuV0.builder()
-//                                .time(Double.parseDouble(temp[0]))
-//                                .mode(Integer.parseInt(temp[1]))
-//                                .color(Integer.parseInt(temp[2]))
-//                                .message(k.getString("m"))
-//                                .build();
-//                    data.add(danmakuV0);
-//                    logger.info("add info to Danmaku, info: {}", danmakuV0.toString());
                 });
             }
         } catch (Exception e) {
@@ -131,6 +128,7 @@ public class PlayServiceImpl implements PlayService {
         data.put("fontSize", RuntimeVariable.fontSize);
         data.put("fontBottom", RuntimeVariable.fontBottom);
         data.put("fontColor", RuntimeVariable.fontColor);
+        data.put("danmakuBottom", RuntimeVariable.danmakuBottom);
         return data;
     }
 
@@ -182,14 +180,13 @@ public class PlayServiceImpl implements PlayService {
                 Integer.parseInt(matchEpisodePutReqVO.getEpisodeId()));
     }
 
-    public Boolean checkDanmuku(String comment) {
-        // 方法返回值为 true 表示无需过滤此条弹幕
+    public List<Pattern> getFilterPatterns() {
         if (!RuntimeVariable.defaultStatus) {
-            return true;
+            return Collections.emptyList();
         }
         String rule = RuntimeVariable.regex;
         if (rule == null) {
-            return true;
+            return Collections.emptyList();
         }
         StringTokenizer tokenizer = new StringTokenizer(rule, "\n");
         List<Pattern> rules = new ArrayList<>();
@@ -202,6 +199,14 @@ public class PlayServiceImpl implements PlayService {
                 logger.warn("正则语法错误 rule = {} ", tempRule);
             }
         }
+        return rules;
+    }
+
+    public Boolean checkDanmuku(List<Pattern> rules, String comment) {
+        // 方法返回值为 true 表示无需过滤此条弹幕
+       if (CollectionUtils.isEmpty(rules)) {
+           return true;
+       }
         // 若匹配某一屏蔽规则，返回 false;
         for (Pattern pattern : rules) {
             Matcher matcher = pattern.matcher(comment);
@@ -210,6 +215,16 @@ public class PlayServiceImpl implements PlayService {
             }
         }
         return true;
+    }
+
+    @Override
+    public List<MatchSubtitleVO> getMatchSubtitles(Integer fileId) {
+        ResourceEntity resourceEntity = resourceInformationDao.findResourceInformationByFileId(fileId);
+        if (resourceEntity == null) {
+            return Collections.emptyList();
+        }
+        MatchSubtitleVO matchSubtitleVO = MatchSubtitleVO.builder().subtitleName(resourceEntity.getSubtitlePath()).build();
+        return Collections.singletonList(matchSubtitleVO);
     }
 
 }

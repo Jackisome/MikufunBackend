@@ -27,7 +27,8 @@ create table if not exists mikufun.mikufun_resource_information
     primary key (file_id)
 ) comment '下载资源信息表';
 
-CREATE TABLE IF NOT EXISTS `mikufun_favorite_status_record`
+-- 保存不同收藏状态的番剧
+CREATE TABLE IF NOT EXISTS mikufun.mikufun_favorite_status_record
 (
     `record_id`   int(11)     NOT NULL AUTO_INCREMENT COMMENT 'id',
     `resource_id` int(11)     NOT NULL COMMENT '番剧标识',
@@ -40,8 +41,6 @@ CREATE TABLE IF NOT EXISTS `mikufun_favorite_status_record`
     `update_time` timestamp   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     PRIMARY KEY (`record_id`)
 );
-
-
 
 -- 自动下载规则
 create table if not exists mikufun.mikufun_auto_download_rule

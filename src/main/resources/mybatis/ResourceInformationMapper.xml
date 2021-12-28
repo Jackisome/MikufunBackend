@@ -121,7 +121,7 @@
                type, episode_id, danmaku_shift, gid
         from mikufun_resource_information
         where resource_id = #{resourceId}
-        order by file_name
+        order by episode_id
     </select>
 
     <select id="findResourceList" resultType="com.devteam.mikufunbackend.entity.ResourceV0">
@@ -134,8 +134,9 @@
                recent_play_time, recent_play_position, download_time, exact_match, resource_id, resource_name, episode_title,
                type, episode_id, danmaku_shift, gid
         from mikufun_resource_information
-        order by file_name
+        order by download_time DESC
     </select>
+
     <select id="findAllGid" resultType="java.lang.String">
         select distinct gid
         from mikufun_resource_information

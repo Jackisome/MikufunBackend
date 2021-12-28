@@ -44,6 +44,7 @@ public class ResourceEntity {
                 .fileSize(this.getFileSize() / 1048576.0)
                 .resourceName(this.getResourceName())
                 .episode(this.getEpisodeTitle())
+                .played(this.recentPlayTime.after(Timestamp.valueOf("2001-01-01 01:00:00.0")))
                 .build();
     }
 

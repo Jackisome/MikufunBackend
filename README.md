@@ -24,3 +24,15 @@ Mikufun是一个VPS用户可搭建的私人番剧存储和弹幕播放网站，�
    ```
 
 3. 浏览器访问ip:7070，第一次输入的密码作为用户密码，开始愉快的追番之旅！
+
+## 感谢
+
+1. [弹弹Play开放平台API]: https://github.com/kaedei/dandanplay-libraryindex/blob/master/api/OpenPlatform.md
+
+2. [ Bangumi开放API ]: https://bangumi.github.io/api
+
+3. [ DPlayer播放器 ]: https://github.com/DIYgod/DPlayer
+
+4. [ ffmpeg ]: https://github.com/FFmpeg/FFmpeg
+
+5. [ Aria2 ]: https://github.com/aria2/aria2

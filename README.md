@@ -27,12 +27,8 @@ Mikufun是一个VPS用户可搭建的私人番剧存储和弹幕播放网站，�
 
 ## 感谢
 
-1. [弹弹Play开放平台API]: https://github.com/kaedei/dandanplay-libraryindex/blob/master/api/OpenPlatform.md
-
-2. [ Bangumi开放API ]: https://bangumi.github.io/api
-
-3. [ DPlayer播放器 ]: https://github.com/DIYgod/DPlayer
-
-4. [ ffmpeg ]: https://github.com/FFmpeg/FFmpeg
-
-5. [ Aria2 ]: https://github.com/aria2/aria2
+1. [弹弹Play开放平台API](https://github.com/kaedei/dandanplay-libraryindex/blob/master/api/OpenPlatform.md)：提供番剧信息和视频弹幕匹配
+2. [Bangumi开放API](https://bangumi.github.io/api )：提供新番时间表的信息
+3. [DPlayer播放器](https://github.com/DIYgod/DPlayer)：支持弹幕播放
+4. [FFMPEG](https://github.com/FFmpeg/FFmpeg )：将视频转码为流媒体格式、视频截图、字幕提取等
+5. [Aria2](https://github.com/aria2/aria2 )：P2P下载

@@ -1,7 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
-import com.devteam.mikufunbackend.entity.DiskSpaceV0;
-import com.devteam.mikufunbackend.entity.FileV0;
+import com.devteam.mikufunbackend.entity.DiskSpaceVO;
+import com.devteam.mikufunbackend.entity.FileVO;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * @date 2021/10/21
  */
 public interface LocalServerService {
-    DiskSpaceV0 getDiskSpace();
+    DiskSpaceVO getDiskSpace();
 
     /**
      * 删除文件或目录，并返回删除的文件个数
@@ -19,5 +19,5 @@ public interface LocalServerService {
      */
     int deleteFile(String path);
 
-    List<FileV0> getFileInformation(String path);
+    List<FileVO> getFileInformation(String path);
 }

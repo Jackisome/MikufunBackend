@@ -2,7 +2,6 @@ package com.devteam.mikufunbackend.entity;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 
 import java.io.Serializable;
 import java.util.*;
@@ -13,7 +12,7 @@ import java.util.*;
  */
 @Data
 @Builder
-public class OrganizeV0 implements Serializable {
+public class OrganizeVO implements Serializable {
     String userImageUrl;
     String userPassword;
     List<String> visitorPasswords;

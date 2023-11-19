@@ -37,7 +37,7 @@ public interface DownloadService {
      * @return
      * @throws IOException
      */
-    DownloadStatusTransferV0 changeDownloadStatusAndGetResults(String gid, Aria2Constant.downloadAction downloadAction) throws IOException;
+    DownloadStatusTransferVO changeDownloadStatusAndGetResults(String gid, Aria2Constant.downloadAction downloadAction) throws IOException;
 
     /**
      * 多个文件下载状态变更，并获取变更结果
@@ -46,33 +46,33 @@ public interface DownloadService {
      * @return
      * @throws IOException
      */
-    List<DownloadStatusTransferV0> changeDownloadStatusAndGetResults(List<String> gids, Aria2Constant.downloadAction downloadAction) throws IOException;
+    List<DownloadStatusTransferVO> changeDownloadStatusAndGetResults(List<String> gids, Aria2Constant.downloadAction downloadAction) throws IOException;
 
     /**
      * 获取下载中的所有文件（状态为waiting、active、stopped）
      * @return
      * @throws IOException
      */
-    List<DownloadStatusV0> getDownloadingFiles() throws IOException;
+    List<DownloadStatusVO> getDownloadingFiles() throws IOException;
 
     /**
      * 获取所有下载并转码完成的文件
      * @return
      */
-    List<FinishFileV0> getFinishFiles();
+    List<FinishFileVO> getFinishFiles();
 
     /**
      * 根据resourceId获取指定番剧的所有下载并完成转码的文件
      * @param resourceId
      * @return
      */
-    List<FinishFileV0> getFinishFilesByResourceId(int resourceId);
+    List<FinishFileVO> getFinishFilesByResourceId(int resourceId);
 
     /**
      * 获取番剧列表，其中任何一个番剧至少有一个完成下载并转码的本地文件
      * @return
      */
-    List<ResourceResponseV0> getResourceList();
+    List<ResourceResponseVO> getResourceList();
 
     /**
      * 根据fileId删除本地文件
@@ -81,12 +81,12 @@ public interface DownloadService {
      * @throws IOException
      * @throws InterruptedException
      */
-    List<SimpleFinishFileV0> deleteLocalFiles(List<Integer> fileIds) throws IOException, InterruptedException;
+    List<SimpleFinishFileVO> deleteLocalFiles(List<Integer> fileIds) throws IOException, InterruptedException;
 
     /**
      * 根据gid删除下载中的文件
      * @param gids
      * @return
      */
-    List<DownloadStatusTransferV0> removeDownloadingFile(List<String> gids) throws IOException, InterruptedException;
+    List<DownloadStatusTransferVO> removeDownloadingFile(List<String> gids) throws IOException, InterruptedException;
 }

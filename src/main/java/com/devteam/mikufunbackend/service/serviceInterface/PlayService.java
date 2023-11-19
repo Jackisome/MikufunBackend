@@ -23,7 +23,7 @@ public interface PlayService {
      * 增加弹幕
      * @param body
      */
-    Boolean postDanmaku(DanmakuPostV0 body) throws Exception;
+    Boolean postDanmaku(DanmakuPostVO body) throws Exception;
 
     /**
      * 更新播放进度

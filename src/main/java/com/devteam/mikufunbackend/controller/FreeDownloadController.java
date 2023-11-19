@@ -1,6 +1,6 @@
 package com.devteam.mikufunbackend.controller;
 
-import com.devteam.mikufunbackend.entity.FileV0;
+import com.devteam.mikufunbackend.entity.FileVO;
 import com.devteam.mikufunbackend.service.serviceInterface.FreeDownloadService;
 import com.devteam.mikufunbackend.service.serviceInterface.LocalServerService;
 import com.devteam.mikufunbackend.util.Response;
@@ -36,8 +36,8 @@ public class FreeDownloadController {
     @GetMapping("/finish")
     public Response getFreeDownloadFile() {
         Map<String, Object> data = ResultUtil.getData();
-        List<FileV0> fileV0s = freeDownloadService.getAllFreeDownloadFile();
-        data.put("finishFiles", fileV0s);
+        List<FileVO> fileVOS = freeDownloadService.getAllFreeDownloadFile();
+        data.put("finishFiles", fileVOS);
         return ResultUtil.success(data);
     }
 

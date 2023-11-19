@@ -5,6 +5,6 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class RegExpV0 {
+public class RegExpVO {
     private String regexId,regex;
 }

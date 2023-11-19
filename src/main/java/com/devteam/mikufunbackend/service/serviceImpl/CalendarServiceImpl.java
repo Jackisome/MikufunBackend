@@ -1,17 +1,12 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.devteam.mikufunbackend.constant.AnimeTypeEnum;
-import com.devteam.mikufunbackend.entity.CalendarInfoV0;
-import com.devteam.mikufunbackend.entity.DownloadStatusV0;
+import com.devteam.mikufunbackend.entity.CalendarInfoVO;
 import com.devteam.mikufunbackend.service.serviceInterface.CalendarService;
-import com.devteam.mikufunbackend.util.HttpClientUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -20,13 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,9 +28,9 @@ public class CalendarServiceImpl implements CalendarService {
     Logger logger = LoggerFactory.getLogger(CalendarServiceImpl.class);
 
     @Override
-    public List<CalendarInfoV0> calendar(AnimeTypeEnum type, int week) {
+    public List<CalendarInfoVO> calendar(AnimeTypeEnum type, int week) {
 
-        List<CalendarInfoV0> data = new ArrayList<>();
+        List<CalendarInfoVO> data = new ArrayList<>();
 
         String url1="https://api.acplay.net/api/v2/homepage?filterAdultContent=true";
         String url2="https://api.bgm.tv/calendar";
@@ -64,7 +53,7 @@ public class CalendarServiceImpl implements CalendarService {
         return data;
     }
 
-    public void parseJsonGet(List<CalendarInfoV0> data,String jsonString1,String jsonString2,int week){
+    public void parseJsonGet(List<CalendarInfoVO> data, String jsonString1, String jsonString2, int week){
         try {
             //dandanPlay数据
             List<JSONObject> dataList1 = JSON.parseArray((JSONObject.parseObject(jsonString1))
@@ -76,7 +65,7 @@ public class CalendarServiceImpl implements CalendarService {
             //数据采用dandanplay,bangumi若有对应番剧则采用bangumi上映日期airDate
             dataList1.forEach(k -> {
                 if (k.getInteger("airDay") == week1) {
-                    CalendarInfoV0 calendarInfoV0 = CalendarInfoV0.builder()
+                    CalendarInfoVO calendarInfoVO = CalendarInfoVO.builder()
                             .resourceId(String.valueOf(k.getInteger("animeId")))
                             .resourceName(k.getString("animeTitle"))
                             .airDate("未知")
@@ -88,12 +77,12 @@ public class CalendarServiceImpl implements CalendarService {
                             List<JSONObject> items = JSON.parseArray(i.getJSONArray("items").toJSONString(), JSONObject.class);
                             items.forEach(j -> {
                                 if (j.getString("name_cn").equals(k.getString("animeTitle"))) {
-                                    calendarInfoV0.setAirDate(j.getString("air_date"));
+                                    calendarInfoVO.setAirDate(j.getString("air_date"));
                                 }
                             });
                         }
                     });
-                    data.add(calendarInfoV0);
+                    data.add(calendarInfoVO);
                 }
             });
         }catch (Exception e){

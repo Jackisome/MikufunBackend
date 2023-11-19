@@ -33,7 +33,7 @@ root:
   path: /docker
 
 aria2:
-  url: http://localhost:6800/jsonrpc
+  url: http://${ARIA2_SERVER_IP:localhost}:6800/jsonrpc
 
 shell:
   path: /docker/transfer.sh

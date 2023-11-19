@@ -7,7 +7,7 @@ import lombok.Data;
  * @date 2021/10/4
  */
 @Data
-public class DandanPlayMatchV0 {
+public class DandanPlayMatchVO {
     int episodeId;
     int animeId;
     String animeTitle;

@@ -5,11 +5,11 @@ import lombok.Data;
 
 /**
  * @author Jackisome
- * @date 2021/10/6
+ * @date 2021/10/21
  */
 @Data
 @Builder
-public class ResourceResponseV0 {
-    String resourceId;
-    String resourceName;
+public class DiskSpaceVO {
+    double usedSpace;
+    double totalSpace;
 }

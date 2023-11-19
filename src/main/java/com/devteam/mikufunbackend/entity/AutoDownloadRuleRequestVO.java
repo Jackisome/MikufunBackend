@@ -9,7 +9,9 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class LoginV0 {
-    String token;
-    boolean visitor;
+public class AutoDownloadRuleRequestVO {
+    String ruleName;
+    String keyword;
+    String activeResourceTime;
+    boolean active;
 }

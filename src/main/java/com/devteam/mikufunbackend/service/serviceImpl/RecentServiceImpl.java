@@ -1,12 +1,10 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.devteam.mikufunbackend.dao.ResourceInformationDao;
-import com.devteam.mikufunbackend.entity.OrganizeV0;
-import com.devteam.mikufunbackend.entity.RecentDownloadV0;
-import com.devteam.mikufunbackend.entity.RecentPlayV0;
+import com.devteam.mikufunbackend.entity.RecentDownloadVO;
+import com.devteam.mikufunbackend.entity.RecentPlayVO;
 import com.devteam.mikufunbackend.entity.ResourceEntity;
 import com.devteam.mikufunbackend.service.serviceInterface.RecentService;
-import com.devteam.mikufunbackend.util.IOUtil;
 import com.devteam.mikufunbackend.util.TimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +28,14 @@ public class RecentServiceImpl implements RecentService {
     Logger logger = LoggerFactory.getLogger(RecentServiceImpl.class);
 
     @Override
-    public List<RecentPlayV0> recentPlay() throws Exception {
+    public List<RecentPlayVO> recentPlay() throws Exception {
 
-        List<RecentPlayV0> data = new ArrayList<>();
+        List<RecentPlayVO> data = new ArrayList<>();
         try {
             List<ResourceEntity> list = resourceInformationDao.findRecentPlayResource();
             list.forEach(k -> {
                 if (!k.getRecentPlayTime().equals(Timestamp.valueOf("2000-01-01 01:00:00.0"))) {
-                    RecentPlayV0 recentPlayV0 = RecentPlayV0.builder()
+                    RecentPlayVO recentPlayVO = RecentPlayVO.builder()
                             .fileId(String.valueOf(k.getFileId()))
                             .fileName(k.getFileName())
                             .resourceName(k.getResourceName())
@@ -46,7 +44,7 @@ public class RecentServiceImpl implements RecentService {
                             .episode(k.getEpisodeTitle())
                             .videoTime(TimeUtil.getFormattedTimeFromSec((int) k.getRecentPlayPosition()))
                             .build();
-                    data.add(recentPlayV0);
+                    data.add(recentPlayVO);
                     logger.info("timestamp:{}", k.getRecentPlayTime());
                 }
             });
@@ -57,13 +55,13 @@ public class RecentServiceImpl implements RecentService {
     }
 
     @Override
-    public List<RecentDownloadV0> recentDownload() throws Exception {
+    public List<RecentDownloadVO> recentDownload() throws Exception {
 
-        List<RecentDownloadV0> data = new ArrayList<>();
+        List<RecentDownloadVO> data = new ArrayList<>();
         try {
             List<ResourceEntity> list = resourceInformationDao.findRecentDownloadResource();
             list.forEach(k -> {
-                RecentDownloadV0 recentDownloadV0 = RecentDownloadV0.builder()
+                RecentDownloadVO recentDownloadVO = RecentDownloadVO.builder()
                         .fileId(String.valueOf(k.getFileId()))
                         .fileName(k.getFileName())
                         .resourceName(k.getResourceName())
@@ -71,7 +69,7 @@ public class RecentServiceImpl implements RecentService {
                         .imageUrl(k.getImageUrl())
                         .episode(k.getEpisodeTitle())
                         .build();
-                data.add(recentDownloadV0);
+                data.add(recentDownloadVO);
             });
         } catch (Exception e) {
             logger.error(e.toString());

@@ -9,12 +9,12 @@ import java.util.List;
  * @date 2021/10/2
  */
 @Data
-public class Aria2StatusV0 {
+public class Aria2StatusVO {
     long completedLength;
     long totalLength;
     int downloadSpeed;
     int uploadSpeed;
-    List<Aria2FileV0> files;
+    List<Aria2FileVO> files;
     String gid;
     String status;
     String dir;

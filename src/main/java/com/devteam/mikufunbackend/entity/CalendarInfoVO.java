@@ -4,8 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
-
 /**
  * @author Wooyuwen
  * @date 2021/10/05
@@ -13,7 +11,7 @@ import java.util.Date;
 @Data
 @Accessors(chain = true)
 @Builder
-public class CalendarInfoV0 {
+public class CalendarInfoVO {
     String resourceId;//一个番剧的标识，用于搜索时获取精确结果
     String resourceName; //番剧名
     String airDate; //首次放送时间

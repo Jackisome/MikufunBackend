@@ -9,9 +9,9 @@ import java.util.List;
  * @date 2021/10/4
  */
 @Data
-public class DandanPlayMatchResponseV0 {
+public class DandanPlayMatchResponseVO {
     boolean isMatched;
-    List<DandanPlayMatchV0> matches;
+    List<DandanPlayMatchVO> matches;
     int errorCode;
     boolean success;
     String errorMessage;

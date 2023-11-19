@@ -1,7 +1,6 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.devteam.mikufunbackend.constant.Aria2Constant;
 import com.devteam.mikufunbackend.entity.*;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,11 +32,11 @@ public class Aria2ServiceImpl implements Aria2Service {
 
     @Override
     public boolean addUrl(String link) throws IOException, Aria2Exception {
-        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
-        aria2RequestV0.setMethod(Aria2Constant.METHOD_ADD_URI)
+        Aria2RequestVO aria2RequestVO = new Aria2RequestVO();
+        aria2RequestVO.setMethod(Aria2Constant.METHOD_ADD_URI)
                 .addParam(new String[]{link});
         logger.info("begin download, link: {}", link);
-        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestVO);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2下载未正常进行，下载链接: {}", link);
             throw new Aria2Exception("下载未正常进行");
@@ -49,14 +47,14 @@ public class Aria2ServiceImpl implements Aria2Service {
 
     @Override
     public boolean addUrl(String link, String path) throws IOException {
-        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
-        aria2RequestV0.setMethod(Aria2Constant.METHOD_ADD_URI)
+        Aria2RequestVO aria2RequestVO = new Aria2RequestVO();
+        aria2RequestVO.setMethod(Aria2Constant.METHOD_ADD_URI)
                 .addParam(new String[]{link})
-                .addParam(Aria2OptionV0.builder()
+                .addParam(Aria2OptionVO.builder()
                         .dir(path)
                         .build());
         logger.info("begin download, link: {}", link);
-        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestVO);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2下载未正常进行，下载链接: {}", link);
             throw new Aria2Exception("下载未正常进行");
@@ -70,10 +68,10 @@ public class Aria2ServiceImpl implements Aria2Service {
 
     @Override
     public boolean pauseAllDownloadingFile() throws IOException, Aria2Exception {
-        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
-        aria2RequestV0.setMethod(Aria2Constant.METHOD_PAUSE_ALL);
+        Aria2RequestVO aria2RequestVO = new Aria2RequestVO();
+        aria2RequestVO.setMethod(Aria2Constant.METHOD_PAUSE_ALL);
         logger.info("begin pause all downloading file");
-        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestVO);
         String entityString = EntityUtils.toString(response.getEntity());
         System.out.println(entityString);
         if (!HttpClientUtil.validateResponse(response)) {
@@ -85,10 +83,10 @@ public class Aria2ServiceImpl implements Aria2Service {
 
     @Override
     public boolean unpauseAllDownloadingFile() throws IOException, Aria2Exception {
-        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
-        aria2RequestV0.setMethod(Aria2Constant.METHOD_UNPAUSE_ALL);
+        Aria2RequestVO aria2RequestVO = new Aria2RequestVO();
+        aria2RequestVO.setMethod(Aria2Constant.METHOD_UNPAUSE_ALL);
         logger.info("begin unpause all downloading file");
-        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestVO);
         String entityString = EntityUtils.toString(response.getEntity());
         System.out.println(entityString);
         if (!HttpClientUtil.validateResponse(response)) {
@@ -100,11 +98,11 @@ public class Aria2ServiceImpl implements Aria2Service {
 
     @Override
     public boolean transferDownloadStatus(String gid, String method) throws IOException, Aria2Exception {
-        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
-        aria2RequestV0.setMethod(method)
+        Aria2RequestVO aria2RequestVO = new Aria2RequestVO();
+        aria2RequestVO.setMethod(method)
                 .addParam(gid);
         logger.info("begin transfer status of downloading file, gid: {}, method: {}", gid, method);
-        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestVO);
         String entityString = EntityUtils.toString(response.getEntity());
         System.out.println(entityString);
         if (!HttpClientUtil.validateResponse(response)) {
@@ -115,40 +113,40 @@ public class Aria2ServiceImpl implements Aria2Service {
     }
 
     @Override
-    public Aria2StatusV0 tellDownloadingFileStatus(String gid) throws IOException {
-        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
-        aria2RequestV0.setMethod(Aria2Constant.METHOD_TELL_STATUS)
+    public Aria2StatusVO tellDownloadingFileStatus(String gid) throws IOException {
+        Aria2RequestVO aria2RequestVO = new Aria2RequestVO();
+        aria2RequestVO.setMethod(Aria2Constant.METHOD_TELL_STATUS)
                 .addParam(gid)
                 .addParam(Aria2Constant.PARAM_ARRAY_OF_FILED);
         logger.info("begin get file status, gid: {}", gid);
-        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestVO);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2查看文件信息未完成");
             throw new Aria2Exception("查看文件信息未完成");
         }
-        Aria2SingleResponseV0 aria2SingleResponseV0 = (Aria2SingleResponseV0) HttpClientUtil.convertJsonToObject(response, Aria2SingleResponseV0.class);
-        logger.info("get file status finish, gid: {}, content: {}", gid, aria2SingleResponseV0.toString());
-        return aria2SingleResponseV0.getResult();
+        Aria2SingleResponseVO aria2SingleResponseVO = (Aria2SingleResponseVO) HttpClientUtil.convertJsonToObject(response, Aria2SingleResponseVO.class);
+        logger.info("get file status finish, gid: {}, content: {}", gid, aria2SingleResponseVO.toString());
+        return aria2SingleResponseVO.getResult();
     }
 
     @Override
-    public List<Aria2StatusV0> getFileStatus(String type) throws IOException {
-        Aria2RequestV0 aria2RequestV0 = new Aria2RequestV0();
-        aria2RequestV0.setMethod(type);
+    public List<Aria2StatusVO> getFileStatus(String type) throws IOException {
+        Aria2RequestVO aria2RequestVO = new Aria2RequestVO();
+        aria2RequestVO.setMethod(type);
         if (!Aria2Constant.METHOD_TELL_ACTIVE.equals(type)) {
-            aria2RequestV0.addParam(0)
+            aria2RequestVO.addParam(0)
                     .addParam(1000);
         }
-        aria2RequestV0.addParam(Aria2Constant.PARAM_ARRAY_OF_FILED);
+        aria2RequestVO.addParam(Aria2Constant.PARAM_ARRAY_OF_FILED);
         logger.info("begin get file status, type: {}", type);
-        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestV0);
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(aria2RpcUrl, aria2RequestVO);
         if (!HttpClientUtil.validateResponse(response)) {
             logger.error("Aria2查看文件信息未完成");
             throw new Aria2Exception("查看文件信息未完成");
         }
-        Aria2ResponseV0 aria2ResponseV0 = (Aria2ResponseV0) HttpClientUtil.convertJsonToObject(response, Aria2ResponseV0.class);
-        logger.info("get file status finish, type: {}, size: {}", type, aria2ResponseV0.getResult().size());
-        return aria2ResponseV0.getResult();
+        Aria2ResponseVO aria2ResponseVO = (Aria2ResponseVO) HttpClientUtil.convertJsonToObject(response, Aria2ResponseVO.class);
+        logger.info("get file status finish, type: {}, size: {}", type, aria2ResponseVO.getResult().size());
+        return aria2ResponseVO.getResult();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
-import com.devteam.mikufunbackend.entity.Aria2FileV0;
-import com.devteam.mikufunbackend.entity.ResourceMatchV0;
+import com.devteam.mikufunbackend.entity.Aria2FileVO;
+import com.devteam.mikufunbackend.entity.ResourceMatchVO;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,11 +19,11 @@ public interface TransferService {
 
     /**
      * 对一个文件进行转码，变更相应的数据记录
-     * @param aria2FileV0
+     * @param aria2FileVO
      * @param gid
      * @return
      */
-    boolean transferFile(Aria2FileV0 aria2FileV0, String gid) throws IOException, InterruptedException;
+    boolean transferFile(Aria2FileVO aria2FileVO, String gid) throws IOException, InterruptedException;
 
     /**
      * 根据资源信息匹配匹配可能的番剧和聚集，并获取对应的弹幕库
@@ -33,7 +33,7 @@ public interface TransferService {
      * @param videoDuration
      * @return
      */
-    List<ResourceMatchV0> matchResourceInformation(String fileName, String fileHash, long fileSize, int videoDuration) throws IOException;
+    List<ResourceMatchVO> matchResourceInformation(String fileName, String fileHash, long fileSize, int videoDuration) throws IOException;
 
     /**
      * 根据fileUuid寻找资源是否存在字幕文件

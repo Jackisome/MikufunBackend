@@ -1,6 +1,6 @@
 package com.devteam.mikufunbackend.controller;
 
-import com.devteam.mikufunbackend.entity.ResourceMatchV0;
+import com.devteam.mikufunbackend.entity.ResourceMatchVO;
 import com.devteam.mikufunbackend.service.serviceInterface.TransferService;
 import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
@@ -78,8 +78,8 @@ public class TestController {
     @GetMapping("/test/match")
     Response testMatch() throws IOException {
         Map<String, Object> data = ResultUtil.getData();
-        List<ResourceMatchV0> resourceMatchV0s = transferService.matchResourceInformation("[UHA-WINGS][Kobayashi-san Chi no Maid Dragon S][10][x264 1080p][CHS]", "674f1a33a7f54d478062361875b8bec5", 588098798, 1420);
-        data.put("resourceMatchV0s", resourceMatchV0s);
+        List<ResourceMatchVO> resourceMatchVOS = transferService.matchResourceInformation("[UHA-WINGS][Kobayashi-san Chi no Maid Dragon S][10][x264 1080p][CHS]", "674f1a33a7f54d478062361875b8bec5", 588098798, 1420);
+        data.put("resourceMatchV0s", resourceMatchVOS);
         return ResultUtil.success(data);
     }
 }

@@ -2,8 +2,8 @@ package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.devteam.mikufunbackend.dao.AutoDownloadRuleDao;
 import com.devteam.mikufunbackend.entity.AutoDownloadRuleEntity;
-import com.devteam.mikufunbackend.entity.AutoDownloadRuleRequestV0;
-import com.devteam.mikufunbackend.entity.AutoDownloadRuleResponseV0;
+import com.devteam.mikufunbackend.entity.AutoDownloadRuleRequestVO;
+import com.devteam.mikufunbackend.entity.AutoDownloadRuleResponseVO;
 import com.devteam.mikufunbackend.entity.SearchResourceRespVO;
 import com.devteam.mikufunbackend.handle.ParameterErrorException;
 import com.devteam.mikufunbackend.service.serviceInterface.AutoDownloadService;
@@ -41,18 +41,18 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
     private DownloadService downloadService;
 
     @Override
-    public boolean addAutoDownloadRule(AutoDownloadRuleRequestV0 autoDownloadRuleRequestV0) throws ParseException {
-        if (!ParamUtil.isNotEmpty(autoDownloadRuleRequestV0.getRuleName()) || !ParamUtil.isNotEmpty(autoDownloadRuleRequestV0.getKeyword()) || !ParamUtil.isLegalDate(autoDownloadRuleRequestV0.getActiveResourceTime())) {
+    public boolean addAutoDownloadRule(AutoDownloadRuleRequestVO autoDownloadRuleRequestVO) throws ParseException {
+        if (!ParamUtil.isNotEmpty(autoDownloadRuleRequestVO.getRuleName()) || !ParamUtil.isNotEmpty(autoDownloadRuleRequestVO.getKeyword()) || !ParamUtil.isLegalDate(autoDownloadRuleRequestVO.getActiveResourceTime())) {
             throw new ParameterErrorException("参数错误");
         }
-        logger.info("receive autoDownloadRuleRequestV0: {}", autoDownloadRuleRequestV0);
-        Timestamp activeResourceTime = ParamUtil.getDateFromString(autoDownloadRuleRequestV0.getActiveResourceTime());
+        logger.info("receive autoDownloadRuleRequestV0: {}", autoDownloadRuleRequestVO);
+        Timestamp activeResourceTime = ParamUtil.getDateFromString(autoDownloadRuleRequestVO.getActiveResourceTime());
         AutoDownloadRuleEntity autoDownloadRuleEntity = AutoDownloadRuleEntity.builder()
-                .ruleName(autoDownloadRuleRequestV0.getRuleName())
-                .keyword(autoDownloadRuleRequestV0.getKeyword())
+                .ruleName(autoDownloadRuleRequestVO.getRuleName())
+                .keyword(autoDownloadRuleRequestVO.getKeyword())
                 .activeResourceTime(activeResourceTime)
                 .updateTime(activeResourceTime)
-                .active(autoDownloadRuleRequestV0.isActive()? 1: 0)
+                .active(autoDownloadRuleRequestVO.isActive()? 1: 0)
                 .build();
         logger.info("begin add auto download rule to auto download rule table, autoDownloadRuleEntity: {}", autoDownloadRuleEntity);
         int changeLine = autoDownloadRuleDao.addAutoDownloadRule(autoDownloadRuleEntity);
@@ -70,11 +70,11 @@ public class AutoDownloadServiceImpl implements AutoDownloadService {
     }
 
     @Override
-    public List<AutoDownloadRuleResponseV0> getAllAutoDownloadRules() {
+    public List<AutoDownloadRuleResponseVO> getAllAutoDownloadRules() {
         List<AutoDownloadRuleEntity> autoDownloadRuleEntities = autoDownloadRuleDao.getAllAutoDownloadRules();
-        List<AutoDownloadRuleResponseV0> data = new ArrayList<>();
+        List<AutoDownloadRuleResponseVO> data = new ArrayList<>();
         autoDownloadRuleEntities.forEach(autoDownloadRuleEntity -> {
-            data.add(AutoDownloadRuleResponseV0.builder()
+            data.add(AutoDownloadRuleResponseVO.builder()
                     .ruleId(String.valueOf(autoDownloadRuleEntity.getRuleId()))
                     .ruleName(autoDownloadRuleEntity.getRuleName())
                     .keyword(autoDownloadRuleEntity.getKeyword())

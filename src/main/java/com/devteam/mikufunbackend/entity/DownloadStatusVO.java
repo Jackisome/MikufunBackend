@@ -11,7 +11,7 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @Builder
-public class DownloadStatusV0 {
+public class DownloadStatusVO {
     String gid;
     String fileName;
     double completedLength;

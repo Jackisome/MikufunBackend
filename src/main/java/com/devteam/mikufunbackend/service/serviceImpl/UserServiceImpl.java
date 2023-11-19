@@ -2,7 +2,7 @@ package com.devteam.mikufunbackend.service.serviceImpl;
 
 import com.devteam.mikufunbackend.constant.RuntimeVariable;
 import com.devteam.mikufunbackend.constant.UserTypeEnum;
-import com.devteam.mikufunbackend.entity.LoginV0;
+import com.devteam.mikufunbackend.entity.LoginVO;
 import com.devteam.mikufunbackend.handle.PasswordErrorException;
 import com.devteam.mikufunbackend.handle.TokenException;
 import com.devteam.mikufunbackend.service.serviceInterface.UserService;
@@ -14,11 +14,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Jackisome
@@ -52,24 +49,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public LoginV0 getAuthToken(String inputPassword) {
+    public LoginVO getAuthToken(String inputPassword) {
         UserTypeEnum userTypeEnum = validatePassword(inputPassword);
         String uuid = UUID.randomUUID().toString();
         switch (userTypeEnum) {
             case USER:
                 RuntimeVariable.token = uuid;
-                return LoginV0.builder()
+                return LoginVO.builder()
                         .token(uuid)
                         .visitor(false)
                         .build();
             case VISITOR:
                 RuntimeVariable.visitorToken.put(inputPassword, uuid);
-                return LoginV0.builder()
+                return LoginVO.builder()
                         .token(uuid)
                         .visitor(true)
                         .build();
         }
-        return LoginV0.builder()
+        return LoginVO.builder()
                 .token("")
                 .visitor(true)
                 .build();

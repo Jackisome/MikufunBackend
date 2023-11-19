@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class DownloadStatusTransferV0 {
+public class DownloadStatusTransferVO {
     String gid;
     boolean status;
 }

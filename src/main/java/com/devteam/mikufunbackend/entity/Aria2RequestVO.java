@@ -18,7 +18,7 @@ import java.util.UUID;
 @Accessors(chain = true)
 //无参构造方法
 @NoArgsConstructor
-public class Aria2RequestV0 {
+public class Aria2RequestVO {
     /**
      * id随机生成，也可以手动设置
      */
@@ -32,7 +32,7 @@ public class Aria2RequestV0 {
      * 添加下载参数
      * @return
      */
-    public Aria2RequestV0 addParam(Object obj) {
+    public Aria2RequestVO addParam(Object obj) {
         params.add(obj);
         return this;
     }

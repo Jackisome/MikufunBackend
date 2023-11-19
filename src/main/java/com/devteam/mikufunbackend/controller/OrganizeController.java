@@ -1,6 +1,6 @@
 package com.devteam.mikufunbackend.controller;
 
-import com.devteam.mikufunbackend.entity.OrganizeV0;
+import com.devteam.mikufunbackend.entity.OrganizeVO;
 import com.devteam.mikufunbackend.service.serviceInterface.OrganizeService;
 import com.devteam.mikufunbackend.util.Response;
 import com.devteam.mikufunbackend.util.ResultUtil;
@@ -25,8 +25,8 @@ public class OrganizeController {
     @GetMapping("/setting")
     public Response getSetting() {
         Map<String, Object> data = ResultUtil.getData();
-        OrganizeV0 organizeV0 = organizeService.getProperty();
-        data.put("setting", organizeV0);
+        OrganizeVO organizeVO = organizeService.getProperty();
+        data.put("setting", organizeVO);
         return ResultUtil.success(data);
     }
 

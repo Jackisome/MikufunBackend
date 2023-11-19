@@ -1,8 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
-import com.devteam.mikufunbackend.entity.DiskSpaceV0;
-import com.devteam.mikufunbackend.entity.FileV0;
-import com.devteam.mikufunbackend.handle.FileErrorException;
+import com.devteam.mikufunbackend.entity.DiskSpaceVO;
+import com.devteam.mikufunbackend.entity.FileVO;
 import com.devteam.mikufunbackend.service.serviceInterface.LocalServerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,13 +25,13 @@ public class LocalServerServiceImpl implements LocalServerService {
     private String rootPath;
 
     @Override
-    public DiskSpaceV0 getDiskSpace() {
+    public DiskSpaceVO getDiskSpace() {
         File diskPartition = new File(rootPath);
         double usableSpace = diskPartition.getUsableSpace() / 1024.0 / 1024.0 / 1024.0;
         double totalSpace = diskPartition.getTotalSpace() / 1024.0 / 1024.0 / 1024.0;
         double usedSpace = totalSpace - usableSpace;
 
-        return DiskSpaceV0.builder()
+        return DiskSpaceVO.builder()
                 .usedSpace(usedSpace)
                 .totalSpace(totalSpace)
                 .build();
@@ -53,25 +52,25 @@ public class LocalServerServiceImpl implements LocalServerService {
     }
 
     @Override
-    public List<FileV0> getFileInformation(String path) {
-        List<FileV0> data = new ArrayList<>();
+    public List<FileVO> getFileInformation(String path) {
+        List<FileVO> data = new ArrayList<>();
         File file = new File(path);
         getFileInformation(file, data);
         return data;
     }
 
-    private void getFileInformation(File file, List<FileV0> fileV0s) {
+    private void getFileInformation(File file, List<FileVO> fileVOS) {
         if (file.exists()) {
             if (file.isFile()) {
-                fileV0s.add(getFileV0FromFile(file));
+                fileVOS.add(getFileV0FromFile(file));
             } else {
                 File[] files = file.listFiles();
                 if (files != null) {
                     for (File value : files) {
                         if (file.isFile()) {
-                            fileV0s.add(getFileV0FromFile(value));
+                            fileVOS.add(getFileV0FromFile(value));
                         } else {
-                            getFileInformation(value, fileV0s);
+                            getFileInformation(value, fileVOS);
                         }
                     }
                 }
@@ -79,8 +78,8 @@ public class LocalServerServiceImpl implements LocalServerService {
         }
     }
 
-    private FileV0 getFileV0FromFile(File file) {
-        return FileV0.builder()
+    private FileVO getFileV0FromFile(File file) {
+        return FileVO.builder()
                 .fileName(file.getName())
                 .fileUrl(file.getAbsolutePath())
                 .fileSize(file.length() / 1024.0 / 1024.0 + "MiB")

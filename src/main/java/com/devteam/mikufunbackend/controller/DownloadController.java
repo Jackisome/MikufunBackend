@@ -1,7 +1,7 @@
 package com.devteam.mikufunbackend.controller;
 
 import com.devteam.mikufunbackend.constant.Aria2Constant;
-import com.devteam.mikufunbackend.entity.DownloadStatusTransferV0;
+import com.devteam.mikufunbackend.entity.DownloadStatusTransferVO;
 import com.devteam.mikufunbackend.handle.Aria2Exception;
 import com.devteam.mikufunbackend.handle.FileIdException;
 import com.devteam.mikufunbackend.service.serviceInterface.DownloadService;
@@ -45,17 +45,17 @@ public class DownloadController {
 
     @PutMapping("/pause/{gids}")
     public Response pause(@PathVariable List<String> gids) throws IOException {
-        List<DownloadStatusTransferV0> downloadStatusTransferV0s = downloadService.changeDownloadStatusAndGetResults(gids, Aria2Constant.downloadAction.PAUSE);
+        List<DownloadStatusTransferVO> downloadStatusTransferVOS = downloadService.changeDownloadStatusAndGetResults(gids, Aria2Constant.downloadAction.PAUSE);
         Map<String, Object> data = ResultUtil.getData();
-        data.put("downloadEntries", downloadStatusTransferV0s);
+        data.put("downloadEntries", downloadStatusTransferVOS);
         return ResultUtil.success(data);
     }
 
     @PutMapping("/unpause/{gids}")
     public Response unpause(@PathVariable List<String> gids) throws IOException {
-        List<DownloadStatusTransferV0> downloadStatusTransferV0s = downloadService.changeDownloadStatusAndGetResults(gids, Aria2Constant.downloadAction.UNPAUSE);
+        List<DownloadStatusTransferVO> downloadStatusTransferVOS = downloadService.changeDownloadStatusAndGetResults(gids, Aria2Constant.downloadAction.UNPAUSE);
         Map<String, Object> data = ResultUtil.getData();
-        data.put("downloadEntries", downloadStatusTransferV0s);
+        data.put("downloadEntries", downloadStatusTransferVOS);
         return ResultUtil.success(data);
     }
 

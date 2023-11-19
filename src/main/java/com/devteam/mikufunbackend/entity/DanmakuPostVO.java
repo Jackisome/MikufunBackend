@@ -11,7 +11,7 @@ import lombok.*;
  * 增加弹幕
  */
 @Data
-public class DanmakuPostV0 {
+public class DanmakuPostVO {
     String id;
     String author;
     double time;

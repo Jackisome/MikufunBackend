@@ -7,7 +7,7 @@ import lombok.Data;
  * @date 2021/10/2
  */
 @Data
-public class Aria2FileV0 {
+public class Aria2FileVO {
     int index;
     String path;
     long completedLength;

@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class ResourceMatchV0 {
+public class ResourceMatchVO {
     int resourceId;
     String resourceName;
     String episodeTitle;

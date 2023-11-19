@@ -1,7 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
 import com.devteam.mikufunbackend.constant.UserTypeEnum;
-import com.devteam.mikufunbackend.entity.LoginV0;
+import com.devteam.mikufunbackend.entity.LoginVO;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 public interface UserService {
     UserTypeEnum validatePassword(String inputPassword);
 
-    LoginV0 getAuthToken(String inputPassword);
+    LoginVO getAuthToken(String inputPassword);
 
     boolean removeToken(HttpServletRequest request);
 

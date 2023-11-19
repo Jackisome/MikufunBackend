@@ -9,8 +9,8 @@ import java.util.List;
  * @date 2021/10/2
  */
 @Data
-public class Aria2ResponseV0 {
+public class Aria2ResponseVO {
     String id;
     String jsonrpc;
-    List<Aria2StatusV0> result;
+    List<Aria2StatusVO> result;
 }

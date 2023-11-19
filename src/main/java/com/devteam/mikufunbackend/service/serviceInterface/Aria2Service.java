@@ -1,8 +1,6 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
-import com.devteam.mikufunbackend.constant.Aria2Constant;
-import com.devteam.mikufunbackend.entity.Aria2StatusV0;
-import com.devteam.mikufunbackend.entity.DownloadStatusV0;
+import com.devteam.mikufunbackend.entity.Aria2StatusVO;
 import org.dom4j.DocumentException;
 
 import java.io.IOException;
@@ -56,7 +54,7 @@ public interface Aria2Service {
      * @param gid
      * @return
      */
-    Aria2StatusV0 tellDownloadingFileStatus(String gid) throws IOException;
+    Aria2StatusVO tellDownloadingFileStatus(String gid) throws IOException;
 
     /**
      * 根据指定状态获取对应所有文件的下载状态
@@ -64,7 +62,7 @@ public interface Aria2Service {
      * @return
      * @throws IOException
      */
-    List<Aria2StatusV0> getFileStatus(String type) throws IOException;
+    List<Aria2StatusVO> getFileStatus(String type) throws IOException;
 
     /**
      * 获取全局的下载状态

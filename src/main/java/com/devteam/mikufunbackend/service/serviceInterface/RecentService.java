@@ -1,7 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
-import com.devteam.mikufunbackend.entity.RecentDownloadV0;
-import com.devteam.mikufunbackend.entity.RecentPlayV0;
+import com.devteam.mikufunbackend.entity.RecentDownloadVO;
+import com.devteam.mikufunbackend.entity.RecentPlayVO;
 
 import java.util.List;
 
@@ -14,11 +14,11 @@ public interface RecentService {
      * 获取最近播放
      * @return
      */
-    List<RecentPlayV0> recentPlay() throws Exception;
+    List<RecentPlayVO> recentPlay() throws Exception;
 
     /**
      * 获取最近下载
      * @return
      */
-    List<RecentDownloadV0> recentDownload() throws Exception;
+    List<RecentDownloadVO> recentDownload() throws Exception;
 }

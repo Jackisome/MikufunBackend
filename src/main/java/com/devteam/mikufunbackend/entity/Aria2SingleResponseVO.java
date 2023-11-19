@@ -7,8 +7,8 @@ import lombok.Data;
  * @date 2021/11/14
  */
 @Data
-public class Aria2SingleResponseV0 {
+public class Aria2SingleResponseVO {
     String id;
     String jsonrpc;
-    Aria2StatusV0 result;
+    Aria2StatusVO result;
 }

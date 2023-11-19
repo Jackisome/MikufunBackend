@@ -2,8 +2,6 @@ package com.devteam.mikufunbackend.entity;
 
 import lombok.*;
 
-import java.text.DecimalFormat;
-
 /**
  * @author Jackisome
  * @date 2021/9/30
@@ -13,7 +11,7 @@ import java.text.DecimalFormat;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DanmakuV0 {
+public class DanmakuVO {
     double time;
     int mode;
     int color;

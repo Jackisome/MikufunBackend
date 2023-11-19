@@ -7,7 +7,7 @@ import lombok.Data;
  * @date 2021/10/19
  */
 @Data
-public class PlayInformationV0 {
+public class PlayInformationVO {
     String fileUrl;
     String fileName;
     String resourceId;
@@ -16,7 +16,7 @@ public class PlayInformationV0 {
     double videoTime;
     String format;
 
-    public PlayInformationV0(ResourceEntity resourceEntity) {
+    public PlayInformationVO(ResourceEntity resourceEntity) {
         this.fileUrl = "/docker/resource/" + resourceEntity.getFileUuid() + "/index." + resourceEntity.getTransferFormat();
         this.fileName = resourceEntity.getFileName();
         this.resourceId = String.valueOf(resourceEntity.getResourceId());

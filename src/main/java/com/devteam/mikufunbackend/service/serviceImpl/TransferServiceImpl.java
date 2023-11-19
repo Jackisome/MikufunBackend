@@ -56,19 +56,19 @@ public class TransferServiceImpl implements TransferService {
     @Override
     public void transfer() throws IOException {
         logger.info("begin schedule task: transfer");
-        List<Aria2StatusV0> aria2StatusV0s = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE);
-        aria2StatusV0s.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_STOPPED));
+        List<Aria2StatusVO> aria2StatusVOS = aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_ACTIVE);
+        aria2StatusVOS.addAll(aria2Service.getFileStatus(Aria2Constant.METHOD_TELL_STOPPED));
         Set<String> gidSet = new HashSet<>(resourceInformationDao.findAllGid());
-        if (!ParamUtil.isNotEmpty(aria2StatusV0s)) {
+        if (!ParamUtil.isNotEmpty(aria2StatusVOS)) {
             logger.info("not files can be transferred");
         }
-        for (Aria2StatusV0 aria2StatusV0 : aria2StatusV0s) {
-            String gid = aria2StatusV0.getGid();
+        for (Aria2StatusVO aria2StatusVO : aria2StatusVOS) {
+            String gid = aria2StatusVO.getGid();
             if (!gidSet.contains(gid)) {
-                logger.info("transfer files: {}", aria2StatusV0);
-                if (Aria2Constant.downloadStatus.COMPLETE.getDescription().equals(aria2StatusV0.getStatus())
-                        || (Aria2Constant.downloadStatus.ACTIVE.getDescription().equals(aria2StatusV0.getStatus()) && aria2StatusV0.getCompletedLength() == aria2StatusV0.getTotalLength())) {
-                    for (Aria2FileV0 file : aria2StatusV0.getFiles()) {
+                logger.info("transfer files: {}", aria2StatusVO);
+                if (Aria2Constant.downloadStatus.COMPLETE.getDescription().equals(aria2StatusVO.getStatus())
+                        || (Aria2Constant.downloadStatus.ACTIVE.getDescription().equals(aria2StatusVO.getStatus()) && aria2StatusVO.getCompletedLength() == aria2StatusVO.getTotalLength())) {
+                    for (Aria2FileVO file : aria2StatusVO.getFiles()) {
                         if (!ResultUtil.getFileName(file.getPath()).equals(file.getPath()) && !file.getPath().contains(freeDownloadPath)) {
                             logger.info("begin transfer resource, file: {}", file);
                             if (transferFile(file, gid)) {
@@ -84,8 +84,8 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public boolean transferFile(Aria2FileV0 aria2FileV0, String gid) throws IOException {
-        String filePath = aria2FileV0.getPath();
+    public boolean transferFile(Aria2FileVO aria2FileVO, String gid) throws IOException {
+        String filePath = aria2FileVO.getPath();
         String fileName = ResultUtil.getFileName(filePath);
         String type = ResultUtil.getFileType(filePath);
         String transferFormat = RuntimeVariable.transferType.getFormat();
@@ -107,7 +107,7 @@ public class TransferServiceImpl implements TransferService {
             }
             if (exitValue == 0) {
                 logger.info("transfer file to {} and ts file complete, fileName: {}", transferFormat, fileName);
-                resourceInformationDao.addResourceInformation(generateResourceEntity(aria2FileV0, gid, uuid, transferFormat));
+                resourceInformationDao.addResourceInformation(generateResourceEntity(aria2FileVO, gid, uuid, transferFormat));
                 return true;
             } else {
                 logger.error("transfer file to {} and ts file fail, fileName: {}", transferFormat, fileName);
@@ -134,38 +134,38 @@ public class TransferServiceImpl implements TransferService {
     }
 
     @Override
-    public List<ResourceMatchV0> matchResourceInformation(String fileName, String fileHash, long fileSize, int videoDuration) throws IOException {
-        List<ResourceMatchV0> data = new ArrayList<>();
-        DandanPlayMatchRequestV0 dandanPlayMatchRequestV0 = DandanPlayMatchRequestV0.builder()
+    public List<ResourceMatchVO> matchResourceInformation(String fileName, String fileHash, long fileSize, int videoDuration) throws IOException {
+        List<ResourceMatchVO> data = new ArrayList<>();
+        DandanPlayMatchRequestVO dandanPlayMatchRequestVO = DandanPlayMatchRequestVO.builder()
                 .fileName(ResultUtil.getFileNameWithoutExtensionName(fileName))
                 .fileHash(fileHash)
                 .fileSize(fileSize)
                 .videoDuration(videoDuration)
                 .matchMode("hashAndFileName")
                 .build();
-        logger.info("match file to resource information, request: {}", dandanPlayMatchRequestV0.toString());
-        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(dandanPlayUrl + "/match", dandanPlayMatchRequestV0);
-        DandanPlayMatchResponseV0 dandanPlayMatchResponseV0 = (DandanPlayMatchResponseV0) HttpClientUtil.convertJsonToObject(response, DandanPlayMatchResponseV0.class);
-        System.out.println("matchresponse: " + dandanPlayMatchResponseV0.toString());
-        if (dandanPlayMatchResponseV0.getErrorCode() != 0) {
-            logger.error("invoke dandanplay match fail, errorMessage: {}", dandanPlayMatchResponseV0.getErrorMessage());
+        logger.info("match file to resource information, request: {}", dandanPlayMatchRequestVO.toString());
+        CloseableHttpResponse response = HttpClientUtil.sendPostAsJson(dandanPlayUrl + "/match", dandanPlayMatchRequestVO);
+        DandanPlayMatchResponseVO dandanPlayMatchResponseVO = (DandanPlayMatchResponseVO) HttpClientUtil.convertJsonToObject(response, DandanPlayMatchResponseVO.class);
+        System.out.println("matchresponse: " + dandanPlayMatchResponseVO.toString());
+        if (dandanPlayMatchResponseVO.getErrorCode() != 0) {
+            logger.error("invoke dandanplay match fail, errorMessage: {}", dandanPlayMatchResponseVO.getErrorMessage());
             return data;
         }
-        List<DandanPlayMatchV0> dandanPlayMatchV0s = dandanPlayMatchResponseV0.getMatches();
-        if (dandanPlayMatchV0s == null || dandanPlayMatchV0s.size() == 0) {
+        List<DandanPlayMatchVO> dandanPlayMatchVOS = dandanPlayMatchResponseVO.getMatches();
+        if (dandanPlayMatchVOS == null || dandanPlayMatchVOS.size() == 0) {
             logger.error("invoke dandanplay match, no matches, fileName: {}", fileName);
             return data;
         }
-        dandanPlayMatchV0s.forEach(dandanPlayMatchV0 -> {
-            ResourceMatchV0 resourceMatchV0 = ResourceMatchV0.builder()
-                    .resourceId(dandanPlayMatchV0.getAnimeId())
-                    .resourceName(dandanPlayMatchV0.getAnimeTitle())
-                    .episodeTitle(dandanPlayMatchV0.getEpisodeTitle())
-                    .type(dandanPlayMatchV0.getType())
-                    .episodeId(dandanPlayMatchV0.getEpisodeId())
-                    .shift(dandanPlayMatchV0.getShift())
+        dandanPlayMatchVOS.forEach(dandanPlayMatchVO -> {
+            ResourceMatchVO resourceMatchVO = ResourceMatchVO.builder()
+                    .resourceId(dandanPlayMatchVO.getAnimeId())
+                    .resourceName(dandanPlayMatchVO.getAnimeTitle())
+                    .episodeTitle(dandanPlayMatchVO.getEpisodeTitle())
+                    .type(dandanPlayMatchVO.getType())
+                    .episodeId(dandanPlayMatchVO.getEpisodeId())
+                    .shift(dandanPlayMatchVO.getShift())
                     .build();
-            data.add(resourceMatchV0);
+            data.add(resourceMatchVO);
         });
         return data;
     }
@@ -240,8 +240,8 @@ public class TransferServiceImpl implements TransferService {
         return subtitleFile.exists() ? subtitlePath : "";
     }
 
-    private ResourceEntity generateResourceEntity(Aria2FileV0 aria2FileV0, String gid, String uuid, String transferFormat) throws IOException {
-        String filePath = aria2FileV0.getPath();
+    private ResourceEntity generateResourceEntity(Aria2FileVO aria2FileVO, String gid, String uuid, String transferFormat) throws IOException {
+        String filePath = aria2FileVO.getPath();
         String fileName = ResultUtil.getFileName(filePath);
         // 获取资源时长
         int videoDuration = (int) getVideoDuration(filePath);
@@ -253,23 +253,23 @@ public class TransferServiceImpl implements TransferService {
         String imageUrl = makeResourceImage(filePath, uuid);
 
         // 获取资源对应的番剧集数和弹幕
-        List<ResourceMatchV0> resourceMatchV0s = matchResourceInformation(fileName, md5, aria2FileV0.getLength(), videoDuration);
+        List<ResourceMatchVO> resourceMatchVOS = matchResourceInformation(fileName, md5, aria2FileVO.getLength(), videoDuration);
 
         ResourceEntity resourceEntity = ResourceEntity.builder()
                 .fileName(fileName)
                 .fileUuid(uuid)
                 .fileHash(md5)
-                .fileSize(aria2FileV0.getLength())
-                .srcFilePath(aria2FileV0.getPath())
+                .fileSize(aria2FileVO.getLength())
+                .srcFilePath(aria2FileVO.getPath())
                 .transferFormat(transferFormat)
                 .videoDuration(videoDuration)
                 .imageUrl(imageUrl)
                 .subtitlePath(getDefaultSubtitlePath(uuid))
                 .gid(gid)
                 .build();
-        if (resourceMatchV0s.size() != 0) {
-            ResourceMatchV0 matchV0 = resourceMatchV0s.get(0);
-            resourceEntity.setExactMatch(resourceMatchV0s.size() == 1 ? 1 : 0)
+        if (resourceMatchVOS.size() != 0) {
+            ResourceMatchVO matchV0 = resourceMatchVOS.get(0);
+            resourceEntity.setExactMatch(resourceMatchVOS.size() == 1 ? 1 : 0)
                     .setResourceId(matchV0.getResourceId())
                     .setResourceName(matchV0.getResourceName())
                     .setEpisodeTitle(matchV0.getEpisodeTitle())

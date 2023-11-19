@@ -1,7 +1,7 @@
 package com.devteam.mikufunbackend.dao;
 
 import com.devteam.mikufunbackend.entity.ResourceEntity;
-import com.devteam.mikufunbackend.entity.ResourceV0;
+import com.devteam.mikufunbackend.entity.ResourceVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -99,7 +99,7 @@ public interface ResourceInformationDao {
      *
      * @return
      */
-    List<ResourceV0> findResourceList();
+    List<ResourceVO> findResourceList();
 
     /**
      * 查找所有文件信息记录

@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 @Builder
-public class DandanPlayMatchRequestV0 {
+public class DandanPlayMatchRequestVO {
     String fileName;
     String fileHash;
     long fileSize;

@@ -1,6 +1,6 @@
 package com.devteam.mikufunbackend.service.serviceImpl;
 
-import com.devteam.mikufunbackend.entity.FileV0;
+import com.devteam.mikufunbackend.entity.FileVO;
 import com.devteam.mikufunbackend.handle.FileUploadException;
 import com.devteam.mikufunbackend.handle.ParameterErrorException;
 import com.devteam.mikufunbackend.service.serviceInterface.Aria2Service;
@@ -46,7 +46,7 @@ public class FreeDownloadServiceImpl implements FreeDownloadService {
     }
 
     @Override
-    public List<FileV0> getAllFreeDownloadFile() {
+    public List<FileVO> getAllFreeDownloadFile() {
         return localServerService.getFileInformation(freeDownloadPath);
     }
 

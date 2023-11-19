@@ -124,7 +124,7 @@
         order by episode_id
     </select>
 
-    <select id="findResourceList" resultType="com.devteam.mikufunbackend.entity.ResourceV0">
+    <select id="findResourceList" resultType="com.devteam.mikufunbackend.entity.ResourceVO">
         select DISTINCT resource_id, resource_name
         from mikufun_resource_information
     </select>

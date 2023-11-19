@@ -1,7 +1,7 @@
 package com.devteam.mikufunbackend.service.serviceInterface;
 
 import com.devteam.mikufunbackend.constant.AnimeTypeEnum;
-import com.devteam.mikufunbackend.entity.CalendarInfoV0;
+import com.devteam.mikufunbackend.entity.CalendarInfoVO;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ public interface CalendarService {
      * 获取新番时间表
      * @return
      */
-    List<CalendarInfoV0> calendar(AnimeTypeEnum type, int week) throws Exception;
+    List<CalendarInfoVO> calendar(AnimeTypeEnum type, int week) throws Exception;
 }

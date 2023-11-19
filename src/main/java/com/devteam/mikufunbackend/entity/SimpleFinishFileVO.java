@@ -5,11 +5,12 @@ import lombok.Data;
 
 /**
  * @author Jackisome
- * @date 2021/10/21
+ * @date 2021/10/2
  */
 @Data
 @Builder
-public class DiskSpaceV0 {
-    double usedSpace;
-    double totalSpace;
+public class SimpleFinishFileVO {
+    String fileId;
+    String fileName;
+    boolean delete;
 }

@@ -36,8 +36,8 @@ public class ResourceEntity {
     double danmakuShift;
     String gid;
 
-    public FinishFileV0 getFinishFileV0() {
-        return FinishFileV0.builder()
+    public FinishFileVO getFinishFileV0() {
+        return FinishFileVO.builder()
                 .fileId(String.valueOf(this.getFileId()))
                 .imageUrl(this.getImageUrl())
                 .fileName(this.getFileName())
@@ -48,8 +48,8 @@ public class ResourceEntity {
                 .build();
     }
 
-    public SimpleFinishFileV0 getSimpleFinishFileV0() {
-        return SimpleFinishFileV0.builder()
+    public SimpleFinishFileVO getSimpleFinishFileV0() {
+        return SimpleFinishFileVO.builder()
                 .fileId(String.valueOf(this.getFileId()))
                 .fileName(this.getFileName())
                 .delete(false)

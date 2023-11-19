@@ -87,7 +87,7 @@ public class PlayServiceImpl implements PlayService {
     }
 
     @Override
-    public Boolean postDanmaku(DanmakuPostV0 comment) throws Exception {
+    public Boolean postDanmaku(DanmakuPostVO comment) throws Exception {
         try {
             logger.info("put danmaku, danmaku: {}", comment);
         } catch (Exception e) {
@@ -150,14 +150,14 @@ public class PlayServiceImpl implements PlayService {
             return Collections.singletonList(matchEpisodeRespVO);
         }
         // 非精确匹配，返回所有可能的匹配弹幕文件信息
-        List<ResourceMatchV0> resourceMatchV0s = transferService.matchResourceInformation(resourceEntity.getFileName(),
+        List<ResourceMatchVO> resourceMatchVOS = transferService.matchResourceInformation(resourceEntity.getFileName(),
                 resourceEntity.getFileHash(), resourceEntity.getFileSize(), resourceEntity.getVideoDuration());
-        return resourceMatchV0s.stream().map(resourceMatchV0 -> MatchEpisodeRespVO.builder()
-                .resourceId(String.valueOf(resourceMatchV0.getResourceId()))
-                .resourceName(resourceMatchV0.getResourceName())
-                .episodeId(String.valueOf(resourceMatchV0.getEpisodeId()))
-                .episode(resourceMatchV0.getEpisodeTitle())
-                .resourceType(resourceMatchV0.getType())
+        return resourceMatchVOS.stream().map(resourceMatchVO -> MatchEpisodeRespVO.builder()
+                .resourceId(String.valueOf(resourceMatchVO.getResourceId()))
+                .resourceName(resourceMatchVO.getResourceName())
+                .episodeId(String.valueOf(resourceMatchVO.getEpisodeId()))
+                .episode(resourceMatchVO.getEpisodeTitle())
+                .resourceType(resourceMatchVO.getType())
                 .build()).collect(Collectors.toList());
     }
 

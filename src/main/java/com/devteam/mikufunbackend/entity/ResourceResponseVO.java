@@ -5,12 +5,11 @@ import lombok.Data;
 
 /**
  * @author Jackisome
- * @date 2021/10/21
+ * @date 2021/10/6
  */
 @Data
 @Builder
-public class FileV0 {
-    String fileName;
-    String fileSize;
-    String fileUrl;
+public class ResourceResponseVO {
+    String resourceId;
+    String resourceName;
 }
